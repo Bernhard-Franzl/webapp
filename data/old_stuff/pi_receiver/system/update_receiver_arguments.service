@@ -1,0 +1,8 @@
+[Unit]
+Description=Updates the arguments of the IR emitter
+
+[Service]
+ExecStart=/bin/bash /home/pi_receiver/update_arguments.sh
+
+[Install]
+WantedBy=multi-user.target

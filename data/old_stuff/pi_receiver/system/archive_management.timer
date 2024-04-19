@@ -1,0 +1,11 @@
+[Unit]
+Description=start local data management service
+
+[Timer]
+Unit=archive_management.service
+OnCalendar=*-*-* 23:59:00
+#OnCalendar=*-*-* *:*:00/30
+Persistent=true
+
+[Install]
+WantedBy=timers.target

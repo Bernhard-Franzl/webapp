@@ -1,0 +1,10 @@
+[Unit]
+Description=Sync ip adress
+Requires=ir_receiver.service
+
+[Service]
+ExecStart=/bin/bash /home/pi_receiver/sync_ip.sh
+#User=pi_receiver
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+[Unit]
+Description=Sync data
+Requires=sync_ip.service
+
+[Service]
+ExecStart=/bin/bash /home/pi_receiver/sync_data.sh
+User=pi_receiver
+
+[Install]
+WantedBy=multi-user.target
+
