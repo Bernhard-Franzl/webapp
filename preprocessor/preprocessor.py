@@ -87,7 +87,7 @@ class Preprocessor:
         
         return df_accumulated.reset_index(drop=True)
       
-    #######  Data Processing Methods ########
+    #######  Data Cleaning Methods ########
     def correct_entering_column(self, entry):
         if entry == "True":
             return 1
@@ -114,14 +114,46 @@ class Preprocessor:
         df = df.drop(columns=["entering", "people_in", "people_out"])
         
         # only keep rows with event_type 1 or 0
-        df = df[df["event_type"].isin([0,1])]
+        df = df[df["event_type"].isin([0,1])].reset_index()
         
         # deal with events with low directional support!
+        df_test = df.copy()
+        
+        k = 5
+        n = 2
+        upper_bound = 2
+        
+        df_test = df_test[(df_test["in_support_count"] < upper_bound) 
+                          & (df_test["out_support_count"] < upper_bound)]
+
+        for x in df_test.index:
+            # use index to get row
+            rows = df.iloc[x-k:x+k]
+            
+            # from the neighborhood select the n with the closest time stamp 
+            time_diff = rows["time"] - df.loc[x]["time"]
+            idx = abs(time_diff).sort_values()[1:n+1].index
+            rows_filtered = rows.loc[idx]
+
+            value_counts = rows_filtered["event_type"].value_counts([0,1])
+            common_event_type = value_counts.idxmax()
+            
+            df.loc[x, "event_type"] = common_event_type
         
         # sort by time
         df = df.sort_values(by="time", ascending=True).reset_index(drop=True)
+        
+        # discard samples betwen 22:00 and 07:30
+        x = dt.strptime("07:30:00", "%H:%M:%S")
+        
+        df.between_time("07:30:00", "22:00:00")
+        print(df.between_time("07:30:00", "22:00:00"))
+        mask = (df["time"].dt.hour >= 7) & (df["time"].dt.hour < 22)
+        df = df[mask].reset_index(drop=True)
         return df
 
+
+    #######  Data Filtering Methods ########
     def filter_by_room(self, dataframe, room_id):
         df = dataframe.copy()
         mask = df["room_id"] == room_id
@@ -138,6 +170,7 @@ class Preprocessor:
         return df[mask]
     
     
+    ########  Data Analysis Methods ########
     # calc people entering and leaving
     def calc_people_in_out(self, dataframe):
         df = dataframe.copy()
