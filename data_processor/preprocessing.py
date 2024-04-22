@@ -1,5 +1,6 @@
 import os
-from datetime import datetime as dt
+from datetime import datetime
+from datetime import time 
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -8,8 +9,11 @@ class Preprocessor:
     data_directory = "archive"
     date_format = "%Y-%m-%d"
     last_synchronized = "2024-04-07"
-    last_synchronized_dt = dt.strptime(last_synchronized, date_format)
-    raw_data_format = ['Entering', 'Time', 'People_IN', 'People_OUT', 'IN_Support_Count', 'OUT_Support_Count', 'One_Count_1', 'One_Count_2']
+    last_synchronized_dt = datetime.strptime(last_synchronized, date_format)
+    raw_data_format = ['Entering', 'Time', 
+                       'People_IN', 'People_OUT', 
+                       'IN_Support_Count', 'OUT_Support_Count', 
+                       'One_Count_1', 'One_Count_2']
     def __init__(self, path_to_data, room_to_id, door_to_id):
         self.path_to_data = path_to_data # /home/pi_server
         self.room_to_id = room_to_id
@@ -28,7 +32,7 @@ class Preprocessor:
     def filter_directories(self, directories:list):
         filtered_dirs = []
         for x in directories:
-            day = dt.strptime(x.split("_")[-1], self.date_format)
+            day = datetime.strptime(x.split("_")[-1], self.date_format)
             if self.last_synchronized_dt < day:
                 filtered_dirs.append(x)
         return filtered_dirs
@@ -49,7 +53,7 @@ class Preprocessor:
 
     def change_time_format(self, dataframe):
         df = dataframe.copy()
-        df["Time"] = df["Time"].apply(lambda x: dt.strptime(x, "%a %b %d %H:%M:%S %Y"))
+        df["Time"] = df["Time"].apply(lambda x: datetime.strptime(x, "%a %b %d %H:%M:%S %Y"))
         return df
         
     def accumulate_raw_data(self, data_directories):
@@ -97,7 +101,10 @@ class Preprocessor:
             return int(entry)
         
     def clean_raw_data(self, dataframe):
+        
+        # make copy of dataframe
         df = dataframe.copy()
+        
         # correct the data types
         for col in df.columns[2:]:
             df[col] = df[col].astype(int)
@@ -114,14 +121,14 @@ class Preprocessor:
         df = df.drop(columns=["entering", "people_in", "people_out"])
         
         # only keep rows with event_type 1 or 0
-        df = df[df["event_type"].isin([0,1])].reset_index()
+        df = df[df["event_type"].isin([0,1])].reset_index(drop=True)
         
         # deal with events with low directional support!
         df_test = df.copy()
         
         k = 5
-        n = 2
-        upper_bound = 2
+        n = 3
+        upper_bound = 3
         
         df_test = df_test[(df_test["in_support_count"] < upper_bound) 
                           & (df_test["out_support_count"] < upper_bound)]
@@ -144,55 +151,10 @@ class Preprocessor:
         df = df.sort_values(by="time", ascending=True).reset_index(drop=True)
         
         # discard samples betwen 22:00 and 07:30
-        x = dt.strptime("07:30:00", "%H:%M:%S")
         
-        df.between_time("07:30:00", "22:00:00")
-        print(df.between_time("07:30:00", "22:00:00"))
-        mask = (df["time"].dt.hour >= 7) & (df["time"].dt.hour < 22)
+        lb = time(hour=7, minute=40, second=0)
+        ub = time(hour=20, minute=00, second=0)
+        mask  = df.apply(lambda x: (x["time"].time() >= lb) & (x["time"].time() <= ub), axis=1)
         df = df[mask].reset_index(drop=True)
+        
         return df
-
-
-    #######  Data Filtering Methods ########
-    def filter_by_room(self, dataframe, room_id):
-        df = dataframe.copy()
-        mask = df["room_id"] == room_id
-        return df[mask]
-    
-    def filter_by_door(self, dataframe, door_id):
-        df = dataframe.copy()
-        mask = df["door_id"] == door_id
-        return df[mask]
-    
-    def filter_by_time(self, dataframe, start_time, end_time):
-        df = dataframe.copy()
-        mask = (df["time"] >= start_time) & (df["time"] <= end_time)
-        return df[mask]
-    
-    
-    ########  Data Analysis Methods ########
-    # calc people entering and leaving
-    def calc_people_in_out(self, dataframe):
-        df = dataframe.copy()
-        
-        # cum sum of event type for people in
-        df["people_in"] = df["event_type"].cumsum()
-        # cum sum of inverted event type for people out
-        df["people_out"] = df["event_type"].apply(lambda x: 1-x).cumsum()
-
-        print(df)
-    
-    #######  Data Visualization Methods ########
-    def plot_data(self, dataframe):
-        
-        df = dataframe.copy()
-        
-        # filter by room and door
-        df = self.filter_by_room(df, 0)
-        df = self.filter_by_door(df, 0)
-        
-        #df_plot = df[mask].sort_values(by="time", ascending=True)
-        
-        #df_plot.plot(x="time", y="event_type", kind="bar")
-        
-        #plt.show()
