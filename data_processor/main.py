@@ -25,21 +25,37 @@ year = 2024
 month = 4
 day = 8
 
-start_time = dt(year, month, day, 13, 45, 0)
-end_time = dt(year, month, day, 15, 15, 0)
-first, last = False, False
+start_time = dt(year, month, day, 12, 00, 0)
+end_time = dt(year, month, day, 13, 30, 0)
+first, last = True, False
 
 
 analyzer = Analyzer(cleaned_data)
 data_analysis = analyzer.filter_by_room(cleaned_data, room_id)
-#data_analysis = analyzer.filter_by_door(data_analysis, door_id)
+data_analysis = analyzer.filter_by_door(data_analysis, door_id)
+#data_analysis = analyzer.filter_by_time(data_analysis, start_time, end_time)
 
 #data_sophisticated, _ = analyzer.calc_patricipants_sophisticated(data_analysis, start_time, end_time, first, last)
 
 
-data_control, extrema, count_in, count_out = analyzer.calc_participants_extrema(data_analysis, 
-                                                  start_time, end_time,
-                                                  first, last)
+#data_control = analyzer.calc_inside_per_min(data_analysis, n=2)
+#print(data_control.head())
+#mode = analyzer.calc_mode_inside(data_control)
+#description = analyzer.describe_inside(data_control)
+#print(description)
+#print()
+#print()
+
+before, during, after = analyzer.calc_participants(data_analysis, 
+                                          start_time=start_time,
+                                          end_time=end_time,
+                                          first=first,
+                                          last=last)
+#print(data_control)
+
+#data_control, extrema, count_in, count_out = analyzer.calc_participants_extrema(data_analysis, 
+#                                                  start_time, end_time,
+#                                                  first, last)
 #print(data_analysis)
 
 #########  Data Visualization #########
@@ -50,11 +66,15 @@ visard = Visualizer()
 #                legend,
 #                "time", "people_inside", f"{start_time}", extrema)
 
-data_list = [data_control] 
-legend = ["simple aggregation"] + ["extrema"]
+#[(description["mean"],"r"), 
+#                                                                             (description["50%"],"b"), 
+#                                                                             (mode, "g")]
+
+data_list = [ before, during, after] 
+legend = ["before", "during", "after"]
 visard.plot_line( data_list, 
-                 legend,
-                 "time", "people_inside", f"{start_time}", extrema, count_in, count_out)
+                 legend ,
+                 "time", "people_inside", f"{start_time}", horizontal_lines=[])
 
 
 # TODO:

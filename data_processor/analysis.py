@@ -38,6 +38,29 @@ class Analyzer():
         else:
             return df[mask]
     
+    
+    ######## Statistical Methods ########
+    def calc_mean_inside(self, dataframe):
+        df = dataframe.copy()
+        return df["people_inside"].mean()
+    
+    def calc_median_inside(self, dataframe):
+        df = dataframe.copy()
+        return df["people_inside"].median()
+    
+    def calc_mode_inside(self, dataframe):
+        df = dataframe.copy()
+        return int(df["people_inside"].mode())
+    
+    def calc_std_inside(self, dataframe):
+        df = dataframe.copy()
+        return df["people_inside"].std()
+    
+    def describe_inside(self, dataframe):
+        df = dataframe.copy()
+        return df["people_inside"].describe()
+    
+    
     ########  Data Analysis Methods ########
     # calc people entering and leaving
     def calc_entering_leaving(self, dataframe):
@@ -58,7 +81,31 @@ class Analyzer():
         # calc people in room a a given time
         df["people_inside"] = df["people_in"] - df["people_out"]
         return df
-
+    
+    def calc_inside_per_min(self, dataframe, n=1, start=None, end=None):
+        
+        df = dataframe.copy()
+        
+        # add a check if n is a divisor of the time span
+        
+        
+        df["people_in"] = df["event_type"].apply(lambda x: 1 if x == 1 else 0)
+        df["people_out"] = df["event_type"].apply(lambda x: 1 if x == 0 else 0)
+        
+        
+        idx = pd.date_range(start=start, end=end, freq=f'{n}min')
+        
+        df = df.set_index("time")\
+                .resample(f"{n}min")\
+                .sum().reindex(idx, fill_value=0).reset_index()
+        df.rename(columns={"index":"time"}, inplace=True)
+        
+        df["people_in"] = df["people_in"].cumsum()
+        df["people_out"] = df["people_out"].cumsum()
+        df["people_inside"] = df["people_in"] - df["people_out"]
+        
+        return df
+            
     def get_time(self, start_time, end_time, first, last):
                 
         if first:
@@ -84,6 +131,31 @@ class Analyzer():
                                             order=n)[0]]["people_inside"]
         return df
     
+    def calc_participants(self, dataframe, start_time, end_time, first, last):
+        
+        n = 1
+        # make a copy of the dataframe
+        df = dataframe.copy()
+        # get the new start and end time
+        df_during = self.filter_by_time(df, start_time, end_time)
+        df_course = self.calc_inside_per_min(df_during, n ,start_time, end_time-timedelta(minutes=1))
+        
+        start_time_new, end_time_new = self.get_time(start_time, end_time, first, last)
+        
+        df_before = self.filter_by_time(df, start_time_new, start_time)
+        df_before = self.calc_inside_per_min(df_before, n ,start_time_new, start_time-timedelta(minutes=1))
+        
+        df_after = self.filter_by_time(df, end_time, end_time_new)
+        df_after = self.calc_inside_per_min(df_after, n ,end_time, end_time_new-timedelta(minutes=1))
+        
+        #print(self.calc_inside_per_min(df_before))
+        print(df_before)
+        print(df_course)
+        print(df_after)
+        #print(self.calc_inside_per_min(df_after))
+        #start from the assumption that during the course only particpants are in the room
+        return df_before, df_course, df_after
+
     def calc_participants_simple(self, dataframe, start_time, end_time):
         df = dataframe.copy()
         
@@ -172,32 +244,6 @@ class Analyzer():
         
         return course_attendance, sanity_check
  
-
-    #def check_extrema(self, minima, maxima, mask_min, mask_max):
-    #    # process minima
-    #    if len(minima[mask_min]) > 1:
-    #        # check if in between minimum is a maximum
-    #        # if yes, split chunk into two
-    #        min_indices = minima[mask_min].index
-    #        max_indices = maxima[mask_max].index
-            
-    #        indices = []
-    #        for i, i_1 in zip(min_indices[:-1], min_indices[1:]):
-    #            max_between = max_indices[(max_indices > i) & (max_indices < i_1)]
-    #            if np.any(max_between):
-    #                indices.append(i)
-    #                indices.append(max_between.item())
-    #            else:
-    #                indices.append(i)
-                    
-    #        indices.append(i_1)
-    #        return indices 
-        
-    #    elif len(minima[mask_min]) == 1:
-    #        return [minima[mask_min].index.item()]
-    #    else:
-    #        return []
-
 # calculate people present at a course
     def calc_participants_extrema(self, dataframe, start_time, end_time, first, last):
         
@@ -384,3 +430,29 @@ class Analyzer():
         #print("Sanity-check:", count_in, count_out)
         
         return df_control, extrema, count_in, count_out
+
+
+    #def check_extrema(self, minima, maxima, mask_min, mask_max):
+    #    # process minima
+    #    if len(minima[mask_min]) > 1:
+    #        # check if in between minimum is a maximum
+    #        # if yes, split chunk into two
+    #        min_indices = minima[mask_min].index
+    #        max_indices = maxima[mask_max].index
+            
+    #        indices = []
+    #        for i, i_1 in zip(min_indices[:-1], min_indices[1:]):
+    #            max_between = max_indices[(max_indices > i) & (max_indices < i_1)]
+    #            if np.any(max_between):
+    #                indices.append(i)
+    #                indices.append(max_between.item())
+    #            else:
+    #                indices.append(i)
+                    
+    #        indices.append(i_1)
+    #        return indices 
+        
+    #    elif len(minima[mask_min]) == 1:
+    #        return [minima[mask_min].index.item()]
+    #    else:
+    #        return []
