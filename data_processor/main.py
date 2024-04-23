@@ -6,7 +6,7 @@ from visulization import Visualizer
 #########  Constants #########
 room_to_id ={"HS18":0, "HS19":1}
 door_to_id = {"door1":0, "door2":1}
-data_path = "/home/berni/data_04_22"
+data_path = "/home/berni/data_04_23"
 
 #########  Data Preprocessing #########
 worker = Preprocessor(data_path, room_to_id, door_to_id)
@@ -24,33 +24,20 @@ door_id = 0
 year = 2024
 month = 4
 day = 8
-# first lecture slot 8:30 - 10:00
-#start_time, end_time = dt(year, month, day, 8, 30, 0), dt(year, month, day, 10, 0, 0)
-#first, last = True, False
-## second lecture slot 10:15 - 11:45
-#start_time, end_time = dt(year, month, day, 10, 15, 0), dt(year, month, day, 11, 45, 0)
-#first, last = True, False
-# third lecture slot 12:00 - 13:30
-#start_time, end_time = dt(year, month, day, 12, 0, 0), dt(year, month, day, 13, 30, 0)
-#first, last = True, False
-# fourth lecture slot 13:45 - 15:15
-#start_time, end_time = dt(year, month, day, 13, 45, 0), dt(year, month, day, 15, 15, 0)
-#first, last = False, False
-# fifth lecture slot 15:30 - 17:00
-#start_time, end_time = dt(year, month, day, 15, 30, 0), dt(year, month, day, 17, 0, 0)
-#first, last = False, False
-# sixth lecture slot 17:15 - 18:45
-start_time, end_time = dt(year, month, day, 17, 15, 0), dt(year, month, day, 20, 45, 0)
-first, last = False, True
+
+start_time = dt(year, month, day, 13, 45, 0)
+end_time = dt(year, month, day, 15, 15, 0)
+first, last = False, False
 
 
 analyzer = Analyzer(cleaned_data)
 data_analysis = analyzer.filter_by_room(cleaned_data, room_id)
 #data_analysis = analyzer.filter_by_door(data_analysis, door_id)
-#data_analysis = analyzer.filter_by_time(data_analysis, start_time, end_time)
-#data_analysis = analyzer.calc_inside(data_analysis)
 
-data_control, df_list, extrema = analyzer.calc_participants_extrema(data_analysis, 
+#data_sophisticated, _ = analyzer.calc_patricipants_sophisticated(data_analysis, start_time, end_time, first, last)
+
+
+data_control, extrema, count_in, count_out = analyzer.calc_participants_extrema(data_analysis, 
                                                   start_time, end_time,
                                                   first, last)
 #print(data_analysis)
@@ -58,15 +45,23 @@ data_control, df_list, extrema = analyzer.calc_participants_extrema(data_analysi
 #########  Data Visualization #########
 visard = Visualizer()
 
-# [data_control]  ["simple aggregation"] 
-visard.plot_line( df_list, 
-                 [f"extrema {i}" for i in range(1, len(df_list)+1)] + ["extrema"],
-                 "time", "people_inside", f"{start_time}", extrema)
+#legend = ["simple aggregation"] + [f"extrema {i}" for i in range(1, len(df_list)+1)] + ["extrema"]
+#visard.plot_line( [data_control] + df_list,
+#                legend,
+#                "time", "people_inside", f"{start_time}", extrema)
+
+data_list = [data_control] 
+legend = ["simple aggregation"] + ["extrema"]
+visard.plot_line( data_list, 
+                 legend,
+                 "time", "people_inside", f"{start_time}", extrema, count_in, count_out)
 
 
 # TODO:
 # - from signal calculate something like: "participants" 
 # We need one number representing the participants of course(defined time span)
+
+# at some point introduce time limit for the calc_participants_extrema function
 
 # - make a filter that checks for unplausible signal:
 # E.g: if one person enters and one leaves after 1 second in the same door
@@ -114,3 +109,21 @@ def calc_inside_permin(dataframe):
 df_inside = calc_inside_permin(merged)[:50]
 df_inside
 """
+
+
+# first lecture slot 8:30 - 10:00
+#start_time, end_time = dt(year, month, day, 8, 30, 0), dt(year, month, day, 10, 0, 0)
+#first, last = True, False
+## second lecture slot 10:15 - 11:45
+#start_time, end_time = dt(year, month, day, 10, 15, 0), dt(year, month, day, 11, 45, 0)
+#first, last = True, False
+# third lecture slot 12:00 - 13:30
+#start_time, end_time = dt(year, month, day, 12, 0, 0), dt(year, month, day, 13, 30, 0)
+#first, last = True, False
+# fourth lecture slot 13:45 - 15:15
+#start_time, end_time = dt(year, month, day, 13, 45, 0), dt(year, month, day, 15, 15, 0)
+#first, last = False, False
+# fifth lecture slot 15:30 - 17:00
+#start_time, end_time = dt(year, month, day, 15, 30, 0), dt(year, month, day, 17, 0, 0)
+#first, last = False, False
+# sixth lecture slot 17:15 - 18:45

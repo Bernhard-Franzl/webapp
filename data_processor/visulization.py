@@ -5,7 +5,7 @@ class Visualizer():
         # maybe some general settings like style and window size
         pass
         
-    def plot_line(self,dataframes:list, legend:list, x_column, y_column, save_path, extrema):
+    def plot_line(self,dataframes:list, legend:list, x_column, y_column, save_path, extrema, count_in, count_out):
         
         fig, ax = plt.subplots(figsize=(10, 5))
         
@@ -14,6 +14,9 @@ class Visualizer():
             
         plt.scatter(extrema.time, extrema["min"], c="r")
         plt.scatter(extrema.time, extrema["max"], c="g")
+        
+        plt.axhline(y = count_in, color = 'r', linestyle = '-') 
+        plt.axhline(y = count_out, color = 'g', linestyle = '-') 
 
         plt.legend(legend)
         plt.grid()
