@@ -11,10 +11,10 @@ class Visualizer():
         
         for dataframe in dataframes:
             dataframe.plot(x=x_column, y=y_column, kind="line", ax=ax)
-    
+
         if extrema is not None:
-            plt.scatter(extrema.time, extrema["min"], c="r")
-            plt.scatter(extrema.time, extrema["max"], c="g")
+            extrema.plot(x="time", y="min", kind="scatter", ax=ax, c="r")
+            extrema.plot(x="time", y="max", kind="scatter", ax=ax, c="g")
         
         if len(horizontal_lines) > 0:
             for x, c in horizontal_lines:
