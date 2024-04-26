@@ -24,13 +24,14 @@ door_id = 0
 year = 2024
 month = 4
 #day
-start_time_int = 1715
-end_time_int = 1845
+start_time_int = 1345
+end_time_int = 1515
+first, last = False, False
+day_list = [8, 15, 22]
 
-day_list = [8,15,22]
 for day in  day_list:
 
-    print(f"#################### f{day}.04.2024 {start_time_int}####################")
+    print(f"#################### {day}.4.2024 {start_time_int}####################")
     start_time = dt(year, month, day, start_time_int//100, start_time_int%100, 0)
     end_time = dt(year, month, day, end_time_int//100, end_time_int%100, 0)
     
@@ -38,38 +39,58 @@ for day in  day_list:
     # - first lecture of the day
     # - no lecture before
     # - early termination of the last lecture
-    first, last = False, False
 
 
     analyzer = Analyzer(cleaned_data)
     data_analysis = analyzer.filter_by_room(cleaned_data, room_id)
 
     # m is an extremely important parameter -> the one that is used to calculate the extrema
-    df_control, df_list, participants, extrema = analyzer.calc_participants(data_analysis, 
+    df_control, df_list, participants, extrema, df_plot_list = analyzer.calc_participants(data_analysis, 
                                             start_time=start_time,
                                             end_time=end_time,
                                             first=first,
                                             last=last)
-    print()
+    
+    #print(participants)
+    #print(participants[0]-participants[1])
+    #print()
     print("Participants: ", participants)
-    print()
-    df_before, df_during, df_after = df_list
+    #print()
+    #df_before, df_during, df_after = df_list
 
-    # if high std -> check for outliers, for example courses that end very early!
-    # nice to detect irregularities in the data
-    description_during = analyzer.describe_inside(df_during)
-    print(description_during)
+    ## if high std -> check for outliers, for example courses that end very early!
+    ## nice to detect irregularities in the data
+    #description_during = analyzer.describe_inside(df_during)
+    #print(description_during)
 
     #########  Data Visualization #########
     visard = Visualizer()
-    legend = ["before", "during", "after", "minima", "maxima"]
-    visard.plot_line( df_list, 
-                    legend ,
-                    "time", 
-                    "people_inside", 
-                    f"{start_time}", 
-                    extrema=extrema, 
-                    horizontal_lines=[])
+
+
+    df_plotting = visard.merge_participant_dfs(df_plot_list)
+    
+    horizontal_lines = [(participants[0], "black", " before"),
+                        (participants[1], "gold", " after")]
+    
+  
+    visard.plot_participants(save_path = f"plots/{start_time}.png",
+                             participants=df_plotting,
+                             df_list = df_list,
+                             control = None,
+                             extrema = extrema,
+                             horizontal_lines=[])
+    
+    #visard.plot_participant_algorithm(dataframe=df_plotting,)
+                                       
+    
+    
+    #visard.plot_line( df_list, 
+    #                legend ,
+    #                "time", 
+    #                "people_inside", 
+    #                f"{start_time}", 
+    #                extrema=extrema, 
+    #                horizontal_lines=[])
         
     # simple + horizontal lines
     #legend = ["simple", "part. before", "part. after"]
@@ -88,12 +109,14 @@ for day in  day_list:
 # we need that for nice viszalization
 
 # - make a filter that checks for unplausible signal:
-# E.g: if one person enters and one leaves after 1 second in the same door -> change direction if necessary, maybe in form of a sliding window
+# E.g: if one person enters and one leaves after 1 second in the same door 
+# -> change direction if necessary, maybe in form of a sliding window
 
 # - make viszalization interactive (plotly)
 
 # - incorporate measures from the manual control data
-# -> Especially inspect the signals of event type 5 followd by 6 -> could be a person entering that is cut of in the middle of the signal
+# -> Especially inspect the signals of event type 5 followd by 6 
+# -> could be a person entering that is cut of in the middle of the signal
 
 # - restructure data cleaning methods, restructure api
 

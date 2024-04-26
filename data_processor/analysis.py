@@ -160,14 +160,7 @@ class Analyzer():
 
         df_control = self.filter_by_time(df, start_time_new, end_time_new)
         df_control = self.calc_inside_per_min(df_control, n ,start_time_new, end_time_new-timedelta(minutes=1))
-        #in_before = self.get_people_in(df_before)
-        #out_before = self.get_people_out(df_before)
-        
-        #in_during = self.get_people_in(df_during)
-        #out_during = self.get_people_out(df_during)
-        
-        #in_after = self.get_people_in(df_after)
-        #out_after = self.get_people_out(df_after)
+
         def process_part(dataframe, n=10, before=True, first=False, last=False):
             df = dataframe.copy()
             
@@ -201,42 +194,81 @@ class Analyzer():
             glob_min_time = glob_min["time"]
             
             counter=0
-            before_min = df[df["time"] < glob_min_time]
+            before_min = df[df["time"] <= glob_min_time]
             after_min = df[df["time"] >= glob_min_time]
+            
+            df_list = []
 
             if before:
-                if not before_min.empty:
+                if len(before_min) > 1:
                     counter += before_min.iloc[-1]["people_in"]
-                if not after_min.empty:
-                    inside_col = after_min["people_inside"]
-                    counter += inside_col.iloc[-1] - inside_col.iloc[0]
+                    df_list.append((before_min, "before_in"))
+
+                    if len(after_min) > 1:
+                        
+                        #before_min_in = before_min.iloc[-1]["people_in"]
+                        #after_min_in = after_min.iloc[0]["people_in"]
+                        inside_col = after_min["people_inside"]
+                        counter += inside_col.iloc[-1] - inside_col.iloc[0] #+ (after_min_in -before_min_in)
+                        df_list.append((after_min, "before_inside"))
+
+                else:
+                    if len(after_min) > 1:
+                        inside_col = after_min["people_inside"]
+                        counter += inside_col.iloc[-1]
+                        df_list.append((after_min, "before_inside"))
+                        
+                    else:
+                        raise Exception("Both dataframes are empty")
+                             
             else:
-
-                if not before_min.empty:
-                    counter += abs(before_min.iloc[-1]["people_inside"])
-                if not after_min.empty:
-                    outside_col = after_min["people_out"]
-                    counter += outside_col.iloc[-1] - outside_col.iloc[0]
+                if len(before_min) > 1:
+        
+                    last_row_before = before_min.iloc[-1]
+                    counter -= last_row_before["people_inside"]
+                    df_list.append((before_min, "after_inside"))
+                    
+                    if len(after_min) > 1:
+                        
+                        outside_col = after_min["people_out"]        
+                        #before_min_out = last_row_before["people_out"]
+                        counter += outside_col.iloc[-1] - outside_col.iloc[0] #- before_min_out
+                        df_list.append((after_min, "after_out"))
+                    
+                else:
+                    if len(after_min) > 1:
+                        outside_col = after_min["people_out"]
+                        
+                        counter += outside_col.iloc[-1]
+                        df_list.append((after_min, "after_out"))
+                        
+                    else:
+                        raise Exception("Both dataframes are empty")
                 
-            return extrema, counter
+            return extrema, counter, df_list
         
-        m = 3
-        extrema_b, inside_b = process_part(df_before, n=m, before=True, first=first, last=last)
-        extrema_a, outside_a = process_part(df_after, n=m, before=False, first=first, last=last)
+        m = 2
+        ext_b, in_b, df_list_b = process_part(df_before, n=m, before=True, first=first, last=last)
+        ext_a, out_a, df_list_a = process_part(df_after, n=m, before=False, first=first, last=last)
         
-        median_inside = self.calc_median_inside(df_during)
-        # inside_b + people_inside_during - outside_a = 0
-        print("#### Sanity Check #####")
-        print(inside_b + df_during.iloc[-1]["people_inside"] - outside_a)
-        print("#######################")
+        def calc_participants(during:pd.DataFrame, in_before:int, out_after:int, mode:str="median"):
+            if mode == "median":
+                median_inside = self.calc_median_inside(during)
+                part_before = in_before + median_inside 
+                part_after = out_after - during.iloc[-1]["people_inside"] + median_inside
+                sanity_check = abs(part_before - part_after)
+                
+                return part_before, part_after, sanity_check
+            
+            else:
+                raise Exception("Mode not implemented")
+        
 
-        participants_b = inside_b + median_inside
-        participants_a = outside_a - df_during.iloc[-1]["people_inside"] + median_inside 
+        part_b, part_a, sanity_check = calc_participants(during=df_during, in_before=in_b, 
+                                                         out_after=out_a, mode="median")
+        extrema = pd.concat([ext_b, ext_a])
         
-        extrema = pd.concat([extrema_b, extrema_a])
-        
-        
-        return df_control, [df_before, df_during, df_after], (participants_b, participants_a), extrema
+        return df_control, [df_before, df_during, df_after], (part_b, part_a), extrema, [df_list_b, df_during, df_list_a]
 
     def calc_participants_simple(self, dataframe, start_time, end_time):
         df = dataframe.copy()
