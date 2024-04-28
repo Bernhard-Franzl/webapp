@@ -3,7 +3,7 @@ from datetime import datetime, time, timedelta
 from scipy.signal import argrelextrema
 import numpy as np
 
-class Analyzer():
+class SignalAnalyzer():
     def __init__(self, dataframe):
         # cleaned raw data
         self.dataframe = dataframe

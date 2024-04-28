@@ -19,7 +19,7 @@ class Preprocessor:
         self.room_to_id = room_to_id
         self.door_to_id = door_to_id
               
-    # get all subdirectories of a directory
+    #######  Data Extraction Helper Methods ########
     def get_all_sub_directories(self, path_to_dir):
         sub_dirs = sorted(list(os.walk(path_to_dir))[0][1])
         return sub_dirs
@@ -28,7 +28,6 @@ class Preprocessor:
         sub_files = sorted(list(os.walk(path_to_dir))[0][2])
         return sub_files
     
-    # check if data has already been processed according to the last synchronization date
     def filter_directories(self, directories:list):
         filtered_dirs = []
         for x in directories:
@@ -36,14 +35,12 @@ class Preprocessor:
             if self.last_synchronized_dt < day:
                 filtered_dirs.append(x)
         return filtered_dirs
-
-    # get list of data directories inside the main data directory        
+      
     def get_list_of_data_dirs(self):
         path = os.path.join(self.path_to_data, self.data_directory)
         sub_dirs = self.get_all_sub_directories(path)
         filtered = self.filter_directories(sub_dirs)
         return filtered
-     
      
     #######  Data Extraction Methods ########
     def get_data(self, file_name):
@@ -158,3 +155,10 @@ class Preprocessor:
         df = df[mask].reset_index(drop=True)
         
         return df
+    
+    ###### Preprocessing Application ########
+    def apply_preprocessing(self):
+        list_dirs = self.get_list_of_data_dirs()
+        data = self.accumulate_raw_data(list_dirs)
+        cleaned_data = self.clean_raw_data(data)
+        return cleaned_data
