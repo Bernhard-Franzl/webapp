@@ -148,7 +148,6 @@ class Preprocessor:
         df = df.sort_values(by="time", ascending=True).reset_index(drop=True)
         
         # discard samples betwen 22:00 and 07:30
-        
         lb = time(hour=7, minute=40, second=0)
         ub = time(hour=20, minute=00, second=0)
         mask  = df.apply(lambda x: (x["time"].time() >= lb) & (x["time"].time() <= ub), axis=1)
