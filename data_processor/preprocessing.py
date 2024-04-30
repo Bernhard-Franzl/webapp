@@ -14,6 +14,7 @@ class Preprocessor:
                        'People_IN', 'People_OUT', 
                        'IN_Support_Count', 'OUT_Support_Count', 
                        'One_Count_1', 'One_Count_2']
+    
     def __init__(self, path_to_data, room_to_id, door_to_id):
         self.path_to_data = path_to_data # /home/pi_server
         self.room_to_id = room_to_id
@@ -65,6 +66,8 @@ class Preprocessor:
             
             # sanity check
             if file_list != ["door1.csv", "door2.csv", "format.csv"]:
+                print(path)
+                print(file_list)
                 raise ValueError("Data directory does not contain the correct files")
             
             room_name = data_dir_name.split("_")[1]

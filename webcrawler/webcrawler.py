@@ -226,7 +226,6 @@ class Snail():
         
         return df_courses, df_dates
     
-        
     def get_courses_by_room(self, room_name):
         
         if self.validate_room(room_name):

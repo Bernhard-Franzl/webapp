@@ -4,9 +4,8 @@ from scipy.signal import argrelextrema
 import numpy as np
 
 class SignalAnalyzer():
-    def __init__(self, dataframe):
-        # cleaned raw data
-        self.dataframe = dataframe
+    def __init__(self):
+        pass
 
     #######  Data Filtering Methods ########
     def filter_by_room(self, dataframe, room_id):
@@ -140,7 +139,9 @@ class SignalAnalyzer():
     def get_people_out(self, dataframe):
         return dataframe.iloc[-1]["people_out"]
         
-    def calc_participants(self, dataframe, start_time, end_time, first, last):
+    def calc_participants(self, dataframe, start_time, end_time, first, last, control=False):
+        
+        #return_tuple = ()
         
         n = 1
         # make a copy of the dataframe
@@ -157,9 +158,13 @@ class SignalAnalyzer():
         
         df_after = self.filter_by_time(df, end_time, end_time_new)
         df_after = self.calc_inside_per_min(df_after, n ,end_time, end_time_new-timedelta(minutes=1))
-
-        df_control = self.filter_by_time(df, start_time_new, end_time_new)
-        df_control = self.calc_inside_per_min(df_control, n ,start_time_new, end_time_new-timedelta(minutes=1))
+        
+        #return_tuple += ([df_before, df_during, df_after],)
+        
+        if control:
+            df_control = self.filter_by_time(df, start_time_new, end_time_new)
+            df_control = self.calc_inside_per_min(df_control, n ,start_time_new, end_time_new-timedelta(minutes=1))
+            #return_tuple += (df_control,)
 
         def process_part(dataframe, n=10, before=True, first=False, last=False):
             df = dataframe.copy()
@@ -268,7 +273,12 @@ class SignalAnalyzer():
                                                          out_after=out_a, mode="median")
         extrema = pd.concat([ext_b, ext_a])
         
-        return df_control, [df_before, df_during, df_after], (part_b, part_a), extrema, [df_list_b, df_during, df_list_a]
+        if control:
+            return [df_before, df_during, df_after], (part_b, part_a), extrema, [df_list_b, df_during, df_list_a], control
+        else:
+            return [df_before, df_during, df_after], (part_b, part_a), extrema, [df_list_b, df_during, df_list_a]
+        
+        
 
     def calc_participants_simple(self, dataframe, start_time, end_time):
         df = dataframe.copy()

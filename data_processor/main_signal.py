@@ -5,14 +5,12 @@ from datetime import datetime as dt
 from visulization import Visualizer
 
 #########  Constants #########
-room_to_id ={"HS18":0, "HS19":1}
+room_to_id ={"HS18":0, "HS 18":0, "HS19":1, "HS 19": 1}
 door_to_id = {"door1":0, "door2":1}
 data_path = "/home/berni/data_04_23"
 
 
 # TODO:
-# - during the calculation of participants construct a signal that shows the participants over time
-# we need that for nice viszalization
 
 # - make a filter that checks for unplausible signal:
 # E.g: if one person enters and one leaves after 1 second in the same door 
@@ -42,10 +40,10 @@ door_id = 0
 year = 2024
 month = 4
 #day
-start_time_int = 1345
-end_time_int = 1515
+start_time_int = 1530
+end_time_int = 1700
 first, last = False, False
-day_list = [8, 15, 22]
+day_list = [8]
 
 for day in  day_list:
 
@@ -59,20 +57,28 @@ for day in  day_list:
     # - early termination of the last lecture
 
 
-    analyzer = SignalAnalyzer(cleaned_data)
+    analyzer = SignalAnalyzer()
     data_analysis = analyzer.filter_by_room(cleaned_data, room_id)
 
     # m is an extremely important parameter -> the one that is used to calculate the extrema
-    df_control, df_list, participants, extrema, df_plot_list = analyzer.calc_participants(data_analysis, 
+    df_list, participants, extrema, df_list_plotting, control = analyzer.calc_participants(data_analysis, 
                                             start_time=start_time,
                                             end_time=end_time,
                                             first=first,
-                                            last=last)
+                                            last=last,
+                                            control=True)
     
     #print(participants)
     #print(participants[0]-participants[1])
     #print()
     print("Participants: ", participants)
+    
+    #df_during = df_list[1]
+    #print(analyzer.describe_inside(df_during))
+    
+    #min_index = df_during["people_inside"].diff().argmin()
+    #print(df_during.iloc[min_index])
+    #print(df_during["people_inside"].min() df_during["people_inside"].max())
     #print()
     #df_before, df_during, df_after = df_list
 
