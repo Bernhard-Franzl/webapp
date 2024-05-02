@@ -3,6 +3,7 @@ from signal_analysis import SignalAnalyzer
 from preprocessing import Preprocessor
 from datetime import datetime, timedelta
 import os
+from tqdm import tqdm
 
 class CourseAnalyzer():
     
@@ -21,20 +22,21 @@ class CourseAnalyzer():
         self.df_courses = self.initialize_courses()
         self.df_dates = self.initialize_dates()   
         self.df_combined = self.add_course_info(self.df_dates)
-        # sanity check: if room_x == room_y
-        
-        print(self.df_combined["room_x"] == self.df_combined["room_y"])
-        if (self.df_combined["room_x"] == self.df_combined["room_y"]).all():
-            print("Hello")
-            
+
         # get signal data
         cleaned_data = self.preprocessor.apply_preprocessing()
         self.signal_analyzer = SignalAnalyzer()
         
-        if room_name is not None:
-            self.room_id = self.room_to_id[room_name]
-            self.df_signal = self.signal_analyzer.filter_by_room(cleaned_data, self.room_id)
-        
+        self.df_combined.drop("room_id_y", axis=1, inplace=True)
+        self.df_combined.rename(columns={"room_id_x":"room_id"}, inplace=True)
+
+        if self.room_name is None:
+            self.df_signal = cleaned_data
+            del cleaned_data
+        else:
+            self.df_signal = self.signal_analyzer.filter_by_room(cleaned_data, self.room_to_id[room_name])
+            
+
     ###### Basic Methods #####
     def import_from_csv(self, path):
         try:
@@ -78,7 +80,13 @@ class CourseAnalyzer():
         
     def export_courses(self, name):
         self.export_to_csv(self.df_courses, self.data_dir_course + name + "_courses.csv")
-        
+
+    def format_course_number(self, course_number):
+        if type(course_number) == str:
+            return course_number
+        else:
+            return "{:.3f}".format(course_number)
+
     ###### Dataframe Initialization ######
     def initialize_courses(self):
         if self.room_name is None:
@@ -87,21 +95,20 @@ class CourseAnalyzer():
             dataframes = []
             for file in sub_files:
                 df_courses = self.import_from_csv(os.path.join(self.data_dir_course, file))
-                df_courses["room"] = self.room_to_id[file.split("_")[0]]
+                df_courses["room_id"] = self.room_to_id[file.split("_")[0]]
                 dataframes.append(df_courses)
             df_courses = pd.concat(dataframes, axis=0).reset_index(drop=True)
                 
         else:
             df_courses = self.import_from_csv(os.path.join(self.data_dir_course, self.room_name + "_courses.csv"))
+            df_courses["room_id"] = self.room_to_id[self.room_name]
             
         df_courses = self.rename_columns(df_courses, 
                                               ["LVA-Nr.", "LVA-Titel", "Typ", "Art", "LeiterIn", "Sem.", "ECTS", "SSt."], 
                                               ["course_number", "course_name", "type", "kind", "lecturer", "semester", "ects", "sst"])
-        
-        if df_courses["course_number"].dtype == float:
-            df_courses["course_number"] = df_courses["course_number"].apply(lambda x: "{:.3f}".format(x))
-            
+        df_courses["course_number"] = df_courses["course_number"].apply(lambda x: self.format_course_number(x))
         df_courses.drop("Nächster Termin", axis=1, inplace=True)
+        
         return df_courses
         
     def initialize_dates(self):
@@ -110,24 +117,24 @@ class CourseAnalyzer():
             
             dataframes = []
             for file in sub_files:
-                df_courses = self.import_from_csv(os.path.join(self.data_dir_course, file))
-                df_courses["room"] = self.room_to_id[file.split("_")[0]]
-                dataframes.append(df_courses)
+                df_dates = self.import_from_csv(os.path.join(self.data_dir_course, file))
+                df_dates["room_id"] = self.room_to_id[file.split("_")[0]]
+                dataframes.append(df_dates)
                 
             df_dates = pd.concat(dataframes, axis=0).reset_index(drop=True)
                 
         else:
             df_dates = self.import_from_csv(os.path.join(self.data_dir_course, self.room_name + "_dates.csv"))
+            df_dates["room_id"] = self.room_to_id[self.room_name]
                     
         df_dates = self.format_dates(df_dates)
         df_dates = self.rename_columns(df_dates,
                                             ["LVA-Nummer", "Wochentag", "Ort", "Anmerkung"],
                                             ["course_number", "weekday", "room", "note"])
-        
-        if df_dates["course_number"].dtype == float:
-            df_dates["course_number"] = df_dates["course_number"].apply(lambda x: "{:.3f}".format(x))
+        df_dates["course_number"] = df_dates["course_number"].apply(lambda x: self.format_course_number(x))
             
         return df_dates
+
 
     ###### Filter Dataframes ######
     def filter_df_by_timestamp(self, dataframe, start_time, end_time):
@@ -149,6 +156,20 @@ class CourseAnalyzer():
         df = dataframe.copy(deep=True)
         mask = df["start_time"].dt.date == date
         df = df[mask]
+        df = df.sort_values(by="start_time").reset_index(drop=True)
+        return df
+
+    def filter_df_by_room(self, dataframe, room_id):
+        # only show courses betwen start and end time
+        df = dataframe.copy(deep=True)
+        df = df[df["room_id"] == room_id]
+        df = df.sort_values(by="start_time").reset_index(drop=True)
+        return df
+   
+    def filter_df_by_courses(self, dataframe, course_numbers):
+        # only show courses betwen start and end time
+        df = dataframe.copy(deep=True)
+        df = df[df["course_number"].isin(course_numbers)]
         df = df.sort_values(by="start_time").reset_index(drop=True)
         return df
     
@@ -180,19 +201,33 @@ class CourseAnalyzer():
     
         
         cur_date = None
+        cur_room = None
+        
         plot_list = []
         extrema_list = []
         df_list = []
         part_list = []
         plot_name = []
         
-        for i,row in df.iterrows():
+        for i,row in tqdm(df.iterrows(), total=len(df)):
             
-            #print(f"####################  {i}  ######################## ")
-            
-            if (cur_date is None) or (cur_date != row["start_time"].date()):
-                cur_date = row["start_time"].date()
-                df_first_last = self.filter_df_by_date(self.df_dates, cur_date)
+            if self.room_name is None:
+                if (cur_date != row["start_time"].date()) or (cur_room != row["room_id"]):
+                    # we could somehow chache it to avoid recalculating
+                    cur_date = row["start_time"].date()
+                    df_first_last = self.filter_df_by_date(self.df_dates, cur_date)
+                    cur_room = row["room_id"]
+                    df_first_last = self.filter_df_by_room(df_first_last, cur_room)
+                    
+                df_signal = self.signal_analyzer.filter_by_room(self.df_signal, cur_room)
+                
+            else:
+                if (cur_date != row["start_time"].date()):
+                    cur_date = row["start_time"].date()
+                    df_first_last = self.filter_df_by_date(self.df_dates, cur_date)
+                    
+                df_signal = self.df_signal
+                
                 
             start_time = row["start_time"]
             end_time = row["end_time"]
@@ -202,13 +237,14 @@ class CourseAnalyzer():
             first, last = self.get_first_last(df_first_last, start_time, end_time)
             #print(first, "|", last)
 
-            dataframes, participants, extrema, df_plot_list =  self.signal_analyzer.calc_participants(dataframe = self.df_signal, 
+            dataframes, participants, extrema, df_plot_list =  self.signal_analyzer.calc_participants(dataframe = df_signal, 
                                                                             start_time = start_time, 
                                                                             end_time = end_time, 
                                                                             first = first, 
                                                                             last = last, 
                                                                             control=False)
             
+
             df.loc[i, "present_students_b"] = participants[0]
             df.loc[i, "present_students_a"] = participants[1]
             df.loc[i, "present_students"] = (participants[0] + participants[1])//2

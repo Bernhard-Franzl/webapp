@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-
+import numpy as np
 import plotly
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -31,6 +31,8 @@ class Visualizer():
             "modeBarButtonsToRemove": 
                 ["select", "zoomIn", "zoomOut", "autoScale", "lasso2d"]}
 
+
+############ Matplotlib ############
       
     ##### Plot Particpants Algorithm - How it works #####  
     def merge_participant_dfs(self, dataframes:list):
@@ -132,8 +134,10 @@ class Visualizer():
             fig.savefig(self.path + file_name)
             
             plt.close()
-    
-    ##### Basic Particpants Bar Chart #####
+
+
+############ Plotly ############
+    ##### Basic Utility Functions #####
     def add_title(self, fig, title):
         
         fig.update_layout(
@@ -161,6 +165,44 @@ class Visualizer():
             height=self.plot_height)
 
         return fig
+
+    def frequency_yaxis(self, fig, row, col, relative=False):
+        if relative:
+            fig.update_yaxes(
+                title={
+                    "text":"<b> Relative Frequency</b>",
+                    "font": {"size": self.axis_title_size}},
+                range=[0,1.1],
+                automargin=True,
+                row=row, col=col) 
+        else:
+            fig.update_yaxes(
+                title={
+                    "text":"<b> Absolute Frequency</b>",
+                    "font": {"size": self.axis_title_size}},
+                automargin=True,
+                row=row, col=col)           
+        
+        return fig
+    
+    def date_xaxis(self, fig, row, col, x, ticktext):
+        fig.update_xaxes(
+            title={
+                "text":"<b> Course Date </b>",
+                "font": {"size": self.axis_title_size}},
+            automargin=True,
+            tickvals=x,
+            ticktext=ticktext,
+            row=row, col=col)  
+        return fig
+    
+    def customize_hover(self, fig):
+        fig.update_traces(
+            hovertemplate="<b>%{customdata[0]}</b>\
+                        <br>Participants: %{y}")
+        return fig
+    
+    ##### One Course Particpants Bar Chart #####
 
     def generate_charts_before_after(self, fig, df):
         
@@ -224,9 +266,9 @@ class Visualizer():
             row=2, col=1)
         
         return fig
-           
-    def plot_course_participants_bar(self, dataframe, file_name, title, show_relative=False, show_before_after=False):
-        
+    
+    def plot_course_bar(self, dataframe, file_name, title, show_relative=False, show_before_after=False):
+    
         df = dataframe.copy()
          
         if show_relative:
@@ -241,17 +283,13 @@ class Visualizer():
                                     shared_xaxes=True,
                                     subplot_titles=("Absolute Frequencies", "Frequencies Relative to Registered Students"))
                 
-                fig = self.generate_particpants_bar_chart(fig, df)
-                fig = self.generate_relative_bar_chart(fig, df)
+                fig = self.generate_particpants_bar_chart(fig=fig, df=df)
+                fig = self.generate_relative_bar_chart(fig=fig, df=df)
                 
                 fig.update_layout(showlegend=False)
-                fig.update_yaxes(
-                    title={
-                        "text":"<b> Relative Frequency</b>",
-                        "font": {"size": self.axis_title_size}},
-                    range=[0,1],
-                    automargin=True,
-                    row=2, col=1)
+                fig = self.frequency_yaxis(fig=fig, 
+                                           row=2, col=1, 
+                                           relative=True)
             
         else:
             rows, cols = 1, 1
@@ -264,23 +302,15 @@ class Visualizer():
                 fig = self.generate_particpants_bar_chart(fig, df) 
         
         # absolute frequency always on top    
-        fig.update_yaxes(
-            title={
-                "text":"<b> Absolute Frequency</b>",
-                "font": {"size": self.axis_title_size}},
-            automargin=True,
-            row=1, col=1)
+        fig = self.frequency_yaxis(fig=fig, 
+                                    row=1, col=1, 
+                                    relative=False)
         
         # x-axis settings
-        x = list(range(len(df)))
-        fig.update_xaxes(
-            title={
-                "text":"<b> Course Date </b>",
-                "font": {"size": self.axis_title_size}},
-            automargin=True,
-            tickvals=x,
-            ticktext=df["start_time"].dt.strftime("%d.%m.%Y <br> %H:%M"),
-            row=rows, col=cols)
+        fig = self.date_xaxis(fig=fig,
+                              row=rows, col=cols,
+                              x=list(range(len(df))),
+                                ticktext=df["start_time"].dt.strftime("%d.%m.%Y <br> %H:%M"))
 
         fig = self.add_title(fig, title)
         
@@ -289,7 +319,83 @@ class Visualizer():
         fig.show(config=self.config)
         
     ##### Multiple Courses Bar Chart #####
-    def plot_multiple_courses_bar(self, dataframe, lva_numbers, file_name, title):
-        pass
+    def course_numbers_xaxis(self, fig, row, col, x, ticktext):
+        fig.update_xaxes(
+            title={
+                "text":"<b> Course Number </b>",
+                "font": {"size": self.axis_title_size}},
+            automargin=True,
+            tickvals=x,
+            tickangle=0,
+            ticktext=ticktext,
+            row=row, col=col)  
+        return fig
+    
+    def plot_multiple_courses_line(self, dataframe, lva_numbers, file_name, title):
+        df = dataframe.copy()
+
+        rows, cols = 1, 1
+        fig=make_subplots(rows=rows, cols=cols)         
+
+        for lva_number in lva_numbers:
+            
+            # filter by course number
+            df_lva = df[df["course_number"] == lva_number]
+            
+            x = df_lva["start_time"]
+            y = df_lva["present_students"]
+            
+            fig.add_trace(
+                go.Scatter(
+                    x=x, 
+                    y=y, 
+                    name=f"{lva_number}",
+                    mode="lines"),
+                row=1, col=1)
         
+        fig = self.add_title(fig, title)
+        
+        fig = self.apply_general_settings(fig)
+        
+        fig.show(config=self.config)
+    
+    def plot_multiple_courses_bars(self, dataframe, lva_numbers, title):
+        
+        df = dataframe.copy()
+        
+        rows, cols = 1, 1
+        fig = make_subplots(rows=rows, cols=cols)         
+
+        for i,lva_number in enumerate(lva_numbers):
+            
+            # filter by course number
+            df_lva = df[df["course_number"] == lva_number]
+            
+            n_dates = len(df_lva)
+            
+            step_size = 0.8/n_dates
+            
+            x = np.arange(0.1, 0.9, step_size) + i
+            y = df_lva["present_students"]
+            print(df_lva.columns)
+            fig.add_trace(
+                go.Bar(
+                    x=x, 
+                    y=y, 
+                    name=f"", # if name is empty no hoverinfo is shown
+                    width=step_size, 
+                    customdata=df_lva,),
+                row=1, col=1)
+        
+        fig = self.add_title(fig, title)
+        fig = self.frequency_yaxis(fig, row=1, col=1, relative=False)
+        fig = self.course_numbers_xaxis(fig, 
+                                 row=rows, col=cols, 
+                                 x=np.arange(len(lva_numbers)) + 0.5, 
+                                 ticktext=lva_numbers)
+        fig = self.apply_general_settings(fig)
+        fig = self.customize_hover(fig)
+        
+        
+        fig.show(config=self.config)
         
