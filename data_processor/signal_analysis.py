@@ -139,7 +139,7 @@ class SignalAnalyzer():
     def get_people_out(self, dataframe):
         return dataframe.iloc[-1]["people_out"]
         
-    def calc_participants(self, dataframe, start_time, end_time, first, last, control=False):
+    def calc_participants(self, dataframe, start_time, end_time, first, last, control=False, mode="median"):
         
         #return_tuple = ()
         
@@ -256,21 +256,26 @@ class SignalAnalyzer():
         ext_b, in_b, df_list_b = process_part(df_before, n=m, before=True, first=first, last=last)
         ext_a, out_a, df_list_a = process_part(df_after, n=m, before=False, first=first, last=last)
         
-        def calc_participants(during:pd.DataFrame, in_before:int, out_after:int, mode:str="median"):
+        def calc_participants(during:pd.DataFrame, in_before:int, out_after:int, mode:str):
             if mode == "median":
-                median_inside = self.calc_median_inside(during)
-                part_before = in_before + median_inside 
-                part_after = out_after - during.iloc[-1]["people_inside"] + median_inside
-                sanity_check = abs(part_before - part_after)
-                
-                return part_before, part_after, sanity_check
-            
+                inside_during = self.calc_median_inside(during)
+            elif mode == "mean":
+                inside_during = self.calc_mean_inside(during)
+            elif mode == "max":
+                inside_during = during["people_inside"].max()
             else:
                 raise Exception("Mode not implemented")
+            
+            part_before = in_before + inside_during 
+            part_after = out_after - during.iloc[-1]["people_inside"] + inside_during
+            sanity_check = abs(part_before - part_after)
+            
+            return part_before, part_after, sanity_check
+            
         
 
         part_b, part_a, sanity_check = calc_participants(during=df_during, in_before=in_b, 
-                                                         out_after=out_a, mode="median")
+                                                         out_after=out_a, mode=mode)
         extrema = pd.concat([ext_b, ext_a])
         
         if control:

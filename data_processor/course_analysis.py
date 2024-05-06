@@ -9,27 +9,33 @@ class CourseAnalyzer():
     
     room_to_id ={"HS18":0, "HS 18":0, "HS19":1, "HS 19": 1}
     door_to_id = {"door1":0, "door2":1}
+    room_capacities = {0:164, 1:152}
 
     def __init__(self, data_dir_course, data_dir_signal, room_name=None):
 
+        # class variables
         self.room_name = room_name
-        
         self.data_dir_course = data_dir_course
         self.data_dir_signal = data_dir_signal
         
+        # preprocessor
         self.preprocessor = Preprocessor(self.data_dir_signal, self.room_to_id, self.door_to_id)
-        
-        self.df_courses = self.initialize_courses()
-        self.df_dates = self.initialize_dates()   
+        # course information dataframe
+        self.df_courses = self.initialize_courses().drop_duplicates()
+        # course dates dataframe
+        self.df_dates = self.initialize_dates().drop_duplicates()
+
+        # enrich dates with course information
         self.df_combined = self.add_course_info(self.df_dates)
+        self.df_combined.drop("room_id_y", axis=1, inplace=True)
+        self.df_combined.rename(columns={"room_id_x":"room_id"}, inplace=True)
+        self.df_combined = self.df_combined.drop_duplicates().reset_index(drop=True)
 
         # get signal data
         cleaned_data = self.preprocessor.apply_preprocessing()
         self.signal_analyzer = SignalAnalyzer()
+        del self.preprocessor
         
-        self.df_combined.drop("room_id_y", axis=1, inplace=True)
-        self.df_combined.rename(columns={"room_id_x":"room_id"}, inplace=True)
-
         if self.room_name is None:
             self.df_signal = cleaned_data
             del cleaned_data
@@ -58,28 +64,10 @@ class CourseAnalyzer():
         
         return df_dates
     
-    def get_course(self):
-        return self.df_courses
-    
-    def get_dates(self):
-        return self.df_dates    
-    
-    def get_combined(self):
-        return self.df_combined
-     
     def rename_columns(self, dataframe, old_names, new_names):
         df = dataframe.copy(deep=True)
         df.rename(columns=dict(zip(old_names, new_names)), inplace=True)
         return df
-    
-    def export_to_csv(self, dataframe, path):
-        dataframe.to_csv(path, index=False)
-        
-    def export_dates(self, name):
-        self.export_to_csv(self.df_dates, self.data_dir_course + name + "_dates.csv")
-        
-    def export_courses(self, name):
-        self.export_to_csv(self.df_courses, self.data_dir_course + name + "_courses.csv")
 
     def format_course_number(self, course_number):
         if type(course_number) == str:
@@ -87,6 +75,11 @@ class CourseAnalyzer():
         else:
             return "{:.3f}".format(course_number)
 
+    def add_room_capcity(self, dataframe):
+        df = dataframe.copy(deep=True)
+        df["room_capcity"] = df["room_id"].apply(lambda x: self.room_capacities[x])
+        return df
+    
     ###### Dataframe Initialization ######
     def initialize_courses(self):
         if self.room_name is None:
@@ -126,12 +119,14 @@ class CourseAnalyzer():
         else:
             df_dates = self.import_from_csv(os.path.join(self.data_dir_course, self.room_name + "_dates.csv"))
             df_dates["room_id"] = self.room_to_id[self.room_name]
-                    
+                  
         df_dates = self.format_dates(df_dates)
         df_dates = self.rename_columns(df_dates,
-                                            ["LVA-Nummer", "Wochentag", "Ort", "Anmerkung"],
-                                            ["course_number", "weekday", "room", "note"])
+                                        ["LVA-Nummer", "Wochentag", "Ort", "Anmerkung"],
+                                        ["course_number", "weekday", "room", "note"])
+        df_dates["note"] = df_dates["note"].fillna("")  
         df_dates["course_number"] = df_dates["course_number"].apply(lambda x: self.format_course_number(x))
+        df_dates = self.add_room_capcity(df_dates)
             
         return df_dates
 
@@ -173,10 +168,12 @@ class CourseAnalyzer():
         df = df.sort_values(by="start_time").reset_index(drop=True)
         return df
     
-    ###### Course Analysis Methods ######
+    ###### Basic Analysis Methods ######
     def add_course_info(self, dates_dataframe):
         df = dates_dataframe.copy(deep=True)
-        df = pd.merge(df, self.df_courses, on="course_number")
+        df = df.merge(self.df_courses, 
+                      how="inner", 
+                      on="course_number")
         return df
     
     def get_first_last(self, df_first_last, start_time, end_time):
@@ -195,7 +192,7 @@ class CourseAnalyzer():
         
         return first, last
     
-    def calc_course_participants(self, dates_dataframe):
+    def calc_course_participants(self, dates_dataframe, mode):
         
         df = dates_dataframe.copy(deep=True)
     
@@ -206,8 +203,7 @@ class CourseAnalyzer():
         plot_list = []
         extrema_list = []
         df_list = []
-        part_list = []
-        plot_name = []
+
         
         for i,row in tqdm(df.iterrows(), total=len(df)):
             
@@ -242,9 +238,9 @@ class CourseAnalyzer():
                                                                             end_time = end_time, 
                                                                             first = first, 
                                                                             last = last, 
-                                                                            control=False)
+                                                                            control=False,
+                                                                            mode=mode)
             
-
             df.loc[i, "present_students_b"] = participants[0]
             df.loc[i, "present_students_a"] = participants[1]
             df.loc[i, "present_students"] = (participants[0] + participants[1])//2
@@ -282,13 +278,137 @@ class CourseAnalyzer():
             plot_list.append(df_plot_list)
             extrema_list.append(extrema)
             df_list.append(dataframes)
-            part_list.append(participants)
-            plot_name.append(f"{start_time}")
             
 
-        return df, df_list, part_list, extrema_list, plot_list, plot_name
+        return df, df_list, extrema_list, plot_list
         
+    def handle_combined_courses(self, dataframe):
+        df = dataframe.copy(deep=True)
+        
+        mask = df.duplicated(subset=["start_time", "room_id"], keep=False)
+        duplicated = df[mask].drop_duplicates(subset=["start_time", "room_id"], keep="first")
+        
+        for i, row in duplicated.iterrows():
+            start_time = row["start_time"]
+            room_id = row["room_id"]
+            df_masked = df[(df["start_time"] == start_time) & (df["room_id"] == room_id)]
+
+            df.loc[i, "course_number"] = ", ".join(df_masked["course_number"].sort_values())
+            
+            df.loc[i, "course_name"] = ",".join(set(df_masked["course_name"]))
+            df.loc[i, "max_students"] = df_masked["max_students"].sum()
+            df.loc[i, "registered_students"] = df_masked["registered_students"].sum()
+
+        return df.drop_duplicates(subset=["start_time", "room_id"], keep="first")
+
+    # calculate the relative number of present students
+    def calc_relative_registered(self, dataframe):
+        # relative = present_students / registered_students
+        df = dataframe.copy(deep=True)
+        df["relative_registered"] = (df["present_students"] / df["registered_students"]).round(4)
+        return df
+
+    def calc_relative_capacity(self, dataframe):
+        # relative = present_students / room_capcity
+        df = dataframe.copy(deep=True)
+        df["relative_capacity"] = (df["present_students"] / df["max_students"]).round(4)
+        return df
+              
+    ###### Course Attendance Dynamics ######
     
+    def students_running_late(self, dataframe, minutes_interval, minutes_max):
+        
+        # simply take first n elements of the dataframe
+        df_masked = dataframe[minutes_interval-1:minutes_max+1:minutes_interval].reset_index(drop=True)
+        df_masked["diff_inside"] = df_masked["people_inside"].diff()
+        df_masked.loc[0, "diff_inside"] = df_masked.loc[0, "people_inside"]
+        return df_masked
     
+    def students_leaving_early(self, dataframe, minutes_interval, minutes_max):
+        
+        len_df = len(dataframe)
+        df_masked = dataframe[-minutes_max-1::minutes_interval].reset_index(drop=True)
+        cols = ["people_in", "people_out", "people_inside"]
+        norm = df_masked.loc[0,cols]
+        df_masked[cols] -= norm
+        df_masked["diff_inside"] = df_masked["people_inside"].diff()
+        return df_masked[1:].reset_index(drop=True)
     
+    def process_chunk(self, chunk, periods):
+        first_row = chunk.iloc[0]
+        start_time = first_row["time"] - timedelta(minutes=periods)
+        last_row = chunk.iloc[-1]   
+        end_time = last_row["time"]
+        value = abs(chunk["diff_inside"]).max()
+        return first_row.name-periods, start_time, value, last_row.name, end_time
     
+    def extract_time_intervals(self, dataframe, periods):
+        
+        dataframe["diff_minutes"] = dataframe["time"].diff()
+        mask = (dataframe["diff_minutes"] >= timedelta(minutes=periods))
+        split_points = dataframe[mask].index
+        if len(split_points) == 0:
+            return []
+        # split the dataframe into n parts using the indices in split_points:
+        chunks = []
+        last_idx = 0
+        for idx in split_points:
+            chunk = dataframe.loc[last_idx:idx-1]
+            chunks.append(self.process_chunk(chunk, periods))
+            last_idx = idx
+        
+        chunk = dataframe.loc[last_idx:]
+        chunks.append(self.process_chunk(chunk, periods))
+        return chunks
+      
+    def arbitrary_dynamics(self, dataframe, periods, k):
+        
+        df = dataframe.copy(deep=True)
+        df["diff_inside"] = df["people_inside"].diff(periods=periods)
+        df = df.dropna().sort_values(by="diff_inside")
+        
+        top_k = df[-k:][::-1]
+        top_k = top_k[top_k["diff_inside"] > 0].sort_values(by="time")
+        
+        bot_k = df[:k]
+        bot_k = bot_k[bot_k["diff_inside"] < 0].sort_values(by="time")
+
+        students_leaving = self.extract_time_intervals(bot_k, periods)
+        students_entering = self.extract_time_intervals(top_k, periods)
+        
+        return students_leaving, students_entering
+        
+    def calc_attendance_dynamics(self, dataframe):
+        df_input = dataframe.copy(deep=True)
+        
+        len_df = len(df_input)
+        minutes_max = 30
+        minutes_interval = 5
+        
+        df_coming_late = self.students_running_late(df_input,  minutes_interval, minutes_max)
+        df_leaving_early = self.students_leaving_early(df_input,  minutes_interval, minutes_max)
+        
+        # students leaving coming arbitrarily during lecture
+        periods = 5
+        k = 10
+        students_leaving, students_entering = self.arbitrary_dynamics(df_input, periods=periods, k=k)
+        
+        students_entering = [x for x in students_entering if x[3] >= minutes_max]
+        students_leaving = [x for x in students_leaving if x[0] <= (len_df - minutes_max)]
+        
+        # students entering und leaving in dataframes verwandeln!
+        # then ready for plotting
+        print(df_coming_late)
+        print(students_entering)
+        print(students_leaving)
+        print(df_leaving_early)
+        #print(df_dynamics)
+        #print(df_coming_late)
+        #print(df_leaving_early)
+                
+        # we need the numbers relative to participants!
+        
+        
+
+        return df_input
+        

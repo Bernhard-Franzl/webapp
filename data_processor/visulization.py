@@ -15,12 +15,12 @@ class Visualizer():
         
         # font settings
         self.font_family = "Arial, sans-serif"
-        self.axis_title_size = 16
-        self.text_size = 12
-        self.title_size = 22
+        self.axis_title_size = 18
+        self.text_size = 14
+        self.title_size = 25
         
         # format settings
-        self.plot_height = 500
+        self.plot_height = 750
 
         # plotly config
         self.config={
@@ -142,7 +142,7 @@ class Visualizer():
         
         fig.update_layout(
             title = {
-                'text':f"<b>{title}</b>",
+                'text':f"{title}",
                 'font':{
                     'size':self.title_size},
                 'x':0.5,
@@ -166,23 +166,41 @@ class Visualizer():
 
         return fig
 
-    def frequency_yaxis(self, fig, row, col, relative=False):
-        if relative:
-            fig.update_yaxes(
-                title={
-                    "text":"<b> Relative Frequency</b>",
-                    "font": {"size": self.axis_title_size}},
-                range=[0,1.1],
-                automargin=True,
-                row=row, col=col) 
-        else:
-            fig.update_yaxes(
-                title={
-                    "text":"<b> Absolute Frequency</b>",
-                    "font": {"size": self.axis_title_size}},
-                automargin=True,
-                row=row, col=col)           
+    def customize_yaxis(self, fig, title, range, row, col):
         
+        fig.update_yaxes(
+            title={
+                "text": title,
+                "font": {"size": self.axis_title_size}},
+            range=range,
+            automargin=True)
+
+        
+        return fig      
+        
+    def frequency_yaxis(self, fig, row, col, relative, title):
+        
+        if relative:
+            if title:
+                title_text = "<b> Relative Frequency </b>"
+            else:
+                title_text = ""
+            fig = self.customize_yaxis(fig=fig,
+                                      title=title_text, 
+                                      range=[0,1.1], 
+                                      row=row, col=col)
+            
+        else:
+            if title:
+                title_text = "<b> Absolute Frequency </b>"
+            else:
+                title_text = ""
+                
+            fig = self.customize_yaxis(fig=fig,
+                                      title=title_text, 
+                                      range=[0, None], 
+                                      row=row, col=col)
+            
         return fig
     
     def date_xaxis(self, fig, row, col, x, ticktext):
@@ -196,14 +214,20 @@ class Visualizer():
             row=row, col=col)  
         return fig
     
-    def customize_hover(self, fig):
-        fig.update_traces(
-            hovertemplate="<b>%{customdata[0]}</b>\
-                        <br>Participants: %{y}")
+    def customize_hover(self, fig, mode="multi_bar"):
+        if mode == "multi_bar":
+            fig.update_traces(
+                hovertemplate="<b>%{customdata[0]}</b><br>" +
+                            "Title: %{customdata[8]}<br>" +
+                            "Y: %{y}<br>" +
+                            "Present:%{customdata[19]} | Registered:%{customdata[16]}<br>" +
+                            "Start Time: %{customdata[1]} %{customdata[5]}<br>" +
+                            "Room:%{customdata[2]} | Capacity:%{customdata[7]} <br>"+
+                            "Irregular: %{customdata[27]}<br>" +
+                            "Note: %{customdata[3]}")
         return fig
     
     ##### One Course Particpants Bar Chart #####
-
     def generate_charts_before_after(self, fig, df):
         
             x = list(range(len(df)))
@@ -267,7 +291,7 @@ class Visualizer():
         
         return fig
     
-    def plot_course_bar(self, dataframe, file_name, title, show_relative=False, show_before_after=False):
+    def plot_course_bar(self, dataframe, course_number, show_relative=False, show_before_after=False):
     
         df = dataframe.copy()
          
@@ -311,7 +335,10 @@ class Visualizer():
                               row=rows, col=cols,
                               x=list(range(len(df))),
                                 ticktext=df["start_time"].dt.strftime("%d.%m.%Y <br> %H:%M"))
-
+        # get name of course
+        row = df.iloc[0]
+        name = row["course_name"]
+        title = f"<b>{name}</b> <br> Participants per Course Date <br>"
         fig = self.add_title(fig, title)
         
         fig = self.apply_general_settings(fig)
@@ -319,19 +346,26 @@ class Visualizer():
         fig.show(config=self.config)
         
     ##### Multiple Courses Bar Chart #####
-    def course_numbers_xaxis(self, fig, row, col, x, ticktext):
+    def course_numbers_xaxis(self, fig, row, col, x, ticktext, n_rows):
+        if row == n_rows:
+            title_text = "<b> Course Number </b>"
+        else:
+            title_text = ""
+
         fig.update_xaxes(
             title={
-                "text":"<b> Course Number </b>",
+                "text":title_text,
                 "font": {"size": self.axis_title_size}},
             automargin=True,
             tickvals=x,
+            range=[-0.25, len(ticktext)+0.25],
             tickangle=0,
             ticktext=ticktext,
-            row=row, col=col)  
+            row=row, col=col) 
+         
         return fig
     
-    def plot_multiple_courses_line(self, dataframe, lva_numbers, file_name, title):
+    def plot_multiple_courses_line(self, dataframe, lva_numbers, title):
         df = dataframe.copy()
 
         rows, cols = 1, 1
@@ -358,44 +392,93 @@ class Visualizer():
         fig = self.apply_general_settings(fig)
         
         fig.show(config=self.config)
-    
-    def plot_multiple_courses_bars(self, dataframe, lva_numbers, title):
-        
-        df = dataframe.copy()
-        
-        rows, cols = 1, 1
-        fig = make_subplots(rows=rows, cols=cols)         
 
-        for i,lva_number in enumerate(lva_numbers):
+    def generate_mulit_bar_plot(self, fig, y_column, df, course_numbers, row, col):
+        
+        for i,course_number in enumerate(course_numbers):
             
-            # filter by course number
-            df_lva = df[df["course_number"] == lva_number]
+            df_course = df[df["course_number"] == course_number]
             
-            n_dates = len(df_lva)
-            
+            n_dates = len(df_course)
             step_size = 0.8/n_dates
+            x = np.arange(0.1 + step_size/2, 0.9, step_size) + i
+            if len(x) != n_dates:
+                raise ValueError("Length of x and n_dates do not match", len(x), n_dates)
             
-            x = np.arange(0.1, 0.9, step_size) + i
-            y = df_lva["present_students"]
-            print(df_lva.columns)
+            y = df_course[y_column]
+                                            
             fig.add_trace(
                 go.Bar(
                     x=x, 
-                    y=y, 
-                    name=f"", # if name is empty no hoverinfo is shown
+                    y=y,
+                    name="",
                     width=step_size, 
-                    customdata=df_lva,),
-                row=1, col=1)
+                    customdata=df_course,),
+                row=row, col=col)
+            
+        return fig
+    
+    def get_ticktext(self, course_numbers):
+        labels = []
+        for x in course_numbers:
+            splitter = x.split(", ")
+            if len(splitter) > 1:
+                labels.append(splitter[0] + ",...")
+            else:
+                labels.append(x)
+        return labels
+    
+    def plot_multiple_courses_bars(self, dataframe, course_numbers, title, mode):
+        
+        df = dataframe.copy()
+        course_numbers = sorted(course_numbers.copy())
+        
+        df["start_time"] = df["start_time"].dt.strftime("%d.%m.%Y %H:%M")
+        
+        n_courses = len(course_numbers)
+        n_rows = int(np.ceil(n_courses/15))
+        course_indices = np.array_split(np.arange(n_courses), n_rows)
+        n_cols = 1
+        
+        if mode == "absolute":
+            y_column = "present_students"
+            relative = False
+        
+        elif mode == "relative_registered":
+            y_column = "relative_registered"
+            relative = True
+            
+        elif mode == "relative_capacity":
+            y_column = "relative_capacity"
+            relative = True
+            
+        else:
+            raise ValueError("Mode must be one of: absolute, relative_registered, relative_capacity")
+
+            
+        fig = make_subplots(rows=n_rows, cols=n_cols)
+
+        for row, indices in enumerate(course_indices, 1):
+            chunk_course_numbers = [course_numbers[i] for i in indices]
+            fig = self.generate_mulit_bar_plot(fig=fig, 
+                                               y_column=y_column,
+                                                df=df, 
+                                                course_numbers=chunk_course_numbers, 
+                                                row=row, col=1)
+
+            ticktext = self.get_ticktext(chunk_course_numbers)
+            fig = self.course_numbers_xaxis(fig, 
+                                    row=row, col=n_cols, 
+                                    x=np.arange(len(chunk_course_numbers))+0.5, 
+                                    ticktext=ticktext,
+                                    n_rows=n_rows)                
+            fig = self.frequency_yaxis(fig=fig, row=row, col=n_cols, relative=relative, title=True)
         
         fig = self.add_title(fig, title)
-        fig = self.frequency_yaxis(fig, row=1, col=1, relative=False)
-        fig = self.course_numbers_xaxis(fig, 
-                                 row=rows, col=cols, 
-                                 x=np.arange(len(lva_numbers)) + 0.5, 
-                                 ticktext=lva_numbers)
         fig = self.apply_general_settings(fig)
-        fig = self.customize_hover(fig)
+        fig = self.customize_hover(fig=fig, mode="multi_bar")
         
-        
+        fig.update_layout(showlegend=False)
         fig.show(config=self.config)
-        
+
+    

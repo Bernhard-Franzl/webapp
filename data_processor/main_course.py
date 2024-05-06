@@ -1,13 +1,16 @@
 from course_analysis import CourseAnalyzer
 from datetime import datetime
 from visulization import Visualizer
+from matplotlib import pyplot as plt
 
 #TODO:
-# - multiple courses bar chart
-# - Better title for the plots: "Participants per Course Date" as subtiltle
+# - multiple courses bar chart -> enable more than 20 courses to be displayed
+# - column placement not yet correct
+# - Add subtitle with additional information
 # - Deal with irregular courses
 # - Implement proper hover text
 # - Fix distance between subplots
+# - Add room capacity to the plot -> HS18 164, HS 19 152
 
 
 room_name = "HS 19"
@@ -20,40 +23,65 @@ worker = CourseAnalyzer(room_name=None,
 
 
 start_time = datetime(2024, 4, 8, 0, 0, 0)
-end_time = datetime(2024, 5, 1, 23, 59, 0)
+end_time = datetime(2024, 4, 15, 23, 59, 0)
 
-
+# must happen before handling combined courses
 df = worker.filter_df_by_timestamp(dataframe=worker.df_combined, 
                                    start_time=start_time, 
                                    end_time=end_time)
 
 
 
-course_numbers = list(df["course_number"].unique())[:10]
-df = worker.filter_df_by_courses(df, course_numbers)
-df = df.drop_duplicates()
-
-df_result, _, _, _, _, _= worker.calc_course_participants(df)
+# must happen before calculating participants
+df = worker.handle_combined_courses(df)
 
 
-visard = Visualizer()
+#course_numbers = list(df[ "course_number"].unique())[:]
 
-#visard.plot_multiple_courses_line(dataframe=df_result,
-#                                  lva_numbers = course_numbers,
-#                                  file_name = "multiple_courses.png",
-#                                  title="Participants per Course Date")
+## incorporate relative values
+df_result, df_list, _, _ = worker.calc_course_participants(df, mode="max")
 
-visard.plot_multiple_courses_bars(dataframe=df_result,
-                                  lva_numbers=course_numbers,
-                                  title="Participants per Course Date")
+df_during = df_list[6][1]
+# anaylse attendance dynamics during course
+df_dynamics = worker.calc_attendance_dynamics(df_during)
+
+df_dynamics.plot(x="time", y="people_inside", kind="line")
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+#df_result = worker.calc_relative_registered(df_result)
+#df_result = worker.calc_relative_capacity(df_result)
+
+#visard = Visualizer()
+
+#visard.plot_multiple_courses_bars(dataframe=df_result,
+#                                  course_numbers=course_numbers,
+#                                  title="Participants per Course Date",
+#                                  relative=False)
+
+
+##print(df_result.columns[[0, 8, 19, 16, 7, 1, 5, 2, 27, 3]])
+#mode = "relative_registered"
+#visard.plot_multiple_courses_bars(dataframe=df_result,
+#                                  course_numbers=course_numbers,
+#                                  title="Participants per Course Date",
+#                                  mode=mode)
 
 # single course bar chart
-# visard.plot_course_bar(dataframe=df_result,
-#                             file_name = f"{lva_number}.png",
-#                             title="Participants per Course Date",
-#                             show_relative=True,
-#                             show_before_after=False)
-
+#visard.plot_course_bar(dataframe=df_result, 
+#                       course_number=course_numbers[0], 
+#                       show_relative=True, 
+#                       show_before_after=False)
 
 
 
