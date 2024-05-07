@@ -4,13 +4,12 @@ from visulization import Visualizer
 from matplotlib import pyplot as plt
 
 #TODO:
-# - multiple courses bar chart -> enable more than 20 courses to be displayed
+# - people leaving early -> "diff inside" or "people out"??
 # - column placement not yet correct
 # - Add subtitle with additional information
 # - Deal with irregular courses
 # - Implement proper hover text
 # - Fix distance between subplots
-# - Add room capacity to the plot -> HS18 164, HS 19 152
 
 
 room_name = "HS 19"
@@ -41,12 +40,16 @@ df = worker.handle_combined_courses(df)
 ## incorporate relative values
 df_result, df_list, _, _ = worker.calc_course_participants(df, mode="max")
 
-df_during = df_list[6][1]
-# anaylse attendance dynamics during course
-df_dynamics = worker.calc_attendance_dynamics(df_during)
+# must be given the signal during course time -> wise to do after calc_course_participants
+# or we need calc inside per min first
 
-df_dynamics.plot(x="time", y="people_inside", kind="line")
-plt.show()
+
+worker.calc_dynamics_all_dates(df_result, df_list)
+
+#visard = Visualizer()
+
+#visard.plot_dynamics(attendance_dynamics)
+
 
 
 

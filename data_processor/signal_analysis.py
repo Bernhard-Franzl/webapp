@@ -94,6 +94,11 @@ class SignalAnalyzer():
         
         idx = pd.date_range(start=start, end=end, freq=f'{n}min')
         
+
+        print(df)
+        # first row room_id
+        room_id = df.loc[0, "room_id"]
+        
         df = df.set_index("time")\
                 .resample(f"{n}min")\
                 .sum().reindex(idx, fill_value=0).reset_index()
@@ -103,6 +108,10 @@ class SignalAnalyzer():
         df["people_out"] = df["people_out"].cumsum()
         df["people_inside"] = df["people_in"] - df["people_out"]
         
+        df["room_id"] = room_id
+        df.drop(columns=["in_support_count", "out_support_count", 
+                         "sensor_one_support_count", "sensor_two_support_count",
+                         "door_id", "event_type"], inplace=True)
         return df
             
     def get_time(self, start_time, end_time, first, last):
@@ -149,6 +158,7 @@ class SignalAnalyzer():
         
         # get the new start and end time
         df_during = self.filter_by_time(df, start_time, end_time)
+        
         df_during = self.calc_inside_per_min(df_during, n ,start_time, end_time-timedelta(minutes=1))
         
         start_time_new, end_time_new = self.get_time(start_time, end_time, first, last)
@@ -283,8 +293,6 @@ class SignalAnalyzer():
         else:
             return [df_before, df_during, df_after], (part_b, part_a), extrema, [df_list_b, df_during, df_list_a]
         
-        
-
     def calc_participants_simple(self, dataframe, start_time, end_time):
         df = dataframe.copy()
         

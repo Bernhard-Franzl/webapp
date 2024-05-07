@@ -206,6 +206,7 @@ class CourseAnalyzer():
 
         
         for i,row in tqdm(df.iterrows(), total=len(df)):
+        #for i,row in df.iterrows():
             
             if self.room_name is None:
                 if (cur_date != row["start_time"].date()) or (cur_room != row["room_id"]):
@@ -227,12 +228,11 @@ class CourseAnalyzer():
                 
             start_time = row["start_time"]
             end_time = row["end_time"]
-            #print(start_time, "|", end_time)
             
             # check if first or last lecture of the day
             first, last = self.get_first_last(df_first_last, start_time, end_time)
-            #print(first, "|", last)
-
+            
+            # sanity check df_signal must only contain data in the correct room
             dataframes, participants, extrema, df_plot_list =  self.signal_analyzer.calc_participants(dataframe = df_signal, 
                                                                             start_time = start_time, 
                                                                             end_time = end_time, 
@@ -248,7 +248,6 @@ class CourseAnalyzer():
             df.loc[i, "first"] = first
             df.loc[i, "last"] = last
             
-            #print(self.signal_analyzer.describe_inside(dataframes[1]))
             #df.loc[i, "std_during"] = self.signal_analyzer.describe_inside(dataframes[1])["std"]
             
             # description of during dataframe
@@ -299,9 +298,8 @@ class CourseAnalyzer():
             df.loc[i, "max_students"] = df_masked["max_students"].sum()
             df.loc[i, "registered_students"] = df_masked["registered_students"].sum()
 
-        return df.drop_duplicates(subset=["start_time", "room_id"], keep="first")
+        return df.drop_duplicates(subset=["start_time", "room_id"], keep="first").reset_index(drop=True)
 
-    # calculate the relative number of present students
     def calc_relative_registered(self, dataframe):
         # relative = present_students / registered_students
         df = dataframe.copy(deep=True)
@@ -315,7 +313,6 @@ class CourseAnalyzer():
         return df
               
     ###### Course Attendance Dynamics ######
-    
     def students_running_late(self, dataframe, minutes_interval, minutes_max):
         
         # simply take first n elements of the dataframe
@@ -340,7 +337,7 @@ class CourseAnalyzer():
         last_row = chunk.iloc[-1]   
         end_time = last_row["time"]
         value = abs(chunk["diff_inside"]).max()
-        return first_row.name-periods, start_time, value, last_row.name, end_time
+        return first_row.name-periods, start_time, last_row.name, end_time
     
     def extract_time_intervals(self, dataframe, periods):
         
@@ -377,7 +374,22 @@ class CourseAnalyzer():
         students_entering = self.extract_time_intervals(top_k, periods)
         
         return students_leaving, students_entering
+     
+    def convert_timespan_to_df(self, event_list, dataframe, min_inside):
         
+        df = dataframe.copy(deep=True)
+        
+        df_list = []
+        for event in event_list:
+            start_idx, start_time, end_idx, end_time = event
+            df_cur = df.loc[start_idx:end_idx].copy()
+            df_cur["people_inside"] = df_cur["people_inside"] - df_cur["people_inside"].iloc[0]
+            
+            if abs(df_cur["people_inside"].iloc[0]) >= min_inside:
+                df_list.append(df_cur)
+            
+        return df_list
+    
     def calc_attendance_dynamics(self, dataframe):
         df_input = dataframe.copy(deep=True)
         
@@ -387,28 +399,39 @@ class CourseAnalyzer():
         
         df_coming_late = self.students_running_late(df_input,  minutes_interval, minutes_max)
         df_leaving_early = self.students_leaving_early(df_input,  minutes_interval, minutes_max)
+        #students_late = df_coming_late[df_coming_late["diff_inside"] > 0]["diff_inside"].sum()
+        #students_leaving_early = df_leaving_early[df_leaving_early["diff_inside"] < 0]["diff_inside"].sum()
         
-        # students leaving coming arbitrarily during lecture
-        periods = 5
+        periods = 3
         k = 10
         students_leaving, students_entering = self.arbitrary_dynamics(df_input, periods=periods, k=k)
-        
-        students_entering = [x for x in students_entering if x[3] >= minutes_max]
+        students_entering = [x for x in students_entering if x[2] >= minutes_max]
         students_leaving = [x for x in students_leaving if x[0] <= (len_df - minutes_max)]
         
-        # students entering und leaving in dataframes verwandeln!
-        # then ready for plotting
-        print(df_coming_late)
-        print(students_entering)
-        print(students_leaving)
-        print(df_leaving_early)
-        #print(df_dynamics)
-        #print(df_coming_late)
-        #print(df_leaving_early)
-                
-        # we need the numbers relative to participants!
+        df_list_entering_during = self.convert_timespan_to_df(students_entering, df_input, min_inside=0)
+        df_list_leaving_during = self.convert_timespan_to_df(students_leaving, df_input, min_inside=0)
         
-        
+        return df_coming_late, df_leaving_early, df_list_entering_during, df_list_leaving_during
+        #return (df_coming_late, students_late), (df_leaving_early, students_leaving_early), df_list_entering_during, df_list_leaving_during
 
-        return df_input
+    def extract_statistics(self, attendance_dynamics):
+       df_coming_late, df_leaving_early, df_list_entering_during, df_list_leaving_during =  attendance_dynamics
+       
+       print(df_coming_late)
+       late_students = df_coming_late
         
+    def calc_dynamics_all_dates(self, dates_dataframe, df_list):
+        
+        attendance_dynamics_list = []
+
+        for i, row in dates_dataframe.iterrows():
+            
+            print(f"############ {i} ############")
+            meta_data = row
+            df_during = df_list[i][1]
+            attendance_dynamics = self.calc_attendance_dynamics(df_during)
+            
+            self.extract_statistics(attendance_dynamics)
+            
+            break
+            

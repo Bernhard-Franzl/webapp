@@ -481,4 +481,27 @@ class Visualizer():
         fig.update_layout(showlegend=False)
         fig.show(config=self.config)
 
+    ##### Charts for Attendance Dynamics #####
     
+    #def plot_dynamics_single_course(self, attend):
+    # detailed version of the below function -> only one course date!
+    
+    def plot_dynamics(self, attendance_dynamics:tuple):
+        
+        df_coming_late, df_leaving_early, df_list_entering_during, df_list_leaving_during = attendance_dynamics
+        
+        fig = make_subplots(rows=3, cols=2,
+                            specs=[[{"colspan": 2}, None],
+                                   [{"colspan": 2}, None],
+                                   [{},{}]])
+        
+        print(df_coming_late)
+        fig.add_trace(
+            go.Bar(
+                x=df_coming_late["time"], 
+                y=df_coming_late["diff_inside"],
+                name="",
+                customdata=df_coming_late),
+            row=1, col=1)
+            
+        fig.show()
