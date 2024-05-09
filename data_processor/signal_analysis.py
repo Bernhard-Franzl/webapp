@@ -84,21 +84,12 @@ class SignalAnalyzer():
     def calc_inside_per_min(self, dataframe, n=1, start=None, end=None):
         
         df = dataframe.copy()
-        
-        # add a check if n is a divisor of the time span
-        
-        
+
         df["people_in"] = df["event_type"].apply(lambda x: 1 if x == 1 else 0)
         df["people_out"] = df["event_type"].apply(lambda x: 1 if x == 0 else 0)
         
-        
         idx = pd.date_range(start=start, end=end, freq=f'{n}min')
-        
 
-        print(df)
-        # first row room_id
-        room_id = df.loc[0, "room_id"]
-        
         df = df.set_index("time")\
                 .resample(f"{n}min")\
                 .sum().reindex(idx, fill_value=0).reset_index()
@@ -108,10 +99,9 @@ class SignalAnalyzer():
         df["people_out"] = df["people_out"].cumsum()
         df["people_inside"] = df["people_in"] - df["people_out"]
         
-        df["room_id"] = room_id
         df.drop(columns=["in_support_count", "out_support_count", 
                          "sensor_one_support_count", "sensor_two_support_count",
-                         "door_id", "event_type"], inplace=True)
+                         "door_id", "event_type", "room_id"], inplace=True)
         return df
             
     def get_time(self, start_time, end_time, first, last):

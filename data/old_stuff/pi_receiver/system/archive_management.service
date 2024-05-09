@@ -1,9 +1,0 @@
-[Unit]
-Description=Manage the data local data on the pi_receiver
-#Wants=
-
-[Service]
-Type=oneshot
-ExecStart=/bin/bash /home/berni/Dropbox/masterarbeit/archive_management.sh
-User=berni
-

@@ -1,0 +1,19 @@
+.page-header {
+    border-bottom: thin lightgrey solid;
+    height: 100px;
+}
+
+.page-header--title{
+    color: #0028aa;
+    height: 60px;
+    line-height: 60px;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.page-header--description{
+    height: 40px;
+    line-height: 40px;
+    font-size: 20px;
+    font-weight: bold;
+}

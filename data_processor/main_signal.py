@@ -2,7 +2,7 @@
 from preprocessing import Preprocessor
 from signal_analysis import SignalAnalyzer
 from datetime import datetime as dt
-from visulization import Visualizer
+from visualization.visualization import Visualizer
 
 #########  Constants #########
 room_to_id ={"HS18":0, "HS 18":0, "HS19":1, "HS 19": 1}

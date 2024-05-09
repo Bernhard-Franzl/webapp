@@ -1,0 +1,136 @@
+course_number,weekday,room,note,room_id,start_time,end_time,room_capcity,course_name,type,kind,lecturer,ects,sst,registered_students,present_students_b,present_students_a,present_students,first,last,duration,irregular,relative_registered,relative_capacity
+238.302,Mo.,HS 19,,1,2024-04-08 10:15:00,2024-04-08 11:45:00,152,Statistik für Sozial- und Wirtschaftswissenschaften,KS,Präsenz,Angela Bitto-Nemling,"3,00","2,0",115,44.0,37.0,40.0,True,False,90.0,False,0.3478,0.2
+231.115,Mo.,HS 19,,1,2024-04-08 12:00:00,2024-04-08 13:30:00,152,Grundzüge der empirischen Sozialforschung,VU,Präsenz,Dimitri Prandner,"3,00","2,0",72,21.0,28.0,24.0,False,False,90.0,False,0.3333,0.12
+258.410,Mo.,HS 18,Pattern Mining,0,2024-04-08 12:00:00,2024-04-08 13:30:00,164,Data Mining,VL,Präsenz,Christoph Georg Schütz,"3,00","2,0",170,61.0,65.0,63.0,True,False,90.0,False,0.3706,0.42
+190.035,Mo.,HS 19,,1,2024-04-08 13:45:00,2024-04-08 15:15:00,152,Schuldrecht Besonderer Teil: Gesetzliche Schuldverhältnisse,KS,Präsenz,Andreas Geroldinger,"3,00","3,0",64,12.0,15.0,13.0,False,False,90.0,False,0.2031,0.065
+136.309,Mo.,HS 18,,0,2024-04-08 13:45:00,2024-04-08 15:15:00,164,Kriminologie/Abweichendes Verhalten,VL,Präsenz,Helmut Hirtenlehner,"3,00","2,0",98,30.0,32.0,31.0,False,False,90.0,False,0.3163,0.1824
+140.004,Mo.,HS 19,,1,2024-04-08 15:30:00,2024-04-08 18:00:00,152,Grundrechte II,VL,Präsenz,Christoph Herbst,"0,50","1,0",119,17.0,15.0,16.0,False,True,150.0,True,0.1345,0.1067
+238.213,Mo.,HS 18,,0,2024-04-08 15:30:00,2024-04-08 17:00:00,164,Statistik für Sozial- und Wirtschaftswissenschaften,KS,Präsenz,Andreas Quatember,"3,00","2,0",175,30.0,31.0,30.0,False,False,90.0,True,0.1714,0.1667
+360.001,Mo.,HS 18,Tutorium,0,2024-04-08 17:15:00,2024-04-08 18:45:00,164,Grundzüge der Thermofluiddynamik,VL,Präsenz,Philipp Gittler,"4,50","3,0",122,3.0,5.0,4.0,False,True,90.0,True,0.0328,0.02
+366.560,Di.,HS 19,,1,2024-04-09 08:30:00,2024-04-09 10:00:00,152,Statistik,VO,Präsenz,Thomas Forstner,"3,00","2,0",146,26.0,36.0,31.0,True,False,90.0,False,0.2123,0.155
+361.001,Di.,HS 18,,0,2024-04-09 08:30:00,2024-04-09 10:00:00,164,Regelungstechnik,VL,Präsenz,Markus Schöberl,"4,50","3,0",131,33.0,43.0,38.0,True,False,90.0,False,0.2901,0.2714
+340.100,Di.,HS 18,,0,2024-04-09 10:15:00,2024-04-09 11:45:00,164,Algorithmen und Datenstrukturen 1,VO,Präsenz,Alois Ferscha,"3,00","2,0",194,64.0,66.0,65.0,False,False,90.0,False,0.3351,0.325
+360.001,Di.,HS 19,,1,2024-04-09 10:15:00,2024-04-09 11:45:00,152,Grundzüge der Thermofluiddynamik,VL,Präsenz,Philipp Gittler,"4,50","3,0",122,39.0,31.0,35.0,False,False,90.0,False,0.2869,0.175
+382.037,Di.,HS 19,,1,2024-04-09 12:00:00,2024-04-09 15:15:00,152,Schaltungs- und Programmiertechnik 2,VL,Präsenz,Michael Lunglmayr,"6,00","4,0",139,31.0,27.0,29.0,False,False,195.0,True,0.2086,0.1657
+259.002,Di.,HS 18,"Präsenztermin, Video Einheit: Bedingungen - If/Else",0,2024-04-09 12:00:00,2024-04-09 13:30:00,164,Einführung in die Softwareentwicklung mit Python,VL,Präsenz,Iris Groher,"3,00","2,0",222,49.0,44.0,46.0,False,False,90.0,False,0.2072,0.23
+364.000,Di.,HS 18,Local Shading and Illumination,0,2024-04-09 13:45:00,2024-04-09 15:15:00,164,Computer Graphics,VO,Präsenz,Oliver Bimber,"3,00","2,0",186,27.0,33.0,30.0,False,False,90.0,False,0.1613,0.15
+340.400,Di.,HS 18,,0,2024-04-09 15:30:00,2024-04-09 17:00:00,164,Embedded and Pervasive Systems,VO,Präsenz,Alois Ferscha,"3,00","2,0",140,19.0,19.0,19.0,False,True,90.0,False,0.1357,0.095
+229.054,Di.,HS 19,,1,2024-04-09 15:30:00,2024-04-09 18:00:00,152,Grundbegriffe und Grundzüge der Politik,VU,Präsenz,Harald Stöger,"6,00","3,0",140,42.0,41.0,41.0,False,True,150.0,True,0.2929,0.205
+371.000,Mi.,HS 18,,0,2024-04-10 08:30:00,2024-04-10 10:00:00,164,Einführung in den Maschinenbau,VL,Präsenz,Klaus Zeman,"3,00","2,0",148,41.0,37.0,39.0,True,False,90.0,False,0.2635,0.26
+"325.004, 531.170",Mi.,HS 18,,0,2024-04-10 10:15:00,2024-04-10 11:45:00,164,"Zahlentheorie,Einführung in die Zahlentheorie",VO,Präsenz,Friedrich Pillichshammer,"3,00","2,0",117,48.0,42.0,45.0,False,False,90.0,False,0.3846,0.3214
+327.029,Mi.,HS 19,,1,2024-04-10 10:15:00,2024-04-10 11:45:00,152,Numerik und Optimierung,KV,Präsenz,Stefan Takacs,"6,00","4,0",95,33.0,31.0,32.0,True,False,90.0,False,0.3368,0.2286
+258.300,Mi.,HS 18,DBS: Distributed DBS,0,2024-04-10 12:00:00,2024-04-10 13:30:00,164,Data & Knowledge Engineering,VL,Präsenz,Michael Schrefl,"3,00","2,0",134,10.0,8.0,9.0,False,False,90.0,False,0.0672,0.045
+259.022,Mi.,HS 19,"OO Architecture, Tactics",1,2024-04-10 12:00:00,2024-04-10 14:30:00,152,Software Architectures,KV,Präsenz,Rainer Weinreich,"4,50","3,0",63,36.0,33.0,34.0,False,True,150.0,True,0.5397,0.5231
+257.200,Mi.,HS 18,,0,2024-04-10 13:45:00,2024-04-10 15:15:00,164,Prozess- und Kommunikationsmodellierung,VL,Präsenz,Udo Kannengiesser,"3,00","2,0",152,20.0,6.0,13.0,False,False,90.0,False,0.0855,0.065
+365.232,Mi.,HS 19,,1,2024-04-10 14:30:00,2024-04-10 15:15:00,152,Programming in Python II,UE,Präsenz,Rainer Dangl,"1,50","1,0",47,34.0,35.0,34.0,True,True,45.0,False,0.7234,0.4857
+"257.211, 257.213, 257.214",Mi.,HS 18,,0,2024-04-10 15:30:00,2024-04-10 17:00:00,164,Prozess- und Kommunikationsmodellierung,UE,Präsenz,Udo Kannengiesser,"3,00","2,0",79,8.0,13.0,10.0,False,False,90.0,True,0.1266,0.1111
+256.600,Mi.,HS 18,,0,2024-04-10 17:15:00,2024-04-10 18:45:00,164,Soziale Auswirkungen der IT,KS,Präsenz,Hermann Sikora,"3,00","2,0",154,25.0,33.0,29.0,False,True,90.0,False,0.1883,0.1933
+358.001,Do.,HS 19,,1,2024-04-11 08:30:00,2024-04-11 10:00:00,152,Maschinenelemente,VL,Präsenz,Gudrun Mikota,"3,00","2,0",117,17.0,20.0,18.0,True,False,90.0,False,0.1538,0.1059
+371.000,Do.,HS 18,,0,2024-04-11 08:30:00,2024-04-11 10:00:00,164,Einführung in den Maschinenbau,VL,Präsenz,Klaus Zeman,"3,00","2,0",148,40.0,49.0,44.0,True,False,90.0,False,0.2973,0.2933
+531.120,Do.,HS 18,,0,2024-04-11 10:15:00,2024-04-11 11:45:00,164,Lineare Algebra I,VO,Präsenz,Erhard Aichinger,"4,00","4,0",102,37.0,37.0,37.0,False,False,90.0,False,0.3627,0.296
+327.029,Do.,HS 19,,1,2024-04-11 10:15:00,2024-04-11 11:45:00,152,Numerik und Optimierung,KV,Präsenz,Stefan Takacs,"6,00","4,0",95,19.0,5.0,12.0,False,True,90.0,False,0.1263,0.0857
+531.120,Do.,HS 18,Tutorium / Fragestunde,0,2024-04-11 12:00:00,2024-04-11 13:30:00,164,Lineare Algebra I,VO,Präsenz,Erhard Aichinger,"4,00","4,0",102,0.0,8.0,4.0,False,False,90.0,True,0.0392,0.032
+"531.240, 531.241, 531.242",Do.,HS 19,,1,2024-04-11 13:45:00,2024-04-11 14:30:00,152,Geometrie,UV,Präsenz,Bert Jüttler,"3,00","3,0",54,34.0,19.0,26.0,True,True,45.0,False,0.4815,0.3467
+531.208,Do.,HS 18,,0,2024-04-11 13:45:00,2024-04-11 15:15:00,164,Wahrscheinlichkeitsrechnung,VO,Präsenz,Peter Kritzer,"4,00","4,0",76,11.0,17.0,14.0,False,False,90.0,False,0.1842,0.14
+531.240,Do.,HS 19,,1,2024-04-11 14:30:00,2024-04-11 15:15:00,152,Geometrie,UV,Präsenz,Bert Jüttler,"3,00","3,0",30,46.0,37.0,41.0,True,False,45.0,False,1.3667,1.64
+339.170,Do.,HS 19,,1,2024-04-11 15:30:00,2024-04-11 17:00:00,152,Softwareentwicklung 1,VO,Präsenz,Hanspeter Mössenböck,"3,00","2,0",106,34.0,38.0,36.0,False,False,90.0,False,0.3396,0.36
+150.004,Do.,HS 18,,0,2024-04-11 15:30:00,2024-04-11 18:45:00,164,Steuerrecht,RE,Präsenz,Maximilian Reindl,"2,00","2,0",100,56.0,45.0,50.0,False,True,195.0,True,0.5,0.25
+190.300,Do.,HS 19,Leistungsstörung - Verzug - Gewährleistung - Fälle,1,2024-04-11 17:15:00,2024-04-11 19:45:00,152,Privatrecht für Wirtschaftsinformatik,KV,Präsenz,Martina Eliskases,"4,50","3,0",118,35.0,34.0,34.0,False,True,150.0,True,0.2881,0.2267
+361.001,Fr.,HS 19,,1,2024-04-12 08:30:00,2024-04-12 10:00:00,152,Regelungstechnik,VL,Präsenz,Markus Schöberl,"4,50","3,0",131,34.0,31.0,32.0,True,True,90.0,False,0.2443,0.2286
+243.115,Fr.,HS 18,,0,2024-04-12 08:30:00,2024-04-12 11:45:00,164,Einführung in die Wirtschaftswissenschaften für Juristinnen und Juristen,KV,Präsenz,René Andeßner,"6,00","6,0",133,19.0,22.0,20.0,True,False,195.0,True,0.1504,0.1
+383.028,Fr.,HS 19,,1,2024-04-12 12:00:00,2024-04-12 13:30:00,152,Funktionelle Anatomie,VL,Präsenz,Christoph Wolf,"3,00","2,0",155,36.0,23.0,29.0,True,True,90.0,False,0.1871,0.1933
+339.341,Fr.,HS 18,,0,2024-04-12 12:00:00,2024-04-12 18:00:00,164,Special Topics,KV,Präsenz,Hanspeter Mössenböck,"1,50","1,0",120,62.0,56.0,59.0,False,True,360.0,True,0.4917,0.472
+339.341,Sa.,HS 18,,0,2024-04-13 08:30:00,2024-04-13 12:45:00,164,Special Topics,KV,Präsenz,Hanspeter Mössenböck,"1,50","1,0",120,45.0,44.0,44.0,True,True,255.0,True,0.3667,0.352
+367.145,Mo.,HS 18,,0,2024-04-15 08:30:00,2024-04-15 11:45:00,164,Wirtschaftsgrundlagen für Informatiker,VO,Präsenz,Werner Retschitzegger,"3,00","2,0",2,4.0,2.0,3.0,True,False,195.0,True,1.5,0.2
+238.302,Mo.,HS 19,,1,2024-04-15 10:15:00,2024-04-15 11:45:00,152,Statistik für Sozial- und Wirtschaftswissenschaften,KS,Präsenz,Angela Bitto-Nemling,"3,00","2,0",115,8.0,4.0,6.0,True,False,90.0,False,0.0522,0.03
+231.115,Mo.,HS 19,,1,2024-04-15 12:00:00,2024-04-15 13:30:00,152,Grundzüge der empirischen Sozialforschung,VU,Präsenz,Dimitri Prandner,"3,00","2,0",72,18.0,19.0,18.0,False,False,90.0,False,0.25,0.09
+258.410,Mo.,HS 18,Classification,0,2024-04-15 12:00:00,2024-04-15 13:30:00,164,Data Mining,VL,Präsenz,Christoph Georg Schütz,"3,00","2,0",170,46.0,61.0,53.0,False,False,90.0,False,0.3118,0.3533
+190.035,Mo.,HS 19,,1,2024-04-15 13:45:00,2024-04-15 15:15:00,152,Schuldrecht Besonderer Teil: Gesetzliche Schuldverhältnisse,KS,Präsenz,Andreas Geroldinger,"3,00","3,0",64,28.0,29.0,28.0,False,False,90.0,False,0.4375,0.14
+136.309,Mo.,HS 18,,0,2024-04-15 13:45:00,2024-04-15 15:15:00,164,Kriminologie/Abweichendes Verhalten,VL,Präsenz,Helmut Hirtenlehner,"3,00","2,0",98,22.0,22.0,22.0,False,False,90.0,False,0.2245,0.1294
+140.004,Mo.,HS 19,,1,2024-04-15 15:30:00,2024-04-15 18:00:00,152,Grundrechte II,VL,Präsenz,Christoph Herbst,"0,50","1,0",119,8.0,9.0,8.0,False,True,150.0,True,0.0672,0.0533
+238.213,Mo.,HS 18,,0,2024-04-15 15:30:00,2024-04-15 17:00:00,164,Statistik für Sozial- und Wirtschaftswissenschaften,KS,Präsenz,Andreas Quatember,"3,00","2,0",175,26.0,28.0,27.0,False,False,90.0,False,0.1543,0.15
+360.001,Mo.,HS 18,Tutorium,0,2024-04-15 17:15:00,2024-04-15 18:45:00,164,Grundzüge der Thermofluiddynamik,VL,Präsenz,Philipp Gittler,"4,50","3,0",122,7.0,5.0,6.0,False,True,90.0,False,0.0492,0.03
+366.560,Di.,HS 19,,1,2024-04-16 08:30:00,2024-04-16 10:00:00,152,Statistik,VO,Präsenz,Thomas Forstner,"3,00","2,0",146,33.0,30.0,31.0,True,False,90.0,False,0.2123,0.155
+361.001,Di.,HS 18,,0,2024-04-16 08:30:00,2024-04-16 10:00:00,164,Regelungstechnik,VL,Präsenz,Markus Schöberl,"4,50","3,0",131,39.0,50.0,44.0,True,False,90.0,False,0.3359,0.3143
+340.100,Di.,HS 18,,0,2024-04-16 10:15:00,2024-04-16 11:45:00,164,Algorithmen und Datenstrukturen 1,VO,Präsenz,Alois Ferscha,"3,00","2,0",194,36.0,54.0,45.0,False,True,90.0,False,0.232,0.225
+360.001,Di.,HS 19,,1,2024-04-16 10:15:00,2024-04-16 11:45:00,152,Grundzüge der Thermofluiddynamik,VL,Präsenz,Philipp Gittler,"4,50","3,0",122,27.0,22.0,24.0,False,False,90.0,False,0.1967,0.12
+382.037,Di.,HS 19,,1,2024-04-16 12:00:00,2024-04-16 15:15:00,152,Schaltungs- und Programmiertechnik 2,VL,Präsenz,Michael Lunglmayr,"6,00","4,0",139,35.0,25.0,30.0,False,False,195.0,True,0.2158,0.1714
+364.000,Di.,HS 18,Texture Mapping Basics,0,2024-04-16 13:45:00,2024-04-16 15:15:00,164,Computer Graphics,VO,Präsenz,Oliver Bimber,"3,00","2,0",186,21.0,26.0,23.0,True,False,90.0,False,0.1237,0.115
+229.054,Di.,HS 19,,1,2024-04-16 15:30:00,2024-04-16 18:00:00,152,Grundbegriffe und Grundzüge der Politik,VU,Präsenz,Harald Stöger,"6,00","3,0",140,35.0,34.0,34.0,False,True,150.0,True,0.2429,0.17
+340.400,Di.,HS 18,,0,2024-04-16 15:30:00,2024-04-16 17:00:00,164,Embedded and Pervasive Systems,VO,Präsenz,Alois Ferscha,"3,00","2,0",140,20.0,20.0,20.0,False,True,90.0,False,0.1429,0.1
+371.000,Mi.,HS 18,,0,2024-04-17 08:30:00,2024-04-17 10:00:00,164,Einführung in den Maschinenbau,VL,Präsenz,Klaus Zeman,"3,00","2,0",148,37.0,45.0,41.0,True,False,90.0,False,0.277,0.2733
+327.029,Mi.,HS 19,,1,2024-04-17 10:15:00,2024-04-17 11:45:00,152,Numerik und Optimierung,KV,Präsenz,Stefan Takacs,"6,00","4,0",95,25.0,25.0,25.0,True,True,90.0,False,0.2632,0.1786
+"325.004, 531.170",Mi.,HS 18,,0,2024-04-17 10:15:00,2024-04-17 11:45:00,164,"Zahlentheorie,Einführung in die Zahlentheorie",VO,Präsenz,Friedrich Pillichshammer,"3,00","2,0",117,30.0,37.0,33.0,False,False,90.0,False,0.2821,0.2357
+258.300,Mi.,HS 18,DBS: Fortsetzung Distributed DBS;  NoSQL Stores and NewSQL DBMS,0,2024-04-17 12:00:00,2024-04-17 13:30:00,164,Data & Knowledge Engineering,VL,Präsenz,Michael Schrefl,"3,00","2,0",134,8.0,5.0,6.0,False,False,90.0,False,0.0448,0.03
+257.200,Mi.,HS 18,,0,2024-04-17 13:45:00,2024-04-17 15:15:00,164,Prozess- und Kommunikationsmodellierung,VL,Präsenz,Udo Kannengiesser,"3,00","2,0",152,19.0,10.0,14.0,False,False,90.0,False,0.0921,0.07
+365.232,Mi.,HS 19,,1,2024-04-17 14:30:00,2024-04-17 15:15:00,152,Programming in Python II,UE,Präsenz,Rainer Dangl,"1,50","1,0",47,30.0,33.0,31.0,True,True,45.0,False,0.6596,0.4429
+"257.211, 257.213, 257.214",Mi.,HS 18,,0,2024-04-17 15:30:00,2024-04-17 17:00:00,164,Prozess- und Kommunikationsmodellierung,UE,Präsenz,Udo Kannengiesser,"3,00","2,0",79,3.0,6.0,4.0,False,False,90.0,True,0.0506,0.0444
+256.600,Mi.,HS 18,,0,2024-04-17 17:15:00,2024-04-17 18:45:00,164,Soziale Auswirkungen der IT,KS,Präsenz,Hermann Sikora,"3,00","2,0",154,25.0,32.0,28.0,False,True,90.0,False,0.1818,0.1867
+358.001,Do.,HS 19,,1,2024-04-18 08:30:00,2024-04-18 10:00:00,152,Maschinenelemente,VL,Präsenz,Gudrun Mikota,"3,00","2,0",117,23.0,22.0,22.0,True,False,90.0,False,0.188,0.1294
+371.000,Do.,HS 18,,0,2024-04-18 08:30:00,2024-04-18 10:00:00,164,Einführung in den Maschinenbau,VL,Präsenz,Klaus Zeman,"3,00","2,0",148,25.0,34.0,29.0,True,False,90.0,False,0.1959,0.1933
+531.120,Do.,HS 18,,0,2024-04-18 10:15:00,2024-04-18 11:45:00,164,Lineare Algebra I,VO,Präsenz,Erhard Aichinger,"4,00","4,0",102,39.0,31.0,35.0,False,False,90.0,False,0.3431,0.28
+327.029,Do.,HS 19,,1,2024-04-18 10:15:00,2024-04-18 11:45:00,152,Numerik und Optimierung,KV,Präsenz,Stefan Takacs,"6,00","4,0",95,22.0,20.0,21.0,False,True,90.0,False,0.2211,0.15
+531.120,Do.,HS 18,Tutorium / Fragestunde,0,2024-04-18 12:00:00,2024-04-18 13:30:00,164,Lineare Algebra I,VO,Präsenz,Erhard Aichinger,"4,00","4,0",102,7.0,11.0,9.0,False,False,90.0,True,0.0882,0.072
+531.208,Do.,HS 18,,0,2024-04-18 13:45:00,2024-04-18 15:15:00,164,Wahrscheinlichkeitsrechnung,VO,Präsenz,Peter Kritzer,"4,00","4,0",76,19.0,15.0,17.0,False,True,90.0,False,0.2237,0.17
+"531.240, 531.241, 531.242",Do.,HS 19,,1,2024-04-18 13:45:00,2024-04-18 14:30:00,152,Geometrie,UV,Präsenz,Bert Jüttler,"3,00","3,0",54,49.0,26.0,37.0,True,True,45.0,False,0.6852,0.4933
+531.240,Do.,HS 19,,1,2024-04-18 14:30:00,2024-04-18 15:15:00,152,Geometrie,UV,Präsenz,Bert Jüttler,"3,00","3,0",30,34.0,48.0,41.0,True,False,45.0,True,1.3667,1.64
+339.170,Do.,HS 19,,1,2024-04-18 15:30:00,2024-04-18 17:00:00,152,Softwareentwicklung 1,VO,Präsenz,Hanspeter Mössenböck,"3,00","2,0",106,28.0,29.0,28.0,False,False,90.0,False,0.2642,0.28
+190.300,Do.,HS 19,Schadenersatz - Abgabe Hausarbeit,1,2024-04-18 17:15:00,2024-04-18 19:45:00,152,Privatrecht für Wirtschaftsinformatik,KV,Präsenz,Martina Eliskases,"4,50","3,0",118,24.0,20.0,22.0,False,True,150.0,True,0.1864,0.1467
+339.191,Do.,HS 18,19:00 - 19:30 Uhr Test,0,2024-04-18 19:00:00,2024-04-18 19:45:00,164,Softwareentwicklung 2,VO,Präsenz,Herbert Prähofer,"3,00","2,0",307,18.0,27.0,22.0,True,True,45.0,True,0.0717,0.0733
+361.001,Fr.,HS 19,,1,2024-04-19 08:30:00,2024-04-19 10:00:00,152,Regelungstechnik,VL,Präsenz,Markus Schöberl,"4,50","3,0",131,42.0,37.0,39.0,True,True,90.0,False,0.2977,0.2786
+243.115,Fr.,HS 18,,0,2024-04-19 08:30:00,2024-04-19 11:45:00,164,Einführung in die Wirtschaftswissenschaften für Juristinnen und Juristen,KV,Präsenz,René Andeßner,"6,00","6,0",133,19.0,19.0,19.0,True,False,195.0,True,0.1429,0.095
+339.341,Fr.,HS 18,,0,2024-04-19 12:00:00,2024-04-19 18:00:00,164,Special Topics,KV,Präsenz,Hanspeter Mössenböck,"1,50","1,0",120,43.0,49.0,46.0,False,True,360.0,True,0.3833,0.368
+368.190,Mo.,HS 19,,1,2024-04-22 08:30:00,2024-04-22 10:00:00,152,Algebra für Informatik,VL,Präsenz,Christoph Koutschan,"3,00","2,0",242,58.0,41.0,49.0,True,False,90.0,False,0.2025,0.196
+238.302,Mo.,HS 19,,1,2024-04-22 10:15:00,2024-04-22 11:45:00,152,Statistik für Sozial- und Wirtschaftswissenschaften,KS,Präsenz,Angela Bitto-Nemling,"3,00","2,0",115,45.0,38.0,41.0,False,False,90.0,False,0.3565,0.205
+258.410,Mo.,HS 18,Cluster Analysis / Outlier Detection,0,2024-04-22 12:00:00,2024-04-22 13:30:00,164,Data Mining,VL,Präsenz,Christoph Georg Schütz,"3,00","2,0",170,52.0,49.0,50.0,True,False,90.0,False,0.2941,0.3333
+231.115,Mo.,HS 19,,1,2024-04-22 12:00:00,2024-04-22 13:30:00,152,Grundzüge der empirischen Sozialforschung,VU,Präsenz,Dimitri Prandner,"3,00","2,0",72,18.0,22.0,20.0,False,False,90.0,False,0.2778,0.1
+136.309,Mo.,HS 18,,0,2024-04-22 13:45:00,2024-04-22 15:15:00,164,Kriminologie/Abweichendes Verhalten,VL,Präsenz,Helmut Hirtenlehner,"3,00","2,0",98,21.0,20.0,20.0,False,False,90.0,False,0.2041,0.1176
+190.035,Mo.,HS 19,,1,2024-04-22 13:45:00,2024-04-22 15:15:00,152,Schuldrecht Besonderer Teil: Gesetzliche Schuldverhältnisse,KS,Präsenz,Andreas Geroldinger,"3,00","3,0",64,24.0,21.0,22.0,False,False,90.0,False,0.3438,0.11
+238.213,Mo.,HS 18,,0,2024-04-22 15:30:00,2024-04-22 17:00:00,164,Statistik für Sozial- und Wirtschaftswissenschaften,KS,Präsenz,Andreas Quatember,"3,00","2,0",175,30.0,26.0,28.0,False,True,90.0,False,0.16,0.1556
+252.031,Mo.,HS 19,Reflexion in Kleingruppen,1,2024-04-22 15:30:00,2024-04-22 17:00:00,152,Ethik,IK,Präsenz,Johannes Thaller,"3,00","2,0",38,29.0,39.0,34.0,False,False,90.0,True,0.8947,0.85
+360.001,Mo.,HS 19,Tutorium,1,2024-04-22 17:15:00,2024-04-22 18:45:00,152,Grundzüge der Thermofluiddynamik,VL,Präsenz,Philipp Gittler,"4,50","3,0",122,8.0,9.0,8.0,False,True,90.0,False,0.0656,0.04
+361.001,Di.,HS 18,,0,2024-04-23 08:30:00,2024-04-23 10:00:00,164,Regelungstechnik,VL,Präsenz,Markus Schöberl,"4,50","3,0",131,40.0,46.0,43.0,True,False,90.0,False,0.3282,0.3071
+366.560,Di.,HS 19,,1,2024-04-23 08:30:00,2024-04-23 10:00:00,152,Statistik,VO,Präsenz,Thomas Forstner,"3,00","2,0",146,24.0,32.0,28.0,True,False,90.0,False,0.1918,0.14
+360.001,Di.,HS 19,,1,2024-04-23 10:15:00,2024-04-23 11:45:00,152,Grundzüge der Thermofluiddynamik,VL,Präsenz,Philipp Gittler,"4,50","3,0",122,33.0,15.0,24.0,False,False,90.0,False,0.1967,0.12
+340.100,Di.,HS 18,,0,2024-04-23 10:15:00,2024-04-23 11:45:00,164,Algorithmen und Datenstrukturen 1,VO,Präsenz,Alois Ferscha,"3,00","2,0",194,42.0,27.0,34.0,False,False,90.0,False,0.1753,0.17
+259.002,Di.,HS 18,"Präsenztermin, Video Einheit: Collections",0,2024-04-23 12:00:00,2024-04-23 13:30:00,164,Einführung in die Softwareentwicklung mit Python,VL,Präsenz,Iris Groher,"3,00","2,0",222,43.0,42.0,42.0,False,False,90.0,False,0.1892,0.21
+382.037,Di.,HS 19,,1,2024-04-23 12:00:00,2024-04-23 15:15:00,152,Schaltungs- und Programmiertechnik 2,VL,Präsenz,Michael Lunglmayr,"6,00","4,0",139,39.0,16.0,27.0,False,False,195.0,True,0.1942,0.1543
+364.000,Di.,HS 18,Advanced Texture Mapping & Graphics Pipelines,0,2024-04-23 13:45:00,2024-04-23 15:15:00,164,Computer Graphics,VO,Präsenz,Oliver Bimber,"3,00","2,0",186,19.0,22.0,20.0,False,False,90.0,False,0.1075,0.1
+229.054,Di.,HS 19,,1,2024-04-23 15:30:00,2024-04-23 18:00:00,152,Grundbegriffe und Grundzüge der Politik,VU,Präsenz,Harald Stöger,"6,00","3,0",140,29.0,39.0,34.0,False,True,150.0,True,0.2429,0.17
+340.400,Di.,HS 18,,0,2024-04-23 15:30:00,2024-04-23 17:00:00,164,Embedded and Pervasive Systems,VO,Präsenz,Alois Ferscha,"3,00","2,0",140,17.0,19.0,18.0,False,True,90.0,False,0.1286,0.09
+371.000,Mi.,HS 18,,0,2024-04-24 08:30:00,2024-04-24 10:00:00,164,Einführung in den Maschinenbau,VL,Präsenz,Klaus Zeman,"3,00","2,0",148,28.0,23.0,25.0,True,False,90.0,False,0.1689,0.1667
+"325.004, 531.170",Mi.,HS 18,,0,2024-04-24 10:15:00,2024-04-24 11:45:00,164,"Zahlentheorie,Einführung in die Zahlentheorie",VO,Präsenz,Friedrich Pillichshammer,"3,00","2,0",117,40.0,25.0,32.0,False,False,90.0,False,0.2735,0.2286
+327.029,Mi.,HS 19,,1,2024-04-24 10:15:00,2024-04-24 11:45:00,152,Numerik und Optimierung,KV,Präsenz,Stefan Takacs,"6,00","4,0",95,27.0,29.0,28.0,True,False,90.0,False,0.2947,0.2
+258.300,Mi.,HS 18,"WebIS: XML, DBS: Temporal DBS",0,2024-04-24 12:00:00,2024-04-24 13:30:00,164,Data & Knowledge Engineering,VL,Präsenz,Michael Schrefl,"3,00","2,0",134,4.0,8.0,6.0,False,False,90.0,False,0.0448,0.03
+259.022,Mi.,HS 19,Exercise Part 1: Discussion,1,2024-04-24 12:00:00,2024-04-24 14:30:00,152,Software Architectures,KV,Präsenz,Rainer Weinreich,"4,50","3,0",63,37.0,39.0,38.0,False,True,150.0,True,0.6032,0.5846
+257.200,Mi.,HS 18,,0,2024-04-24 13:45:00,2024-04-24 15:15:00,164,Prozess- und Kommunikationsmodellierung,VL,Präsenz,Udo Kannengiesser,"3,00","2,0",152,16.0,3.0,9.0,False,False,90.0,False,0.0592,0.045
+365.232,Mi.,HS 19,,1,2024-04-24 14:30:00,2024-04-24 15:15:00,152,Programming in Python II,UE,Präsenz,Rainer Dangl,"1,50","1,0",47,3.0,34.0,18.0,True,True,45.0,True,0.383,0.2571
+"257.211, 257.213, 257.214",Mi.,HS 18,,0,2024-04-24 15:30:00,2024-04-24 17:00:00,164,Prozess- und Kommunikationsmodellierung,UE,Präsenz,Richard Heininger,"3,00","2,0",79,5.0,4.0,4.0,False,False,90.0,True,0.0506,0.0444
+256.600,Mi.,HS 18,,0,2024-04-24 17:15:00,2024-04-24 18:45:00,164,Soziale Auswirkungen der IT,KS,Präsenz,Hermann Sikora,"3,00","2,0",154,18.0,28.0,23.0,False,True,90.0,False,0.1494,0.1533
+358.001,Do.,HS 19,,1,2024-04-25 08:30:00,2024-04-25 10:00:00,152,Maschinenelemente,VL,Präsenz,Gudrun Mikota,"3,00","2,0",117,0.0,6.0,3.0,True,False,90.0,False,0.0256,0.0176
+371.000,Do.,HS 18,,0,2024-04-25 08:30:00,2024-04-25 10:00:00,164,Einführung in den Maschinenbau,VL,Präsenz,Klaus Zeman,"3,00","2,0",148,22.0,19.0,20.0,True,False,90.0,False,0.1351,0.1333
+531.120,Do.,HS 18,,0,2024-04-25 10:15:00,2024-04-25 11:45:00,164,Lineare Algebra I,VO,Präsenz,Erhard Aichinger,"4,00","4,0",102,46.0,37.0,41.0,False,False,90.0,False,0.402,0.328
+327.029,Do.,HS 19,,1,2024-04-25 10:15:00,2024-04-25 11:45:00,152,Numerik und Optimierung,KV,Präsenz,Stefan Takacs,"6,00","4,0",95,0.0,0.0,0.0,False,True,90.0,False,0.0,0.0
+531.120,Do.,HS 18,Tutorium / Fragestunde,0,2024-04-25 12:00:00,2024-04-25 13:30:00,164,Lineare Algebra I,VO,Präsenz,Erhard Aichinger,"4,00","4,0",102,7.0,9.0,8.0,False,False,90.0,False,0.0784,0.064
+531.208,Do.,HS 18,,0,2024-04-25 13:45:00,2024-04-25 15:15:00,164,Wahrscheinlichkeitsrechnung,VO,Präsenz,Peter Kritzer,"4,00","4,0",76,11.0,14.0,12.0,False,True,90.0,False,0.1579,0.12
+"531.240, 531.241, 531.242",Do.,HS 19,,1,2024-04-25 13:45:00,2024-04-25 14:30:00,152,Geometrie,UV,Präsenz,Bert Jüttler,"3,00","3,0",54,0.0,1.0,0.0,True,True,45.0,False,0.0,0.0
+531.240,Do.,HS 19,,1,2024-04-25 14:30:00,2024-04-25 15:15:00,152,Geometrie,UV,Präsenz,Bert Jüttler,"3,00","3,0",30,0.0,1.0,0.0,True,False,45.0,False,0.0,0.0
+339.170,Do.,HS 19,,1,2024-04-25 15:30:00,2024-04-25 17:00:00,152,Softwareentwicklung 1,VO,Präsenz,Hanspeter Mössenböck,"3,00","2,0",106,0.0,0.0,0.0,False,False,90.0,False,0.0,0.0
+190.300,Do.,HS 19,Schadenersatz,1,2024-04-25 17:15:00,2024-04-25 19:45:00,152,Privatrecht für Wirtschaftsinformatik,KV,Präsenz,Martina Eliskases,"4,50","3,0",118,0.0,0.0,0.0,False,True,150.0,True,0.0,0.0
+361.001,Fr.,HS 19,,1,2024-04-26 08:30:00,2024-04-26 10:00:00,152,Regelungstechnik,VL,Präsenz,Markus Schöberl,"4,50","3,0",131,44.0,19.0,31.0,True,False,90.0,False,0.2366,0.2214
+"362.064, 362.065, 362.066, 362.068, 362.073",Fr.,HS 19,Tutorium 1. TK,1,2024-04-26 10:15:00,2024-04-26 11:45:00,152,"Elektrische Maschinen,Elektrische Maschinen und Antriebselektronik",UE,Präsenz,Stefan Mallinger,"1,50","1,0",112,55.0,64.0,59.0,False,True,90.0,False,0.5268,0.3371
+531.163,Fr.,HS 18,1. Teilklausur,0,2024-04-26 10:15:00,2024-04-26 12:45:00,164,Analysis II,UE,Präsenz,Jan-Michael Holzinger,"2,00","1,0",12,-2.0,27.0,12.0,True,True,150.0,True,1.0,0.48
+238.302,Mo.,HS 19,,1,2024-04-29 10:15:00,2024-04-29 11:45:00,152,Statistik für Sozial- und Wirtschaftswissenschaften,KS,Präsenz,Angela Bitto-Nemling,"3,00","2,0",115,42.0,38.0,40.0,True,False,90.0,False,0.3478,0.2
+231.115,Mo.,HS 19,,1,2024-04-29 12:00:00,2024-04-29 13:30:00,152,Grundzüge der empirischen Sozialforschung,VU,Präsenz,Dimitri Prandner,"3,00","2,0",72,8.0,17.0,12.0,False,False,90.0,False,0.1667,0.06
+258.410,Mo.,HS 18,Q & A / Exam Preparation,0,2024-04-29 12:00:00,2024-04-29 13:30:00,164,Data Mining,VL,Präsenz,Christoph Georg Schütz,"3,00","2,0",170,53.0,56.0,54.0,True,False,90.0,False,0.3176,0.36
+136.309,Mo.,HS 18,,0,2024-04-29 13:45:00,2024-04-29 15:15:00,164,Kriminologie/Abweichendes Verhalten,VL,Präsenz,Helmut Hirtenlehner,"3,00","2,0",98,25.0,18.0,21.0,False,False,90.0,False,0.2143,0.1235
+190.035,Mo.,HS 19,,1,2024-04-29 13:45:00,2024-04-29 15:15:00,152,Schuldrecht Besonderer Teil: Gesetzliche Schuldverhältnisse,KS,Präsenz,Andreas Geroldinger,"3,00","3,0",64,16.0,16.0,16.0,False,False,90.0,False,0.25,0.08
+238.213,Mo.,HS 18,,0,2024-04-29 15:30:00,2024-04-29 17:00:00,164,Statistik für Sozial- und Wirtschaftswissenschaften,KS,Präsenz,Andreas Quatember,"3,00","2,0",175,19.0,26.0,22.0,False,False,90.0,False,0.1257,0.1222
+140.004,Mo.,HS 19,,1,2024-04-29 15:30:00,2024-04-29 18:00:00,152,Grundrechte II,VL,Präsenz,Christoph Herbst,"0,50","1,0",119,5.0,3.0,4.0,False,True,150.0,True,0.0336,0.0267
+360.001,Mo.,HS 18,Tutorium,0,2024-04-29 17:15:00,2024-04-29 18:45:00,164,Grundzüge der Thermofluiddynamik,VL,Präsenz,Philipp Gittler,"4,50","3,0",122,8.0,8.0,8.0,False,True,90.0,False,0.0656,0.04
+361.001,Di.,HS 18,,0,2024-04-30 08:30:00,2024-04-30 10:00:00,164,Regelungstechnik,VL,Präsenz,Markus Schöberl,"4,50","3,0",131,38.0,34.0,36.0,True,True,90.0,False,0.2748,0.2571
+366.560,Di.,HS 19,,1,2024-04-30 08:30:00,2024-04-30 10:00:00,152,Statistik,VO,Präsenz,Thomas Forstner,"3,00","2,0",146,19.0,22.0,20.0,True,False,90.0,False,0.137,0.1
+360.001,Di.,HS 19,,1,2024-04-30 10:15:00,2024-04-30 11:45:00,152,Grundzüge der Thermofluiddynamik,VL,Präsenz,Philipp Gittler,"4,50","3,0",122,19.0,7.0,13.0,False,False,90.0,False,0.1066,0.065
+382.037,Di.,HS 19,,1,2024-04-30 12:00:00,2024-04-30 15:15:00,152,Schaltungs- und Programmiertechnik 2,VL,Präsenz,Michael Lunglmayr,"6,00","4,0",139,5.0,24.0,14.0,False,False,195.0,True,0.1007,0.08
+364.000,Di.,HS 18,Intermediate Exam,0,2024-04-30 13:45:00,2024-04-30 15:15:00,164,Computer Graphics,VO,Präsenz,Oliver Bimber,"3,00","2,0",186,101.0,129.0,115.0,True,True,90.0,True,0.6183,0.575
+229.054,Di.,HS 19,,1,2024-04-30 15:30:00,2024-04-30 18:00:00,152,Grundbegriffe und Grundzüge der Politik,VU,Präsenz,Harald Stöger,"6,00","3,0",140,28.0,28.0,28.0,False,True,150.0,True,0.2,0.14
