@@ -1,8 +1,10 @@
 .page-header {
     border-bottom: thin lightgrey solid;
-    height: 100px;
+    height: 70px;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 10px;
 }
-
 .page-header--title{
     color: #0028aa;
     height: 60px;
@@ -11,9 +13,58 @@
     font-weight: bold;
 }
 
-.page-header--description{
-    height: 40px;
-    line-height: 40px;
+.plot{
+    border-bottom: thin lightgrey solid;
+    padding-top: 10px;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+/*.plot-header{
+}*/
+
+.plot-header--title{
+    color: #000000;
+    height: 60px;
+    line-height: 60px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.plot-header--description{
+    color: #000000;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.plot-header--section-title{
+    color: #0028aa;
+    height: 30px;
+    line-height: 30px;
     font-size: 20px;
     font-weight: bold;
+}
+
+.plot-header--filtering{
+    color: #000000;
+    height: 100px;
+    padding-top: 30px;
+}
+
+.plot-header--sorting-mode{
+    display: inline-flex;
+    width: 100%;
+}
+
+.plot-header--sorting, .plot-header--mode{
+    width: 400px;
+}
+.plot-header--sorting-elements{
+    display: inline-flex;
+}
+.plot-header--sorting-dropdown, .plot-header--mode-dropdown{
+    width: 250px;
+}
+.plot-header--sorting-switch{
+    width: 60px;
 }
