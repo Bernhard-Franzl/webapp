@@ -1,0 +1,91 @@
+.plot{
+    padding-top: 10px;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.plot-header{
+    padding-bottom: 10px;
+}
+
+.plot-header--title{
+    color: #000000;
+    height: 70px;
+    line-height: 70px;
+    font-size: 40px;
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+.plot-header--description{
+    color: #000000;
+    font-size: 24px;
+    font-weight: normal;
+    padding-bottom: 30px;
+}
+
+/*Section Settings*/
+.plot-header--section{
+    padding-bottom: 15px;
+    display: inline-flex;
+    height: 80px;
+}
+.plot-header--section-title{
+    color: #0028aa;
+    height: 30px;
+    line-height: 30px;
+    font-size: 22px;
+    font-weight: bold;
+    padding-bottom: 5px;
+}
+
+
+/*Filtering Settings*/
+.plot-header--filtering-elements{
+    display: inline-flex;
+}
+.plot-header--filtering-element-label{
+    height: 40px;
+    line-height: 40px;
+    font-size: 20px;
+    padding-right: 5px;
+    padding-left: 5px;
+    border: thin lightgrey solid;
+    background: lightgray;
+    border-radius: 1px;
+}
+
+/*Filter by date*/
+.plot-header--filtering-date{
+    display: inline-flex;
+    width: 400px;
+}
+.DateInput_input, .DateInput_input_1{
+    height: 40px;
+    font-size: 20px
+}
+/* Filter by room */
+.plot-header--filtering-room{
+    display: inline-flex;
+    width: 300px;
+}
+
+
+/*Sorting and mode elements*/
+.plot-header--sorting, .plot-header--mode{
+    width: 400px;
+}
+
+/* Sortint elements */
+.plot-header--sorting-elements{
+    display: inline-flex;
+    height: 40px;
+}
+.plot-header--sorting-dropdown, .plot-header--mode-dropdown{
+    width: 250px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 18px;
+}
+.plot-header--sorting-switch{
+    width: 60px;
+}

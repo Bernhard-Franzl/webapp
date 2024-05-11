@@ -33,8 +33,8 @@ class Visualizer():
 
 ############ Pandas ############
 
-    def filter_by_room(self, df, room_id):
-        return df[df["room_id"] == room_id]
+    def filter_by_rooms(self, df, room_id:list):
+        return df[df["room_id"].isin(room_id)]
     
     def filter_greater_than(self, df, column, value):
         return df[df[column] > value]

@@ -3,6 +3,7 @@ import dash_daq as daq
 import json
 import pandas as pd
 from datetime import datetime, date, time
+from assets import page_header
 
 from visualization.visualization import Visualizer
 
@@ -32,109 +33,128 @@ visard = Visualizer()
 
 app.layout = html.Div(children=[
     # page header
-    html.Div(
-        className="page-header",
-        children=[
-            html.Div(
-                "Onsite Participants",
-                className="page-header--title"
-            ),
-        ]
-    ),
+    page_header.layout(current_page="Onsite Participants"),
+    # plot
     html.Div(
         className="plot",
         children=[
-        html.Div(
-            className="plot-header",
-            children=[
-                html.Div(
-                    "Course Participants Overview",
-                    className="plot-header--title"  
-                ),
-                html.Div(
-                    "This plot provides an overview of the onsite participants of all the courses.",
-                    className="plot-header--description"
-                ),
-                html.Div(
-                    className="plot-header--filtering",
-                    children=[
-                        html.Div("Filter By:",
-                                className="plot-header--section-title"
-                        ),
-                        html.Div(
-                            class_name="plot-header--filtering-elements",
-                            children=[
-                                dcc.DatePickerRange(
-                                    id="date_picker",
-                                    display_format="DD.MM.YYYY",
-                                    min_date_allowed=start_date,
-                                    max_date_allowed=end_date,
-                                    initial_visible_month=start_date,
-                                    minimum_nights=0,
-                                    start_date=start_date,
-                                    end_date=end_date,
-                                ),
-                            ],
-                        ),
-                    ]
-                ),
-                html.Div(
-                    className="plot-header--sorting-mode",
-                    children=[
-                        html.Div(
-                            className="plot-header--sorting",
-                            children=[
-                                html.Div("Sort By:",
-                                        className="plot-header--section-title"
-                                ),
-                                html.Div(
-                                    className="plot-header--sorting-elements",
-                                    children=[
-                                        html.Div(
-                                            className="plot-header--sorting-dropdown",
-                                            children=dcc.Dropdown(
-                                                options=["course_number", "course_name", "room", "start_time", 
-                                                        "type", "ects", "registered_students", "duration"],
-                                                value="course_number",
-                                                id="participants_graph_sort_by",
-                                            )
-                                        ),
-                                        html.Div(
-                                            className="plot-header--sorting-switch",
-                                            children=daq.BooleanSwitch(
-                                                id="participants_graph_sort_order",
-                                                on=False,),
-                                        ),
-                                    ],
-                                ),
-                            ]
-                        ),
-                        html.Div(
-                            className="plot-header--mode",
-                            children=[
-                                html.Div("Frequency Mode:",
-                                        className="plot-header--section-title"
-                                ),
-                                html.Div(
-                                    className="plot-header--mode-dropdown",
-                                    children=dcc.Dropdown(
-                                        options=["absolute", "relative_registered", "relative_capacity"],
-                                        value="absolute",
-                                        id="participants_graph_mode",
+            html.Div(
+                className="plot-header",
+                children=[
+                    html.Div(
+                        "Course Participants Overview",
+                        className="plot-header--title"  
+                    ),
+                    html.Div(
+                        "This plot provides an overview of the onsite participants of all the courses.",
+                        className="plot-header--description"
+                    ),
+                    html.Div(
+                        className="plot-header--section",
+                        children=html.Div(
+                                className="plot-header--filtering",
+                                children=[
+                                    html.Div("Filter By:",
+                                            className="plot-header--section-title"
                                     ),
-                                )
-                            ]
-                        ),  
-                    ],
-                ),
-            ],
-        ),
-        dcc.Graph(
-        id="participants_multi_course_bar",
-        config=visard.config)
+                                    html.Div(
+                                        className="plot-header--filtering-elements",
+                                        children=[
+                                            html.Div(
+                                                className="plot-header--filtering-date",
+                                                children=[
+                                                    html.Div(
+                                                        "Date:", 
+                                                        className="plot-header--filtering-element-label"),
+                                                    dcc.DatePickerRange(
+                                                        id="date_picker",
+                                                        display_format="DD.MM.YYYY",
+                                                        min_date_allowed=start_date,
+                                                        max_date_allowed=end_date,
+                                                        initial_visible_month=start_date,
+                                                        minimum_nights=0,
+                                                        start_date=start_date,
+                                                        end_date=end_date
+                                                    )
+                                                ],
+                                            ),
+                                            html.Div(
+                                                className="plot-header--filtering-room",
+                                                children=[
+                                                    html.Div(
+                                                        "Room:", 
+                                                        className="plot-header--filtering-element-label"),
+                                                    dcc.Dropdown(
+                                                        options=[{"label": room, "value": room} for room in df_participants["room"].unique()],
+                                                        value=df_participants["room"].unique().tolist(),
+                                                        multi=True,
+                                                        id="room_filter",
+                                                        style={"height": "40px", "line-height": "40px"}
+                                                    )
+                                                ],
+                                            )
+                                        ]
+                                        ),
+                                ],
+                        ),
+                    ),
+                    html.Div(
+                        className="plot-header--section",
+                        children=[
+                            html.Div(
+                                className="plot-header--sorting",
+                                children=[
+                                    html.Div("Sort By:",
+                                            className="plot-header--section-title"
+                                    ),
+                                    html.Div(
+                                        className="plot-header--sorting-elements",
+                                        children=[
+                                            html.Div(
+                                                className="plot-header--sorting-dropdown",
+                                                children=dcc.Dropdown(
+                                                    options=["course_number", "course_name", "room", "start_time", 
+                                                            "type", "ects", "registered_students", "duration"],
+                                                    value="course_number",
+                                                    id="participants_graph_sort_by",
+                                                )
+                                            ),
+                                            html.Div(
+                                                className="plot-header--sorting-switch",
+                                                children=daq.BooleanSwitch(
+                                                    id="participants_graph_sort_order",
+                                                    on=False,),
+                                            ),
+                                        ],
+                                    ),
+                                ]
+                            ),
+                            html.Div(
+                                className="plot-header--mode",
+                                children=[
+                                    html.Div("Frequency Mode:",
+                                            className="plot-header--section-title"
+                                    ),
+                                    html.Div(
+                                        className="plot-header--mode-dropdown",
+                                        children=dcc.Dropdown(
+                                            options=["absolute", "relative_registered", "relative_capacity"],
+                                            value="absolute",
+                                            id="participants_graph_mode",
+                                        ),
+                                    )
+                                ]
+                            ),  
+                        ],
+                    )    
+                ],
+            ),
+            dcc.Graph(
+            id="participants_multi_course_bar",
+            config=visard.config)
         ]
-    ),
-    ])
+    )
+])
 
 @callback(
     Output(
@@ -149,6 +169,10 @@ app.layout = html.Div(children=[
     Input(
         component_id="date_picker",
         component_property="end_date"),
+    # room filter
+    Input(
+        component_id="room_filter",
+        component_property="value"),
     
     # sorting
     Input(
@@ -163,12 +187,14 @@ app.layout = html.Div(children=[
         component_id="participants_graph_mode", 
         component_property="value"),
     )
-def update_figure(start_date, end_date, sort_by_column, ascending, graph_mode):
+def update_figure(start_date, end_date, room_filter, sort_by_column, ascending, graph_mode):
 
     start_time = datetime.combine(date.fromisoformat(start_date) , time(hour=0, minute=0))
     end_time = datetime.combine(date.fromisoformat(end_date), time(hour=23, minute=59))
     df = visard.filter_by_time(df_participants, start_time, end_time)
     
+    room_filter = [metadata_participants["room_to_id"][room] for room in room_filter]
+    df = visard.filter_by_rooms(df, room_filter)
     df = visard.sort_by_column(df, sort_by_column, ascending=(not ascending))
     fig = visard.plot_multiple_courses_bars(
         dataframe=df,
