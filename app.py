@@ -18,6 +18,7 @@ app = Dash(__name__, title="Visard")
 df_participants = pd.read_csv("data/df_participants.csv")
 df_participants["start_time"] = pd.to_datetime(df_participants["start_time"])
 df_participants["end_time"] = pd.to_datetime(df_participants["end_time"])
+df_participants["note"] = df_participants["note"].fillna("")
 
 with open("data/metadata_participants.json", "r") as file:
     metadata_participants = json.load(file)
@@ -52,50 +53,71 @@ app.layout = html.Div(children=[
                     html.Div(
                         className="plot-header--section",
                         children=html.Div(
-                                className="plot-header--filtering",
-                                children=[
-                                    html.Div("Filter By:",
-                                            className="plot-header--section-title"
-                                    ),
-                                    html.Div(
-                                        className="plot-header--filtering-elements",
-                                        children=[
-                                            html.Div(
-                                                className="plot-header--filtering-date",
-                                                children=[
-                                                    html.Div(
-                                                        "Date:", 
-                                                        className="plot-header--filtering-element-label"),
-                                                    dcc.DatePickerRange(
-                                                        id="date_picker",
-                                                        display_format="DD.MM.YYYY",
-                                                        min_date_allowed=start_date,
-                                                        max_date_allowed=end_date,
-                                                        initial_visible_month=start_date,
-                                                        minimum_nights=0,
-                                                        start_date=start_date,
-                                                        end_date=end_date
-                                                    )
-                                                ],
-                                            ),
-                                            html.Div(
-                                                className="plot-header--filtering-room",
-                                                children=[
-                                                    html.Div(
-                                                        "Room:", 
-                                                        className="plot-header--filtering-element-label"),
-                                                    dcc.Dropdown(
-                                                        options=[{"label": room, "value": room} for room in df_participants["room"].unique()],
-                                                        value=df_participants["room"].unique().tolist(),
-                                                        multi=True,
-                                                        id="room_filter",
-                                                        style={"height": "40px", "line-height": "40px"}
-                                                    )
-                                                ],
-                                            )
-                                        ]
+                            className="plot-header--filtering",
+                            children=[
+                                html.Div("Filter By:",
+                                        className="plot-header--section-title"
+                                ),
+                                html.Div(
+                                    className="plot-header--filtering-elements",
+                                    children=[
+                                        html.Div(
+                                            className="plot-header--filtering-date",
+                                            children=[
+                                                html.Div(
+                                                    "Date:", 
+                                                    className="plot-header--filtering-element-label"),
+                                                dcc.DatePickerRange(
+                                                    id="date_picker",
+                                                    display_format="DD.MM.YYYY",
+                                                    min_date_allowed=start_date,
+                                                    max_date_allowed=end_date,
+                                                    initial_visible_month=start_date,
+                                                    minimum_nights=0,
+                                                    start_date=start_date,
+                                                    end_date=end_date
+                                                )
+                                            ],
                                         ),
-                                ],
+                                        html.Div(
+                                            className="plot-header--filtering-room",
+                                            children=[
+                                                html.Div(
+                                                    "Room:", 
+                                                    className="plot-header--filtering-element-label"),
+                                                dcc.Dropdown(
+                                                    options=[{"label": room, "value": room} for room in df_participants["room"].unique()],
+                                                    value=df_participants["room"].unique().tolist(),
+                                                    multi=True,
+                                                    id="room_filter",
+                                                    style={"height": "40px", "line-height": "40px", "min-width": "175px"}
+                                                )
+                                            ],
+                                        ),
+                                        html.Div(
+                                            className="plot-header-filtering-starttime",
+                                            children=[
+                                                html.Div(
+                                                    "Time:",
+                                                    className="plot-header--filtering-element-label"
+                                                ),
+                                                dcc.Dropdown(
+                                                    options=[{"label": time, "value": time} for time in sorted(df_participants["start_time"].dt.time.unique())],
+                                                    value=sorted(df_participants["start_time"].dt.time.unique()),
+                                                    multi=True,
+                                                    optionHeight=35,
+                                                    maxHeight=50,
+                                                    id="start_time_filter",
+                                                    style={ "line-height": "40px", 
+                                                           "min-width": "175px", "max-width": "300px", 
+                                                           "max-height": "200px", "overflow": "scroll"}
+                                                )
+                                            ]
+                                            
+                                        )
+                                    ]
+                                ),
+                            ],
                         ),
                     ),
                     html.Div(
@@ -173,6 +195,10 @@ app.layout = html.Div(children=[
     Input(
         component_id="room_filter",
         component_property="value"),
+    # start time filter
+    Input(
+        component_id="start_time_filter",
+        component_property="value"),
     
     # sorting
     Input(
@@ -187,15 +213,27 @@ app.layout = html.Div(children=[
         component_id="participants_graph_mode", 
         component_property="value"),
     )
-def update_figure(start_date, end_date, room_filter, sort_by_column, ascending, graph_mode):
+def update_figure(start_date_filter, end_date_filter, room_filter, start_time_filter, sort_by_column, ascending, graph_mode):
 
-    start_time = datetime.combine(date.fromisoformat(start_date) , time(hour=0, minute=0))
-    end_time = datetime.combine(date.fromisoformat(end_date), time(hour=23, minute=59))
+    ########## Filtering ##########
+    # filter by date
+    start_time = datetime.combine(date.fromisoformat(start_date_filter) , time(hour=0, minute=0))
+    end_time = datetime.combine(date.fromisoformat(end_date_filter), time(hour=23, minute=59))
     df = visard.filter_by_time(df_participants, start_time, end_time)
-    
+    # filter by room
     room_filter = [metadata_participants["room_to_id"][room] for room in room_filter]
-    df = visard.filter_by_rooms(df, room_filter)
+    if len(room_filter) > 0:
+        df = visard.filter_by_rooms(df, room_filter)
+    # filter by start_time
+    if len(start_time_filter) > 0:
+        start_time_filter = [time.fromisoformat(time_str) for time_str in start_time_filter]
+        df = visard.filter_by_start_time(df, start_time_filter)
+
+    
+    ########## Sorting ##########
     df = visard.sort_by_column(df, sort_by_column, ascending=(not ascending))
+    
+    ########## Plotting ##########
     fig = visard.plot_multiple_courses_bars(
         dataframe=df,
         course_numbers=df["course_number"].unique(),

@@ -31,21 +31,30 @@ class Visualizer():
             "modeBarButtonsToRemove": 
                 ["select", "zoomIn", "zoomOut", "autoScale", "lasso2d"]}
 
-############ Pandas ############
 
-    def filter_by_rooms(self, df, room_id:list):
+############ Pandas ############
+    def filter_by_rooms(self, dataframe, room_id:list):
+        df = dataframe.copy()
         return df[df["room_id"].isin(room_id)]
     
-    def filter_greater_than(self, df, column, value):
+    def filter_greater_than(self, dataframe, column, value):
+        df = dataframe.copy()
         return df[df[column] > value]
     
-    def filter_by_time(self, df, start_time, end_time):
+    def filter_by_time(self, dataframe, start_time, end_time):
+        df = dataframe.copy()
         return df[(df["start_time"] >= start_time) & (df["end_time"] <= end_time)]
     
-    def sort_by_column(self, df, column, ascending=True):
+    def filter_by_start_time(self, dataframe, start_time:list):
+        df = dataframe.copy()
+        return df[df["start_time"].dt.time.isin(start_time)]
+        
+    def sort_by_column(self, dataframe, column, ascending=True):
+        df = dataframe.copy() 
         return df.sort_values(by=column, ascending=ascending)
+
+
 ############ Matplotlib ############
-      
     ##### Plot Particpants Algorithm - How it works #####  
     def merge_participant_dfs(self, dataframes:list):
         

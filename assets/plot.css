@@ -5,7 +5,8 @@
 }
 
 .plot-header{
-    padding-bottom: 10px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #d4d4d4;
 }
 
 .plot-header--title{
@@ -14,20 +15,21 @@
     line-height: 70px;
     font-size: 40px;
     font-weight: bold;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
 }
 .plot-header--description{
     color: #000000;
     font-size: 24px;
     font-weight: normal;
-    padding-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #d4d4d4;
 }
 
 /*Section Settings*/
 .plot-header--section{
+    padding-top: 15px;
     padding-bottom: 15px;
     display: inline-flex;
-    height: 80px;
 }
 .plot-header--section-title{
     color: #0028aa;
@@ -41,7 +43,7 @@
 
 /*Filtering Settings*/
 .plot-header--filtering-elements{
-    display: inline-flex;
+    display: block;
 }
 .plot-header--filtering-element-label{
     height: 40px;
@@ -66,7 +68,12 @@
 /* Filter by room */
 .plot-header--filtering-room{
     display: inline-flex;
-    width: 300px;
+    width: 400px;
+}
+/* Filter by start time */
+.plot-header-filtering-starttime{
+    display: inline-flex;
+    width: 400px;
 }
 
 
