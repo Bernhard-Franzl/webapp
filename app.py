@@ -3,15 +3,16 @@ import dash_daq as daq
 import json
 import pandas as pd
 from datetime import datetime, date, time
-from assets import page_header
+from assets import page_header, plot_header
 
 from visualization.visualization import Visualizer
 
 app = Dash(__name__, title="Visard")
 
 ## TODO:
-# - Fix note in hover text
-# - ascending descending sort option
+# - something not right with relative capacity
+# - detailed participants view -> show participants of one course
+# - grouped bar chart -> group data by different columns
 
 
 ###### load data ########
@@ -39,137 +40,15 @@ app.layout = html.Div(children=[
     html.Div(
         className="plot",
         children=[
-            html.Div(
-                className="plot-header",
-                children=[
-                    html.Div(
-                        "Course Participants Overview",
-                        className="plot-header--title"  
-                    ),
-                    html.Div(
-                        "This plot provides an overview of the onsite participants of all the courses.",
-                        className="plot-header--description"
-                    ),
-                    html.Div(
-                        className="plot-header--section",
-                        children=html.Div(
-                            className="plot-header--filtering",
-                            children=[
-                                html.Div("Filter By:",
-                                        className="plot-header--section-title"
-                                ),
-                                html.Div(
-                                    className="plot-header--filtering-elements",
-                                    children=[
-                                        html.Div(
-                                            className="plot-header--filtering-date",
-                                            children=[
-                                                html.Div(
-                                                    "Date:", 
-                                                    className="plot-header--filtering-element-label"),
-                                                dcc.DatePickerRange(
-                                                    id="date_picker",
-                                                    display_format="DD.MM.YYYY",
-                                                    min_date_allowed=start_date,
-                                                    max_date_allowed=end_date,
-                                                    initial_visible_month=start_date,
-                                                    minimum_nights=0,
-                                                    start_date=start_date,
-                                                    end_date=end_date
-                                                )
-                                            ],
-                                        ),
-                                        html.Div(
-                                            className="plot-header--filtering-room",
-                                            children=[
-                                                html.Div(
-                                                    "Room:", 
-                                                    className="plot-header--filtering-element-label"),
-                                                dcc.Dropdown(
-                                                    options=[{"label": room, "value": room} for room in df_participants["room"].unique()],
-                                                    value=df_participants["room"].unique().tolist(),
-                                                    multi=True,
-                                                    id="room_filter",
-                                                    style={"height": "40px", "line-height": "40px", "min-width": "175px"}
-                                                )
-                                            ],
-                                        ),
-                                        html.Div(
-                                            className="plot-header-filtering-starttime",
-                                            children=[
-                                                html.Div(
-                                                    "Time:",
-                                                    className="plot-header--filtering-element-label"
-                                                ),
-                                                dcc.Dropdown(
-                                                    options=[{"label": time, "value": time} for time in sorted(df_participants["start_time"].dt.time.unique())],
-                                                    value=sorted(df_participants["start_time"].dt.time.unique()),
-                                                    multi=True,
-                                                    optionHeight=35,
-                                                    maxHeight=50,
-                                                    id="start_time_filter",
-                                                    style={ "line-height": "40px", 
-                                                           "min-width": "175px", "max-width": "300px", 
-                                                           "max-height": "200px", "overflow": "scroll"}
-                                                )
-                                            ]
-                                            
-                                        )
-                                    ]
-                                ),
-                            ],
-                        ),
-                    ),
-                    html.Div(
-                        className="plot-header--section",
-                        children=[
-                            html.Div(
-                                className="plot-header--sorting",
-                                children=[
-                                    html.Div("Sort By:",
-                                            className="plot-header--section-title"
-                                    ),
-                                    html.Div(
-                                        className="plot-header--sorting-elements",
-                                        children=[
-                                            html.Div(
-                                                className="plot-header--sorting-dropdown",
-                                                children=dcc.Dropdown(
-                                                    options=["course_number", "course_name", "room", "start_time", 
-                                                            "type", "ects", "registered_students", "duration"],
-                                                    value="course_number",
-                                                    id="participants_graph_sort_by",
-                                                )
-                                            ),
-                                            html.Div(
-                                                className="plot-header--sorting-switch",
-                                                children=daq.BooleanSwitch(
-                                                    id="participants_graph_sort_order",
-                                                    on=False,),
-                                            ),
-                                        ],
-                                    ),
-                                ]
-                            ),
-                            html.Div(
-                                className="plot-header--mode",
-                                children=[
-                                    html.Div("Frequency Mode:",
-                                            className="plot-header--section-title"
-                                    ),
-                                    html.Div(
-                                        className="plot-header--mode-dropdown",
-                                        children=dcc.Dropdown(
-                                            options=["absolute", "relative_registered", "relative_capacity"],
-                                            value="absolute",
-                                            id="participants_graph_mode",
-                                        ),
-                                    )
-                                ]
-                            ),  
-                        ],
-                    )    
-                ],
+            plot_header.layout(
+                title="Course Participants Overview",
+                description="This plot provides an overview of the onsite participants of all the courses.",
+                filtering=["date", "room", "start_time"],
+                start_date = start_date,
+                end_date = end_date,
+                dataframe = df_participants,
+                sorting=True,
+                mode=True
             ),
             dcc.Graph(
             id="participants_multi_course_bar",

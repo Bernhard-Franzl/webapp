@@ -1,50 +1,41 @@
 .plot{
-    padding-top: 10px;
     padding-left: 5%;
     padding-right: 5%;
 }
 
 .plot-header{
     padding-bottom: 15px;
-    border-bottom: 1px solid #d4d4d4;
 }
 
 .plot-header--title{
     color: #000000;
-    height: 70px;
-    line-height: 70px;
     font-size: 40px;
     font-weight: bold;
-    padding-bottom: 15px;
+    padding-bottom: 10px;
 }
 .plot-header--description{
     color: #000000;
     font-size: 24px;
     font-weight: normal;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #d4d4d4;
 }
 
 /*Section Settings*/
 .plot-header--section{
     padding-top: 15px;
     padding-bottom: 15px;
-    display: inline-flex;
+    display: inline-block;
 }
 .plot-header--section-title{
     color: #0028aa;
-    height: 30px;
-    line-height: 30px;
     font-size: 22px;
     font-weight: bold;
-    padding-bottom: 5px;
 }
-
-
 /*Filtering Settings*/
-.plot-header--filtering-elements{
-    display: block;
+.plot-header--section-elements{
+    display: inline-block;
+    padding-bottom: 15px;
 }
+
 .plot-header--filtering-element-label{
     height: 40px;
     line-height: 40px;
@@ -55,44 +46,39 @@
     background: lightgray;
     border-radius: 1px;
 }
-
-/*Filter by date*/
-.plot-header--filtering-date{
-    display: inline-flex;
-    width: 400px;
-}
 .DateInput_input, .DateInput_input_1{
     height: 40px;
     font-size: 20px
 }
-/* Filter by room */
-.plot-header--filtering-room{
+.plot-header-filtering-starttime, .plot-header--filtering-date , .plot-header--filtering-room{
     display: inline-flex;
-    width: 400px;
+    min-width: 250px;
+    max-width: 350px;
+    min-height: 40px;
+    max-height: 80px;
+    padding-top: 15px;
+    padding-right: 15px;
 }
-/* Filter by start time */
-.plot-header-filtering-starttime{
-    display: inline-flex;
-    width: 400px;
-}
-
 
 /*Sorting and mode elements*/
 .plot-header--sorting, .plot-header--mode{
-    width: 400px;
+    display: inline-table;
 }
 
-/* Sortint elements */
+/* Sorting elements */
 .plot-header--sorting-elements{
     display: inline-flex;
     height: 40px;
+    width: 360px;
 }
 .plot-header--sorting-dropdown, .plot-header--mode-dropdown{
     width: 250px;
     height: 40px;
     line-height: 40px;
     font-size: 18px;
+    padding-top: 15px;
 }
 .plot-header--sorting-switch{
     width: 60px;
+    padding-top: 15px;
 }
