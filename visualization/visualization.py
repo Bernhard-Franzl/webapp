@@ -48,6 +48,10 @@ class Visualizer():
     def filter_by_start_time(self, dataframe, start_time:list):
         df = dataframe.copy()
         return df[df["start_time"].dt.time.isin(start_time)]
+    
+    def filter_by_course_number(self, dataframe, course_number):
+        df = dataframe.copy()
+        return df[df["course_number"] == course_number]
         
     def sort_by_column(self, dataframe, column, ascending=True):
         df = dataframe.copy() 
@@ -324,7 +328,7 @@ class Visualizer():
         
         return fig
     
-    def plot_course_bar(self, dataframe, course_number, show_relative=False, show_before_after=False):
+    def plot_course_bar(self, dataframe, show_relative=False, show_before_after=False):
     
         df = dataframe.copy()
          
@@ -481,7 +485,7 @@ class Visualizer():
             
         return fig
         
-    def plot_multiple_courses_bars(self, dataframe, course_numbers, title, mode):
+    def plot_multiple_courses_bars(self, dataframe, course_numbers, mode):
         
         df = dataframe.copy()
         course_numbers = course_numbers.copy()

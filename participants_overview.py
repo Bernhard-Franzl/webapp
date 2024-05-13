@@ -1,5 +1,4 @@
 from dash import Dash, html, dcc, Input, Output, callback
-import dash_daq as daq
 import json
 import pandas as pd
 from datetime import datetime, date, time
@@ -11,9 +10,6 @@ app = Dash(__name__, title="Visard")
 
 ## TODO:
 # - something not right with relative capacity
-# - detailed participants view -> show participants of one course
-# - grouped bar chart -> group data by different columns
-
 
 ###### load data ########
 df_participants = pd.read_csv("data/df_participants.csv")

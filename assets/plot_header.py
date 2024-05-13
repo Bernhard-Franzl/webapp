@@ -77,13 +77,13 @@ def generate_sorting_section():
                                     options=["course_number", "course_name", "room", "start_time", 
                                             "type", "ects", "registered_students", "duration"],
                                     value="course_number",
-                                    id="participants_graph_sort_by",
+                                    id="graph_sort_by",
                                 )
                             ),
                             html.Div(
                                 className="plot-header--sorting-switch",
                                 children=daq.BooleanSwitch(
-                                    id="participants_graph_sort_order",
+                                    id="graph_sort_order",
                                     on=False)
                             )
                         ]
@@ -103,7 +103,7 @@ def generate_mode_section():
                         children=dcc.Dropdown(
                             options=["absolute", "relative_registered", "relative_capacity"],
                             value="absolute",
-                            id="participants_graph_mode",
+                            id="graph_mode",
                         ),
                     )
                 ]

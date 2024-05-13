@@ -22,12 +22,12 @@ visard = Visualizer()
 
 
 #print(df_result.columns[[0, 8, 19, 16, 7, 1, 5, 2, 27, 3]])
-mode = "relative_registered"
-fig = visard.plot_multiple_courses_bars(dataframe=df_participants,
-                                  course_numbers=metadata_participants["course_numbers"],
-                                  title="Participants per Course Date",
-                                  mode=mode)
-fig.show(config=visard.config)
+#mode = "relative_registered"
+#fig = visard.plot_multiple_courses_bars(dataframe=df_participants,
+#                                  course_numbers=metadata_participants["course_numbers"],
+#                                  title="Participants per Course Date",
+#                                  mode=mode)
+#fig.show(config=visard.config)
 # single course bar chart
 #visard.plot_course_bar(dataframe=df_result, 
 #                       course_number=course_numbers[0], 
