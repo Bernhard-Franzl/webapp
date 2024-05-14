@@ -80,7 +80,7 @@ class CourseAnalyzer():
 
     def add_room_capcity(self, dataframe):
         df = dataframe.copy(deep=True)
-        df["room_capcity"] = df["room_id"].apply(lambda x: self.room_capacities[x])
+        df["room_capacity"] = df["room_id"].apply(lambda x: self.room_capacities[x])
         return df
     
     def last_entry(self, dataframe, column):
@@ -338,7 +338,7 @@ class CourseAnalyzer():
     def calc_relative_capacity(self, dataframe):
         # relative = present_students / room_capcity
         df = dataframe.copy(deep=True)
-        df["relative_capacity"] = (df["present_students"] / df["max_students"]).round(4)
+        df["relative_capacity"] = (df["present_students"] / df["room_capacity"]).round(4)
         return df
           
               

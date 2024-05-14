@@ -7,7 +7,7 @@ from visualization.visualization import Visualizer
 #########  Constants #########
 room_to_id ={"HS18":0, "HS 18":0, "HS19":1, "HS 19": 1}
 door_to_id = {"door1":0, "door2":1}
-data_path = "/home/berni/data_04_23"
+data_path = "/home/berni/data_05_13"
 
 
 # TODO:

@@ -14,7 +14,7 @@ from datetime import datetime
 
 room_name = "HS 19"
 data_dir_course = "/home/berni/github_repos/webapp/data"
-data_dir_signal = "/home/berni/data_05_02"
+data_dir_signal = "/home/berni/data_05_13"
 
 worker = CourseAnalyzer(room_name=None, 
                         data_dir_course=data_dir_course,

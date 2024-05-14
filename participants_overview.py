@@ -77,15 +77,15 @@ app.layout = html.Div(children=[
     
     # sorting
     Input(
-        component_id="participants_graph_sort_by", 
+        component_id="graph_sort_by", 
         component_property="value"),
     Input(
-        component_id="participants_graph_sort_order", 
+        component_id="graph_sort_order", 
         component_property="on"),
     
     # mode  
     Input(
-        component_id="participants_graph_mode", 
+        component_id="graph_mode", 
         component_property="value"),
     )
 def update_figure(start_date_filter, end_date_filter, room_filter, start_time_filter, sort_by_column, ascending, graph_mode):
@@ -112,7 +112,6 @@ def update_figure(start_date_filter, end_date_filter, room_filter, start_time_fi
     fig = visard.plot_multiple_courses_bars(
         dataframe=df,
         course_numbers=df["course_number"].unique(),
-        title="Participants per Course Date",
         mode=graph_mode
     )
     return fig

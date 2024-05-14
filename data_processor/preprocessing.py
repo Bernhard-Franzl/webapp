@@ -32,7 +32,7 @@ class Preprocessor:
     def filter_directories(self, directories:list):
         filtered_dirs = []
         for x in directories:
-            day = datetime.strptime(x.split("_")[-1], self.date_format)
+            day = datetime.strptime(x.split("_")[2], self.date_format)
             if self.last_synchronized_dt < day:
                 filtered_dirs.append(x)
         return filtered_dirs
@@ -65,7 +65,9 @@ class Preprocessor:
             file_list = self.get_all_sub_files(path)
             
             # sanity check
-            if file_list != ["door1.csv", "door2.csv", "format.csv"]:
+            # check if the directory contains the correct files
+            #if "door1.csv", "door2.csv", "format.csv":
+            if not "door1.csv" in file_list or not "door2.csv" in file_list or not "format.csv" in file_list:
                 print(path)
                 print(file_list)
                 raise ValueError("Data directory does not contain the correct files")
@@ -104,10 +106,13 @@ class Preprocessor:
         
         # make copy of dataframe
         df = dataframe.copy()
+        # get nan values
+        print(df[df["Entering"].isna()])
         
         # correct the data types
         for col in df.columns[2:]:
             df[col] = df[col].astype(int)
+        
         df["event_type"] = df["Entering"].apply(lambda x: self.correct_entering_column(x))
         
         # convert columnnames to lowercase
