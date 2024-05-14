@@ -1,15 +1,15 @@
-from dash import Dash, html, dcc, Input, Output, callback
+from dash import Dash, html, dcc, Input, Output, callback, register_page
 import json
 import pandas as pd
 from datetime import datetime, date, time
-from assets import page_header, plot_header
+from assets import plot_header
 
 from visualization.visualization import Visualizer
 
-app = Dash(__name__, title="Visard")
+register_page(__name__, path="/", order=0)
 
 ## TODO:
-# - something not right with relative capacity
+# - do the mode handling with the separate function
 
 ###### load data ########
 df_participants = pd.read_csv("data/df_participants.csv")
@@ -27,24 +27,35 @@ start_date = metadata_participants["start_time"].date()
 end_date = metadata_participants["end_time"].date()
 
 #print(df_participants.columns)
-visard = Visualizer()
 
-app.layout = html.Div(children=[
-    # page header
-    page_header.layout(current_page="Onsite Participants"),
+visard = Visualizer()
+header_config = {
+    "title": "Course Participants Overview",
+    "description": "This plot provides an overview of the onsite participants of all the courses.",
+    "filtering": ["date", "room", "start_time"],
+    "grouping": False,
+    "sorting": True,
+    "mode": True,
+    "course_info": False,
+    "figure":True 
+}
+
+layout = html.Div(children=[
     # plot
     html.Div(
         className="plot",
         children=[
             plot_header.layout(
-                title="Course Participants Overview",
-                description="This plot provides an overview of the onsite participants of all the courses.",
-                filtering=["date", "room", "start_time"],
+                title=header_config["title"],
+                description=header_config["description"],
+                filtering=header_config["filtering"],
                 start_date = start_date,
                 end_date = end_date,
                 dataframe = df_participants,
-                sorting=True,
-                mode=True
+                grouping=header_config["grouping"],
+                sorting=header_config["sorting"],
+                mode=header_config["mode"],
+                course_info=header_config["course_info"]
             ),
             dcc.Graph(
             id="participants_multi_course_bar",
@@ -115,6 +126,3 @@ def update_figure(start_date_filter, end_date_filter, room_filter, start_time_fi
         mode=graph_mode
     )
     return fig
-
-if __name__ == '__main__':
-    app.run(debug=True)

@@ -3,6 +3,7 @@ import numpy as np
 import plotly
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import re
 
 import pandas as pd
 
@@ -52,12 +53,19 @@ class Visualizer():
     def filter_by_course_number(self, dataframe, course_number):
         df = dataframe.copy()
         return df[df["course_number"] == course_number]
+    
+    def filter_by_course_name(self, dataframe, course_name):
+        df = dataframe.copy()
+        return df[df["course_name"] == course_name]
         
     def sort_by_column(self, dataframe, column, ascending=True):
         df = dataframe.copy() 
         return df.sort_values(by=column, ascending=ascending)
 
-
+    def group_by_column(self, dataframe, column):
+        df = dataframe.copy()
+        df = df.drop(columns=["start_time", "end_time"])
+        return df.groupby(column).sum().reset_index()
 ############ Matplotlib ############
     ##### Plot Particpants Algorithm - How it works #####  
     def merge_participant_dfs(self, dataframes:list):
@@ -197,17 +205,18 @@ class Visualizer():
             title={
                 "text": title,
                 "font": {"size": self.axis_title_size}},
-            range=range,)
+            range=range,
+            row=row, col=col)
         
         return fig      
         
     def frequency_yaxis(self, fig, row, col, relative, title):
-        
         if relative:
             if title:
                 title_text = "<b> Relative Frequency </b>"
             else:
                 title_text = ""
+                
             fig = self.customize_yaxis(fig=fig,
                                       title=title_text, 
                                       range=[0,1.1], 
@@ -249,6 +258,11 @@ class Visualizer():
                             "Irregular: %{customdata[21]}<br>" +
                             "Note: %{customdata[3]}")
             
+        elif mode == "single_bar":
+            fig.update_traces(
+                hovertemplate="Note: %{customdata[3]}<br>"
+            )
+            
         elif mode == "late_students":
             fig.update_traces(
                 hovertemplate="<b>%{customdata[0]}</b><br>" +
@@ -264,10 +278,35 @@ class Visualizer():
             raise ValueError("Mode must be one of: multi_bar, late_students")
         return fig
     
+    def handle_mode(self, mode):
+        if mode == "absolute":
+            y_column = "present_students"
+            relative = False
+            before_after = False
+            
+        elif mode == "relative_registered":
+            y_column = "relative_registered"
+            relative = True
+            before_after = False
+            
+        elif mode == "relative_capacity":
+            y_column = "relative_capacity"
+            relative = True
+            before_after = False
+            
+        elif mode == "before_after":
+            y_column = "present_students"
+            relative = False
+            before_after = True
+            
+        else:
+            raise ValueError("Mode must be one of: absolute, relative_registered, relative_capacity, before_after")
+
+        return y_column, relative, before_after
+            
     ##### One Course Particpants Bar Chart #####
-    def generate_charts_before_after(self, fig, df):
+    def generate_charts_before_after(self, fig, df, x, row, col):
         
-            x = list(range(len(df)))
             y = df["present_students_b"]
                 
             fig.add_trace(
@@ -276,10 +315,12 @@ class Visualizer():
                     y=y, 
                     name="Before",
                     text=y,
-                    width=0.1),
-                row=1, col=1)
+                    width=0.1,
+                    customdata=df),
+                row=row, col=col)
             
-            fig = self.generate_particpants_bar_chart(fig, df)
+            y = df["present_students"]
+            fig = self.generate_bar_chart(fig, df, x, y, row=row, col=col)
             
             y = df["present_students_a"]   
             fig.add_trace(
@@ -288,90 +329,68 @@ class Visualizer():
                     y=y,
                     name="After",
                     text=y,
-                    width=0.1),
-                row=1, col=1)
+                    width=0.1,
+                    customdata=df),
+                row=row, col=col)
             
             return fig
-    
-    def generate_particpants_bar_chart(self, fig, df):
+
+    def generate_bar_chart(self, fig, df, x, y, row, col):
         
-        x = list(range(len(df)))
-        y = df["present_students"]
-        
+        custom_data = df.copy()
         fig.add_trace(
             go.Bar(
                 x=x, 
                 y=y, 
-                name="Combined",
+                name="",
                 text=y,
                 textposition='auto',
-                width=0.4),
-            row=1, col=1)
-        
-        return fig
-    
-    def generate_relative_bar_chart(self, fig, df):
-        
-        x = list(range(len(df)))
-        y = (df["present_students"] / df["registered_students"]).round(4)
-        
-        fig.add_trace(
-            go.Bar(
-                x=x, 
-                y=y, 
-                name="Relative_Counts",
-                text=y,
-                textposition='auto',
-                width=0.4),
+                width=0.4,
+                customdata=df),
             
-            row=2, col=1)
+            row=row, col=col)
         
         return fig
     
-    def plot_course_bar(self, dataframe, show_relative=False, show_before_after=False):
+    def make_subplot_beforeafter(self, fig, df, row, col):
+        
+        x = list(range(len(df)))
+        ticktext = df["start_time"].dt.strftime("%d.%m.%Y <br> %H:%M")
+        
+        fig = self.generate_charts_before_after(fig, df, x, row, col)
+        fig = self.frequency_yaxis(fig=fig, row=row, col=col, relative=False, title=True)
+        fig = self.date_xaxis(fig=fig, row=row, col=col, x=x, ticktext=ticktext) 
+        
+        return fig
+        
+    def make_subplot_chart(self, fig, df, y_col, row, col):
+        x = list(range(len(df)))
+        y = df[y_col]
+        ticktext = df["start_time"].dt.strftime("%d.%m.%Y <br> %H:%M")
+        
+        if bool(re.search("relative", y_col)):
+            relative = True
+        else:
+            relative = False
+        
+        fig = self.generate_bar_chart(fig=fig, df=df, x=x, y=y, row=row, col=col)
+        fig = self.frequency_yaxis(fig=fig, row=row, col=col, relative=relative, title=True)
+        fig = self.date_xaxis(fig=fig, row=row, col=col, x=x, ticktext=ticktext)
+
+        return fig
+        
+    def plot_course_bar(self, dataframe):
     
         df = dataframe.copy()
-         
-        if show_relative:
-            
-            if show_before_after:
-                raise ValueError("Only one of show_relative and show_before_after can be True")
-            
-            else:
-                rows, cols = 2, 1
-                fig = make_subplots(rows=rows, 
-                                    cols=cols, 
-                                    shared_xaxes=True,
-                                    subplot_titles=("Absolute Frequencies", "Frequencies Relative to Registered Students"))
-                
-                fig = self.generate_particpants_bar_chart(fig=fig, df=df)
-                fig = self.generate_relative_bar_chart(fig=fig, df=df)
-                
-                fig.update_layout(showlegend=False)
-                fig = self.frequency_yaxis(fig=fig, 
-                                           row=2, col=1, 
-                                           relative=True)
-            
-        else:
-            rows, cols = 1, 1
-            fig=make_subplots(rows=rows, cols=cols)    
-                    
-            if show_before_after:
-                fig = self.generate_charts_before_after(fig, df)
-                
-            else:
-                fig = self.generate_particpants_bar_chart(fig, df) 
+
+        fig = make_subplots(rows=2, cols=2)
         
-        # absolute frequency always on top    
-        fig = self.frequency_yaxis(fig=fig, 
-                                    row=1, col=1, 
-                                    relative=False)
+         # absolute frequency always on top
+        fig = self.make_subplot_chart(fig=fig, df=df, y_col="present_students", row=1, col=1)
+        fig = self.make_subplot_chart(fig=fig, df=df, y_col="relative_registered", row=1, col=2)
+        fig = self.make_subplot_chart(fig=fig, df=df, y_col="relative_capacity", row=2, col=1)
+        fig = self.make_subplot_beforeafter(fig=fig, df=df, row=2, col=2)
         
-        # x-axis settings
-        fig = self.date_xaxis(fig=fig,
-                              row=rows, col=cols,
-                              x=list(range(len(df))),
-                                ticktext=df["start_time"].dt.strftime("%d.%m.%Y <br> %H:%M"))
         
         # get name of course
         row = df.iloc[0]
@@ -380,9 +399,21 @@ class Visualizer():
         fig = self.add_title(fig, title)
         
         fig = self.apply_general_settings(fig)
+        fig = self.customize_hover(fig=fig, mode="single_bar")
+        fig.update_layout(showlegend=False)
         
-        fig.show(config=self.config)
-        
+        return fig
+    
+    def plot_empty_course_bar(self):
+            
+            fig = make_subplots(rows=1, cols=1)
+            
+            fig = self.add_title(fig, "No Course Selected")
+            fig = self.apply_general_settings(fig)
+            fig.update_layout(showlegend=False)
+            
+            return fig   
+    
     ##### Multiple Courses Bar Chart #####
     def course_numbers_xaxis(self, fig, row, col, x, ticktext, n_rows):
         #if row == n_rows:
@@ -545,6 +576,33 @@ class Visualizer():
         
         return fig
 
+    #### Plot Grouped Bar Chart ####
+    def plot_grouped_bar(self, dataframe, group_by, mode):
+        df = dataframe.copy()
+                
+        # handle modes
+        y_column, relative, before_after = self.handle_mode(mode)
+        
+        
+        x = df[group_by]
+        y = df[y_column]
+        fig = go.Figure()
+        
+        fig.add_trace(
+            go.Bar(
+                x=x, 
+                y=y, 
+                name="",
+                text=y,
+                textposition='auto',
+                width=0.4,
+                customdata=df))
+        
+        
+        return fig
+        
+
+
     ##### Charts for Attendance Dynamics #####
     def calc_relative_registered(self, dataframe, column):
         df = dataframe.copy()
@@ -594,8 +652,6 @@ class Visualizer():
         
         df = dataframe.copy()
         
-        #print(df.columns)
-        
         fig.add_trace(
             go.Bar(
                 x=df["x"], 
@@ -610,7 +666,7 @@ class Visualizer():
         fig = self.customize_hover(fig, mode="late_students")
         fig.show(config=self.config)     
 
-    
+
     #def plot_early_leaving_students(self, fig, df_hs18, df_hs19, top_n):
         
     #    df1 = df_hs18.copy()
@@ -668,3 +724,63 @@ class Visualizer():
     #    #fig = self.add_title(fig, title)
     #    fig = self.apply_general_settings(fig)
     #    fig.show(config=self.config)
+    
+    
+    
+    
+        # def plot_course_bar(self, dataframe):
+    
+        # df = dataframe.copy()
+        
+        # #y_column, realtive, before_after = self.handle_mode(mode)
+        
+        # if show_relative:
+            
+        #     if show_before_after:
+        #         raise ValueError("Only one of show_relative and show_before_after can be True")
+            
+        #     else:
+        #         rows, cols = 2, 1
+        #         fig = make_subplots(rows=rows, 
+        #                             cols=cols, 
+        #                             shared_xaxes=True,
+        #                             subplot_titles=("Absolute Frequencies", "Frequencies Relative to Registered Students"))
+                
+        #         fig = self.generate_particpants_bar_chart(fig=fig, df=df)
+        #         fig = self.generate_relative_bar_chart(fig=fig, df=df)
+                
+        #         fig.update_layout(showlegend=False)
+        #         fig = self.frequency_yaxis(fig=fig, 
+        #                                    row=2, col=1, 
+        #                                    relative=True)
+            
+        # else:
+        #     rows, cols = 1, 1
+        #     fig=make_subplots(rows=rows, cols=cols)    
+                    
+        #     if show_before_after:
+        #         fig = self.generate_charts_before_after(fig, df)
+                
+        #     else:
+        #         fig = self.generate_particpants_bar_chart(fig, df) 
+        
+        # # absolute frequency always on top    
+        # fig = self.frequency_yaxis(fig=fig, 
+        #                             row=1, col=1, 
+        #                             relative=False)
+        
+        # # x-axis settings
+        # fig = self.date_xaxis(fig=fig,
+        #                       row=rows, col=cols,
+        #                       x=list(range(len(df))),
+        #                         ticktext=df["start_time"].dt.strftime("%d.%m.%Y <br> %H:%M"))
+        
+        # # get name of course
+        # row = df.iloc[0]
+        # name = row["course_name"]
+        # title = f"<b>{name}</b> <br> Participants per Course Date <br>"
+        # fig = self.add_title(fig, title)
+        
+        # fig = self.apply_general_settings(fig)
+        
+        # fig.show(config=self.config)
