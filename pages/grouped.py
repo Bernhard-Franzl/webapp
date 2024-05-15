@@ -14,6 +14,7 @@ register_page(__name__, order=2)
 # - fix bug in overview plot (axis title cutoff)
 # - fix title of single course overview
 # - improve group by plot -> weekday x-axis, add more grouping options
+# - add color scheme based on groups
 
 ###### load data ########
 df_participants = pd.read_csv("data/df_participants.csv")
@@ -91,17 +92,33 @@ def update_figure(start_date_filter, end_date_filter, room_filter, group_by, gra
     df = df[["weekday", "start_time", "end_time", 
              "present_students", "registered_students", 
              "room", "room_capacity", "type", "kind", "duration"]]
-    # group by weekday
-    df = visard.group_by_column(df, column=group_by)
-
     
+    # group by weekday
+    if group_by == None:
+        group_by = []
+        
+    grouped = False
+    if len(group_by) == 1:
+        df = visard.group_by_column(df, column=group_by)
+        grouped = True
+        
+    elif len(group_by) > 1:
+        df = visard.group_by_column(df, column=group_by)
+        grouped = True
+        
+    else:
+        grouped = False
     # ########## Sorting ##########
     # df = visard.sort_by_column(df, sort_by_column, ascending=(not ascending))
     
     ########## Plotting ##########
-    fig = visard.plot_grouped_bar(
-        dataframe=df,
-        group_by=group_by,
-        mode=graph_mode
-    )
+    if grouped:
+        fig = visard.plot_grouped_bar(
+            dataframe=df,
+            group_by=group_by,
+            mode=graph_mode
+        )
+    else:
+        fig = visard.plot_empty_grouped_bar()
+        
     return fig,

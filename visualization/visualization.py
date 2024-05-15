@@ -65,7 +65,7 @@ class Visualizer():
     def group_by_column(self, dataframe, column):
         df = dataframe.copy()
         df = df.drop(columns=["start_time", "end_time"])
-        return df.groupby(column).sum().reset_index()
+        return df.groupby(by=column).sum().reset_index()
 ############ Matplotlib ############
     ##### Plot Particpants Algorithm - How it works #####  
     def merge_participant_dfs(self, dataframes:list):
@@ -577,36 +577,105 @@ class Visualizer():
         return fig
 
     #### Plot Grouped Bar Chart ####
+    def calc_relative(self, dataframe, tartget_column, relative_to_column, out_column):
+        df = dataframe.copy()
+        df[out_column] = (df[tartget_column] / df[relative_to_column]).round(4)
+        return df
+    
+    def handle_relative_mode(self, dataframe, mode, target_column, out_column):
+        df = dataframe.copy()
+        
+        if mode == "relative_registered":
+            df = self.calc_relative(df, target_column, "registered_students", out_column)
+
+        elif mode == "relative_capacity":
+            df = self.calc_relative(df, target_column, "room_capacity", out_column)
+            
+        else:
+            raise ValueError("Mode must be one of: relative_registered, relative_present")
+        
+        return df
+    
     def plot_grouped_bar(self, dataframe, group_by, mode):
         df = dataframe.copy()
                 
-        # handle modes
-        y_column, relative, before_after = self.handle_mode(mode)
+        # handle mode
+        y_column, relative, _ = self.handle_mode(mode)
         
+        if relative:
+            df = self.handle_relative_mode(df, mode, "present_students", y_column)
         
-        x = df[group_by]
-        y = df[y_column]
         fig = go.Figure()
         
+        #group_column = ", ".join(group_by)
+        #df[group_column] = df[group_by].agg(", ".join, axis=1)
+        
+        
+        if len(group_by) == 1:
+            x = df[group_by[0]]        
+        else:    
+            x = [df[col] for col in group_by]
+        y = df[y_column]
+        
+        # we could add a color scheme
         fig.add_trace(
             go.Bar(
+                alignmentgroup=2,
                 x=x, 
                 y=y, 
                 name="",
                 text=y,
                 textposition='auto',
+                marker_color=["blue", "red"],
                 width=0.4,
                 customdata=df))
         
+        #if len(group_by) > 1:
+        #    group_cols = group_by[:-1]
+        #else:
+        #    group_cols = group_by
+        
+        #print(group_cols)
+        #for x_col in group_cols:
+        #    print(df[x_col].unique())
+        #    for x_val in df[x_col].unique():
+                
+        #        df_mask =df[df[x_col] == x_val]
+        #        fig.add_trace(
+        #            go.Bar(
+        #                x=df_mask[x_col], 
+        #                y=df_mask[y_column],
+        #                name=x_col,
+        #                text=df[y_column],
+        #                customdata=df)
+        #            )
+        #        fig.update_traces(barmode='group')
+            
+        
+        fig = self.apply_general_settings(fig)
         
         return fig
         
-
+    def plot_empty_grouped_bar(self):
+            
+            fig = make_subplots(rows=1, cols=1)
+            
+            fig = self.add_title(fig, "Please Group by a Column!")
+            fig = self.apply_general_settings(fig)
+            fig.update_layout(showlegend=False)
+            
+            return fig   
 
     ##### Charts for Attendance Dynamics #####
+
     def calc_relative_registered(self, dataframe, column):
         df = dataframe.copy()
         df["relative_registered"] = df[column] / df["registered_students"]
+        return df
+    
+    def calc_relative_capacity(self, dataframe, column):
+        df = dataframe.copy()
+        df["relative_capacity"] = df[column] / df["room_capacity"]
         return df
     
     def calc_relative_present(self, dataframe, column):

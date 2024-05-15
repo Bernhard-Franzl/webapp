@@ -272,7 +272,7 @@ def generate_start_time_filter(start_time_list):
         className="plot-header-filtering-starttime",
         children=[
             html.Div(
-                "Time:",
+                "Start Time:",
                 className="plot-header--filtering-element-label"
             ),
             dcc.Dropdown(
@@ -395,9 +395,11 @@ def generate_grouping_section():
                     html.Div(
                         className="plot-header--grouping-dropdown",
                         children=dcc.Dropdown(
-                            options=["weekday"],
-                            value="weekday",
+                            options=["weekday", "room"],
+                            value="",
                             id="graph_group_by",
+                            multi=True,
+                            style={"height": "40px", "line-height": "40px", "min-width": "175px"}
                         ),
                     )
                 ]
