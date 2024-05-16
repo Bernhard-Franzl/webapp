@@ -22,7 +22,7 @@
 /*Section Settings*/
 .plot-header--section{
     padding-top: 15px;
-    padding-bottom: 15px;
+    padding-bottom: 0px;
     display: inline-block;
 }
 .plot-header--section-title{
@@ -61,8 +61,9 @@
 }
 
 /*Sorting and mode elements*/
-.plot-header--sorting, .plot-header--mode{
+.plot-header--sorting, .plot-header--mode, .plot-header--grouping{
     display: inline-table;
+    padding-right: 15px;
 }
 
 /* Sorting elements */
@@ -71,9 +72,10 @@
     height: 40px;
     width: 360px;
 }
-.plot-header--sorting-dropdown, .plot-header--mode-dropdown{
+.plot-header--sorting-dropdown, .plot-header--grouping-dropdown, .plot-header--mode-dropdown{
     width: 250px;
-    height: 40px;
+    min-height: 40px;
+    max-height: 80px;
     line-height: 40px;
     font-size: 18px;
     padding-top: 15px;

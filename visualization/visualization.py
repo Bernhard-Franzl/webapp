@@ -8,7 +8,7 @@ import re
 import pandas as pd
 
 class Visualizer():
-    def __init__(self, path="plots/", figsize=(10,5)):
+    def __init__(self, path="plots/", figsize=(10,5), margin=None):
         # maybe some general settings like style and window size
         # also the path where the plots are saved
         self.path = path
@@ -19,9 +19,14 @@ class Visualizer():
         self.axis_title_size = 18
         self.text_size = 14
         self.title_size = 30
+        
+        if margin is None:
+            self.margin=dict(l=100, r=50, t=50, b=100)
+        else: 
+            self.margin = margin
          
         # format settings
-        self.plot_height = 750
+        self.plot_height = 700
 
         # plotly config
         self.config={
@@ -195,6 +200,7 @@ class Visualizer():
                 family=self.font_family,
                 size=self.text_size,),
             minreducedheight=self.plot_height//2,
+            margin=self.margin,
             height=self.plot_height)
 
         return fig
@@ -383,20 +389,21 @@ class Visualizer():
     
         df = dataframe.copy()
 
-        fig = make_subplots(rows=2, cols=2)
+        titles = ["Absolute Frequencies", 
+                  "Frequencies Relative to Registered Students", 
+                  "Frequencies Relative to Room Capacity",
+                  "Absolute Frequencies with Before & After"]
+        fig = make_subplots(rows=2, cols=2,
+                            vertical_spacing=0.2,
+                            horizontal_spacing=0.1,
+                            subplot_titles=titles)
+        
         
          # absolute frequency always on top
         fig = self.make_subplot_chart(fig=fig, df=df, y_col="present_students", row=1, col=1)
         fig = self.make_subplot_chart(fig=fig, df=df, y_col="relative_registered", row=1, col=2)
         fig = self.make_subplot_chart(fig=fig, df=df, y_col="relative_capacity", row=2, col=1)
         fig = self.make_subplot_beforeafter(fig=fig, df=df, row=2, col=2)
-        
-        
-        # get name of course
-        row = df.iloc[0]
-        name = row["course_name"]
-        title = f"<b>{name}</b> <br> Participants per Course Date <br>"
-        fig = self.add_title(fig, title)
         
         fig = self.apply_general_settings(fig)
         fig = self.customize_hover(fig=fig, mode="single_bar")

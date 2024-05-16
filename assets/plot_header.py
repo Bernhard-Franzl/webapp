@@ -83,7 +83,7 @@ def layout(title,
     horizontal_line = html.Hr(
         style={
             "border": "0",
-            "height": "1px",
+            "height": "2px",
             "color": "lightgrey",
             "backgroundColor": "lightgrey",
             }
@@ -162,14 +162,14 @@ def layout(title,
         plot_header.append(filtering_section)
         plot_header.append(horizontal_line)
     
-    # grouping
-    if grouping:
-        grouping_section = html.Div(
-            className="plot-header--section",
-            children=generate_grouping_section()
-        )
-        plot_header.append(grouping_section)
-        plot_header.append(horizontal_line)
+    ## grouping
+    #if grouping:
+    #    grouping_section = html.Div(
+    #        className="plot-header--section",
+    #        children=generate_grouping_section()
+    #    )
+    #    plot_header.append(grouping_section)
+    #    plot_header.append(horizontal_line)
         
         
         
@@ -182,6 +182,7 @@ def layout(title,
                 children=[]
             )
         )
+
     if sorting:
         sorting_section = generate_sorting_section()
         sorting_mode_section.children.children.append(sorting_section)
@@ -193,20 +194,28 @@ def layout(title,
             plot_header.append(sorting_mode_section)
             plot_header.append(horizontal_line)
             
+        elif grouping:
+            raise ValueError("Grouping and Sorting are not compatible.")
+        
         else:
             plot_header.append(sorting_mode_section)
             plot_header.append(horizontal_line)
                
     else:
         if mode:
+            if grouping:
+                grouping_section = generate_grouping_section()
+                sorting_mode_section.children.children.append(grouping_section)
+                
             mode_section = generate_mode_section()
             sorting_mode_section.children.children.append(mode_section)
             
             plot_header.append(sorting_mode_section)
             plot_header.append(horizontal_line)
-
+                
         else:
-            pass    
+            pass
+        
     del sorting_mode_section    
     
     if course_info:
@@ -305,7 +314,8 @@ def generate_number_filter(course_numbers, id_data_list="number_suggestions"):
                 type="text",
                 placeholder="Course Number",
                 id="course_number_filter",
-                list=id_data_list
+                list=id_data_list,
+                style={"font-size": "18px"}
             ),
             data_list
         ]
@@ -330,7 +340,8 @@ def generate_name_filter(course_names, id_data_list="name_suggestions"):
                 type="text",
                 placeholder="Course Name",
                 id="course_name_filter",
-                list=id_data_list
+                list=id_data_list,
+                style={"font-size": "18px"}
             ),
             data_list
         ]
@@ -396,11 +407,10 @@ def generate_grouping_section():
                         className="plot-header--grouping-dropdown",
                         children=dcc.Dropdown(
                             options=["weekday", "room"],
-                            value="",
+                            value=["weekday"],
                             id="graph_group_by",
-                            multi=True,
-                            style={"height": "40px", "line-height": "40px", "min-width": "175px"}
-                        ),
+                            multi=True
+                        )
                     )
                 ]
     )
@@ -465,11 +475,6 @@ def generate_course_info(dataframe):
                         label="Registered Students:",
                         text=first_row["registered_students"]
                     ),
-                    # Room
-                    generate_info_element(
-                        label="Room:",
-                        text=first_row["room"]
-                    ),
                     # Room Capacity
                     generate_info_element(
                         label="Room Capacity:",
@@ -479,6 +484,11 @@ def generate_course_info(dataframe):
             ),
             html.Div(
                 children=[
+                    # Room
+                    generate_info_element(
+                        label="Room:",
+                        text=first_row["room"]
+                    ),
                     # Weekday
                     generate_info_element(
                         label="Weekday:",

@@ -9,11 +9,8 @@ from visualization.visualization import Visualizer
 register_page(__name__, order=2)
 
 ## TODO:
-# - add subplot titles
-# - institute info
-# - fix bug in overview plot (axis title cutoff)
-# - fix title of single course overview
-# - improve group by plot -> weekday x-axis, add more grouping options
+# - add axis labels
+# - fix oder of the weekdays
 # - add color scheme based on groups
 
 ###### load data ########

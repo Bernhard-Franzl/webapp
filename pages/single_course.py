@@ -9,8 +9,10 @@ from assets import plot_header
 register_page(__name__, order=1)
 
 ## TODO:
-# - add subplot titles
+# - make course information -> smaller and more structured
+# - hover should show value! 
 # - institute info
+# - add a table that shows the available courses
 
 ###### load data ########
 df_participants = pd.read_csv("data/df_participants.csv")
