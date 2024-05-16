@@ -253,7 +253,10 @@ def generate_date_filter(start_date, end_date):
                     initial_visible_month=start_date,
                     minimum_nights=0,
                     start_date=start_date,
-                    end_date=end_date
+                    end_date=end_date,
+                    persistence=True,
+                    persistence_type="memory",
+                    persisted_props=["start_date", "end_date"]
                 )
             ],
         )
@@ -271,7 +274,10 @@ def generate_room_filter(unique_rooms):
                 value=unique_rooms,
                 multi=True,
                 id="room_filter",
-                style={"height": "40px", "line-height": "40px", "min-width": "175px"}
+                style={"height": "40px", "line-height": "40px", "min-width": "175px"},
+                persistence=True,
+                persistence_type="memory",
+                persisted_props=["value"]
             )
         ],
     )
@@ -289,7 +295,10 @@ def generate_start_time_filter(start_time_list):
                 value=start_time_list,
                 multi=True,
                 id="start_time_filter",
-                style={"min-width": "175px", "max-width": "285px"}
+                style={"min-width": "175px", "max-width": "285px"},
+                persistence=True,
+                persistence_type="memory",
+                persisted_props=["value"]
             )
         ]
         
@@ -315,7 +324,7 @@ def generate_number_filter(course_numbers, id_data_list="number_suggestions"):
                 placeholder="Course Number",
                 id="course_number_filter",
                 list=id_data_list,
-                style={"font-size": "18px"}
+                style={"font-size": "18px"},
             ),
             data_list
         ]
@@ -365,13 +374,18 @@ def generate_sorting_section():
                                             "type", "ects", "registered_students", "duration"],
                                     value="course_number",
                                     id="graph_sort_by",
+                                    persistence=True,
+                                    persistence_type="memory",
+                                    persisted_props=["value"]
                                 )
                             ),
                             html.Div(
                                 className="plot-header--sorting-switch",
                                 children=daq.BooleanSwitch(
                                     id="graph_sort_order",
-                                    on=False)
+                                    on=False,
+                                    persistence=True,
+                                    persistence_type="memory")
                             )
                         ]
                     )
@@ -391,6 +405,9 @@ def generate_mode_section():
                             options=["absolute", "relative_registered", "relative_capacity"],
                             value="absolute",
                             id="graph_mode",
+                            persistence=True,
+                            persistence_type="memory",
+                            persisted_props=["value"]
                         ),
                     )
                 ]
@@ -409,7 +426,10 @@ def generate_grouping_section():
                             options=["weekday", "room"],
                             value=["weekday"],
                             id="graph_group_by",
-                            multi=True
+                            multi=True,
+                            persistence=True,
+                            persistence_type="memory",
+                            persisted_props=["value"]
                         )
                     )
                 ]

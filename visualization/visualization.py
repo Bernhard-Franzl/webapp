@@ -71,6 +71,7 @@ class Visualizer():
         df = dataframe.copy()
         df = df.drop(columns=["start_time", "end_time"])
         return df.groupby(by=column).sum().reset_index()
+
 ############ Matplotlib ############
     ##### Plot Particpants Algorithm - How it works #####  
     def merge_participant_dfs(self, dataframes:list):
@@ -473,7 +474,7 @@ class Visualizer():
         
         for i,course_number in enumerate(course_numbers):
             
-            df_course = df[df["course_number"] == course_number].sort_values(by="start_time")
+            df_course = df[df["course_number"] == course_number]
             
             n_dates = len(df_course)
             step_size = 0.8/n_dates
@@ -534,22 +535,8 @@ class Visualizer():
         n_rows = int(np.ceil(n_courses/15))
         course_indices = np.array_split(np.arange(n_courses), n_rows)
         n_cols = 1
-        
-        if mode == "absolute":
-            y_column = "present_students"
-            relative = False
-        
-        elif mode == "relative_registered":
-            y_column = "relative_registered"
-            relative = True
-            
-        elif mode == "relative_capacity":
-            y_column = "relative_capacity"
-            relative = True
-            
-        else:
-            raise ValueError("Mode must be one of: absolute, relative_registered, relative_capacity")
 
+        y_column, relative, _ = self.handle_mode(mode)
         
         x_title = "Course Number"
         y_title = "Onsite Participants"   

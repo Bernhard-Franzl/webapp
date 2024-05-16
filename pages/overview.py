@@ -9,9 +9,9 @@ from visualization.visualization import Visualizer
 register_page(__name__, path="/", order=0)
 
 ## TODO:
-# - order of the dates is not correct
 # - do the mode handling with the separate function
 # - cache current state of the filters
+# - reset button for the filters
 
 ###### load data ########
 df_participants = pd.read_csv("data/df_participants.csv")
@@ -119,7 +119,8 @@ def update_figure(start_date_filter, end_date_filter, room_filter, start_time_fi
 
     
     ########## Sorting ##########
-    df = visard.sort_by_column(df, sort_by_column, ascending=(not ascending))
+    
+    df = visard.sort_by_column(df, [sort_by_column, "start_time"], ascending=(not ascending))
     
     ########## Plotting ##########
     fig = visard.plot_multiple_courses_bars(
