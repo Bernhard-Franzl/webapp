@@ -9,9 +9,9 @@ from visualization.visualization import Visualizer
 register_page(__name__, path="/", order=0)
 
 ## TODO:
-# - do the mode handling with the separate function
-# - cache current state of the filters
-# - reset button for the filters
+# - filter by number of dates, think of more ways to filter the data
+# - reset button for the filters -> resets them to initial values
+#   which is showing all data
 
 ###### load data ########
 df_participants = pd.read_csv("data/df_participants.csv")

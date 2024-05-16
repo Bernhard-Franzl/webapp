@@ -423,7 +423,7 @@ def generate_grouping_section():
                     html.Div(
                         className="plot-header--grouping-dropdown",
                         children=dcc.Dropdown(
-                            options=["weekday", "room"],
+                            options=["weekday", "room", "type", "kind"],
                             value=["weekday"],
                             id="graph_group_by",
                             multi=True,

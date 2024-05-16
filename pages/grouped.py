@@ -8,10 +8,20 @@ from visualization.visualization import Visualizer
 
 register_page(__name__, order=2)
 
-## TODO:
-# - add axis labels
-# - fix oder of the weekdays
+# TODO:
+# - add group options -> type
+# - fix problems with grouping by more than two columns
 # - add color scheme based on groups
+
+weekday_to_id = {
+    "Mo.": 0,
+    "Di.": 1,
+    "Mi.": 2,
+    "Do.": 3,
+    "Fr.": 4,
+    "Sa.": 5,
+    "So.": 6,
+}
 
 ###### load data ########
 df_participants = pd.read_csv("data/df_participants.csv")
@@ -28,7 +38,6 @@ with open("data/metadata_participants.json", "r") as file:
 start_date = metadata_participants["start_time"].date()
 end_date = metadata_participants["end_time"].date()
 
-#print(df_participants.columns)
 visard = Visualizer()
 
 header_config = {
@@ -90,17 +99,21 @@ def update_figure(start_date_filter, end_date_filter, room_filter, group_by, gra
              "present_students", "registered_students", 
              "room", "room_capacity", "type", "kind", "duration"]]
     
-    # group by weekday
     if group_by == None:
         group_by = []
-        
     grouped = False
-    if len(group_by) == 1:
-        df = visard.group_by_column(df, column=group_by)
-        grouped = True
+    if len(group_by) > 0:
         
-    elif len(group_by) > 1:
-        df = visard.group_by_column(df, column=group_by)
+        if "weekday" in group_by:
+            # convert weekday to index for correct order
+            df["weekday"] = df["weekday"].apply(lambda x: weekday_to_id[x])
+            df = visard.group_by_column(df, column=group_by)
+            # convert weekday back
+            df["weekday"] = df["weekday"].apply(lambda x: list(weekday_to_id)[x])
+            
+        else:
+            df = visard.group_by_column(df, column=group_by)
+        
         grouped = True
         
     else:

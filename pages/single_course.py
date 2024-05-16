@@ -9,8 +9,7 @@ from assets import plot_header
 register_page(__name__, order=1)
 
 ## TODO:
-# - make course information -> smaller and more structured
-# - hover should show value! 
+# - make course information -> more structured
 # - institute info
 # - add a table that shows the available courses
 
@@ -94,7 +93,7 @@ def update_figure(start_date_filter, end_date_filter, course_number, course_name
     if course_filtered:
         course_info = plot_header.generate_course_info(df)
     else:
-        course_info = "Nothing to show."
+        course_info = "Please select a Course"
     
     ########## Plotting ##########
     if course_filtered:

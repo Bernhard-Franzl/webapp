@@ -26,7 +26,7 @@ class Visualizer():
             self.margin = margin
          
         # format settings
-        self.plot_height = 700
+        self.plot_height = 900
 
         # plotly config
         self.config={
@@ -267,7 +267,16 @@ class Visualizer():
             
         elif mode == "single_bar":
             fig.update_traces(
-                hovertemplate="Note: %{customdata[3]}<br>"
+                hovertemplate="Y: %{y}<br>" +
+                            "Note: %{customdata[3]}<br>"
+            )
+        
+        elif mode == "grouped_bar":
+            fig.update_traces(
+                hovertemplate="Y: %{y}<br>" +
+                            "Present: %{customdata[1]}<br>" +
+                            "Registered: %{customdata[2]}<br>" +
+                            "Room Capacity: %{customdata[4]}<br>"
             )
             
         elif mode == "late_students":
@@ -315,14 +324,13 @@ class Visualizer():
     def generate_charts_before_after(self, fig, df, x, row, col):
         
             y = df["present_students_b"]
-                
             fig.add_trace(
                 go.Bar(
-                    x=x, 
+                    x=np.array(x) - 0.35, 
                     y=y, 
                     name="Before",
                     text=y,
-                    width=0.1,
+                    width=0.2,
                     customdata=df),
                 row=row, col=col)
             
@@ -332,11 +340,11 @@ class Visualizer():
             y = df["present_students_a"]   
             fig.add_trace(
                 go.Bar( 
-                    x=x, 
+                    x=np.array(x) + 0.35, 
                     y=y,
                     name="After",
                     text=y,
-                    width=0.1,
+                    width=0.2,
                     customdata=df),
                 row=row, col=col)
             
@@ -352,7 +360,7 @@ class Visualizer():
                 name="",
                 text=y,
                 textposition='auto',
-                width=0.4,
+                width=0.5,
                 customdata=df),
             
             row=row, col=col)
@@ -390,10 +398,10 @@ class Visualizer():
     
         df = dataframe.copy()
 
-        titles = ["Absolute Frequencies", 
+        titles = ["Absolute Frequencies",
+                  "Absolute Frequencies with Before & After",
                   "Frequencies Relative to Registered Students", 
-                  "Frequencies Relative to Room Capacity",
-                  "Absolute Frequencies with Before & After"]
+                  "Frequencies Relative to Room Capacity"]
         fig = make_subplots(rows=2, cols=2,
                             vertical_spacing=0.2,
                             horizontal_spacing=0.1,
@@ -402,9 +410,10 @@ class Visualizer():
         
          # absolute frequency always on top
         fig = self.make_subplot_chart(fig=fig, df=df, y_col="present_students", row=1, col=1)
-        fig = self.make_subplot_chart(fig=fig, df=df, y_col="relative_registered", row=1, col=2)
-        fig = self.make_subplot_chart(fig=fig, df=df, y_col="relative_capacity", row=2, col=1)
-        fig = self.make_subplot_beforeafter(fig=fig, df=df, row=2, col=2)
+        fig = self.make_subplot_beforeafter(fig=fig, df=df, row=1, col=2)
+        fig = self.make_subplot_chart(fig=fig, df=df, y_col="relative_registered", row=2, col=1)
+        fig = self.make_subplot_chart(fig=fig, df=df, y_col="relative_capacity", row=2, col=2)
+        
         
         fig = self.apply_general_settings(fig)
         fig = self.customize_hover(fig=fig, mode="single_bar")
@@ -599,11 +608,7 @@ class Visualizer():
         if relative:
             df = self.handle_relative_mode(df, mode, "present_students", y_column)
         
-        fig = go.Figure()
-        
-        #group_column = ", ".join(group_by)
-        #df[group_column] = df[group_by].agg(", ".join, axis=1)
-        
+        fig = make_subplots(rows=1, cols=1)
         
         if len(group_by) == 1:
             x = df[group_by[0]]        
@@ -612,6 +617,7 @@ class Visualizer():
         y = df[y_column]
         
         # we could add a color scheme
+        # color_list = ?
         fig.add_trace(
             go.Bar(
                 alignmentgroup=2,
@@ -620,34 +626,18 @@ class Visualizer():
                 name="",
                 text=y,
                 textposition='auto',
-                marker_color=["blue", "red"],
-                width=0.4,
+                width=0.6,
                 customdata=df))
         
-        #if len(group_by) > 1:
-        #    group_cols = group_by[:-1]
-        #else:
-        #    group_cols = group_by
-        
-        #print(group_cols)
-        #for x_col in group_cols:
-        #    print(df[x_col].unique())
-        #    for x_val in df[x_col].unique():
-                
-        #        df_mask =df[df[x_col] == x_val]
-        #        fig.add_trace(
-        #            go.Bar(
-        #                x=df_mask[x_col], 
-        #                y=df_mask[y_column],
-        #                name=x_col,
-        #                text=df[y_column],
-        #                customdata=df)
-        #            )
-        #        fig.update_traces(barmode='group')
-            
-        
         fig = self.apply_general_settings(fig)
-        
+        fig = self.frequency_yaxis(fig=fig, row=1, col=1, relative=relative, title=True)
+        fig.update_xaxes(
+            title={
+                "text":", ".join(group_by),
+                "font": {"size": self.axis_title_size}},
+            automargin=True,
+            row=1, col=1) 
+        fig = self.customize_hover(fig, "grouped_bar")
         return fig
         
     def plot_empty_grouped_bar(self):
