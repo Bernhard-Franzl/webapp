@@ -17,5 +17,4 @@ def layout(**kwargs):
             ) for page in dash.page_registry.values()
         ]
     )
-    layout.children[-1].style["border-right"] = "2px solid black"
     return layout

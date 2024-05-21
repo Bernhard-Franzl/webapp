@@ -8,26 +8,41 @@ import re
 import pandas as pd
 
 class Visualizer():
-    def __init__(self, path="plots/", figsize=(10,5), margin=None):
+    def __init__(self, path="plots/", **kwargs):
         # maybe some general settings like style and window size
         # also the path where the plots are saved
+        
+        #establish a better system!
         self.path = path
-        self.figsize = figsize
+        self.figsize = (10,5)
         
         # font settings
         self.font_family = "Arial, sans-serif"
-        self.axis_title_size = 18
-        self.text_size = 14
-        self.title_size = 30
         
-        if margin is None:
-            self.margin=dict(l=100, r=50, t=50, b=100)
-        else: 
-            self.margin = margin
+        self.margin=dict(l=100, r=50, t=50, b=100)
+        if "margin" in kwargs:
+            self.margin = kwargs["margin"]
+            
+        self.axis_title_size = 18
+        if "axis_title_size" in kwargs:
+            self.axis_title_size = kwargs["axis_title_size"]
+            
+        self.text_size = 14
+        if "text_size" in kwargs:
+            self.text_size = kwargs["text_size"]
+            
+        self.title_size = 30
+        if "title_size" in kwargs:
+            self.title_size = kwargs["title_size"]
          
         # format settings
-        self.plot_height = 900
-
+        self.plot_height = 750
+        if "plot_height" in kwargs:
+            self.plot_height = kwargs["plot_height"]
+        
+        self.plot_width = None
+        if "plot_width" in kwargs:
+            self.plot_width = kwargs["plot_width"]
         # plotly config
         self.config={
             "responsive": True,
@@ -37,7 +52,14 @@ class Visualizer():
             "modeBarButtonsToRemove": 
                 ["select", "zoomIn", "zoomOut", "autoScale", "lasso2d"]}
 
-
+############ CSS ############
+    def get_css_class(self):
+        
+        if self.plot_width is None:
+            return "chart-container-responsive"
+        else:
+            return "chart-container-fixed"
+        
 ############ Pandas ############
     def filter_by_rooms(self, dataframe, room_id:list):
         df = dataframe.copy()
@@ -200,10 +222,12 @@ class Visualizer():
             font=dict(
                 family=self.font_family,
                 size=self.text_size,),
-            minreducedheight=self.plot_height//2,
             margin=self.margin,
             height=self.plot_height)
 
+        if self.plot_width is not None:
+            fig.update_layout(width=self.plot_width)
+            
         return fig
 
     def customize_yaxis(self, fig, title, range, row, col):
@@ -644,7 +668,7 @@ class Visualizer():
             
             fig = make_subplots(rows=1, cols=1)
             
-            fig = self.add_title(fig, "Please Group by a Column!")
+            fig = self.add_title(fig, "Please select a feature to group by!")
             fig = self.apply_general_settings(fig)
             fig.update_layout(showlegend=False)
             

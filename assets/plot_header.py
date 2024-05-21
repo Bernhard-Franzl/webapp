@@ -274,7 +274,7 @@ def generate_room_filter(unique_rooms):
                 value=unique_rooms,
                 multi=True,
                 id="room_filter",
-                style={"height": "40px", "line-height": "40px", "min-width": "175px"},
+                style={"height": "32px", "line-height": "32px", "min-width": "150px"},
                 persistence=True,
                 persistence_type="memory",
                 persisted_props=["value"]
@@ -292,10 +292,10 @@ def generate_start_time_filter(start_time_list):
             ),
             dcc.Dropdown(
                 options=[{"label": time.strftime("%H:%M") , "value": time} for time in start_time_list],
-                value=start_time_list,
+                value=[],
                 multi=True,
                 id="start_time_filter",
-                style={"min-width": "175px", "max-width": "285px"},
+                style={"min-width": "150px", "max-width": "285px"},
                 persistence=True,
                 persistence_type="memory",
                 persisted_props=["value"]

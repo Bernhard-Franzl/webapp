@@ -6,7 +6,7 @@ from visualization.visualization import Visualizer
 from datetime import datetime, date, time
 from assets import plot_header
 
-register_page(__name__, order=1)
+register_page(__name__, name="Course Details", order=2)
 
 ## TODO:
 # - make course information -> more structured
@@ -33,7 +33,7 @@ visard = Visualizer()
 
 header_config = {
     "title": "Course Participants Detailed View",
-    "description": "This plot provides a more detailed view on the participants of a single course.",
+    "description": "This page provides a more detailed view on the participants of a single course.",
     "filtering": ["date", "number", "name"],
     "grouping": False,
     "sorting": False,

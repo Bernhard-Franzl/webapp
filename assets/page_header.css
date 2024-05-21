@@ -1,24 +1,23 @@
 .page-header {
+    margin: 0;
     padding-left: 5%;
     padding-right: 5%;
-    padding-top: 10px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid black;
-    background-color: lightgray;
+    background-color: #0028aa;
     display: inline-flex;
     width: 100%;
 }
 .page-header--element{
     display: inline-flex;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-left: 2px solid black;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 .page-header--element:hover{
-    background-color: lightblue;
+    background-color: #003cff;
 }
 .page-header--link{
-    color: #0028aa;
+    color: #ffffff;
     height: 40px;
     line-height: 40px;
     font-size: 30px;
@@ -26,12 +25,6 @@
     text-decoration: none;
 }
 .page-header--link:link, .page-header--link:visited{
-    color: #0028aa;
+    color: #ffffff;
 
-}
-.page-header--link:hover{
-    background-color: lightblue;
-}
-.page-header--link:active{
-    background-color: lightblue;
 }

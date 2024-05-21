@@ -6,7 +6,7 @@ from assets import plot_header
 
 from visualization.visualization import Visualizer
 
-register_page(__name__, path="/", order=0)
+register_page(__name__, name="Courses Overview", order=1)
 
 ## TODO:
 # - filter by number of dates, think of more ways to filter the data
@@ -33,7 +33,7 @@ end_date = metadata_participants["end_time"].date()
 visard = Visualizer()
 header_config = {
     "title": "Course Participants Overview",
-    "description": "This plot provides an overview of the onsite participants of all the courses.",
+    "description": "This page provides an overview of the onsite participants of all the courses.",
     "filtering": ["date", "room", "start_time"],
     "grouping": False,
     "sorting": True,

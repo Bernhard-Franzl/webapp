@@ -6,7 +6,7 @@ from assets import plot_header
 
 from visualization.visualization import Visualizer
 
-register_page(__name__, order=2)
+register_page(__name__, name="Grouped Data" ,order=3)
 
 # TODO:
 # - add group options -> type
@@ -38,12 +38,14 @@ with open("data/metadata_participants.json", "r") as file:
 start_date = metadata_participants["start_time"].date()
 end_date = metadata_participants["end_time"].date()
 
-visard = Visualizer()
+# if plot height not specified use different css for chart-container
+visard = Visualizer(plot_height=750, plot_width=1000)
+css_class = visard.get_css_class()
 
 header_config = {
-    "title": "Course Participants Detailed View",
-    "description": "This plot provides a more detailed view on the participants of a single course.",
-    "filtering": ["date", "room"],
+    "title": "Grouped Onsite Participants",
+    "description": "This page visualizes the data grouped by a selection of features.",
+    "filtering": ["date", "room", "start_time"],
     "grouping": True,
     "sorting": False,
     "mode": True,
@@ -68,9 +70,14 @@ layout = html.Div(children=[
                 course_info=header_config["course_info"],
                 grouping=header_config["grouping"],
             ),
-            dcc.Graph(
-            id="grouped_bar_chart",
-            config=visard.config)
+            html.Div(
+                className=css_class,
+                children=[
+                    dcc.Graph(
+                        id="grouped_bar_chart",
+                        config=visard.config)
+                ]
+            )
         ]
     )
 ])
@@ -80,7 +87,7 @@ output_list = plot_header.generate_output_list(header_config, "grouped_bar_chart
 @callback(
     output_list,
     input_list)
-def update_figure(start_date_filter, end_date_filter, room_filter, group_by, graph_mode):
+def update_figure(start_date_filter, end_date_filter, room_filter, start_time_filter, group_by, graph_mode):
 
     ########## Filtering ##########
     # filter by date

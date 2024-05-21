@@ -1,28 +1,46 @@
+body{
+    margin:0;
+}
+
 .plot{
+    padding-top: 15px;
     padding-left: 5%;
     padding-right: 5%;
 }
 
-.plot-header{
-    padding-bottom: 15px;
+.chart-container-fixed{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+.chart-container-responsive{
+    display: block;
+}
+
+
+.plot-header{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 
 .plot-header--title{
     color: #000000;
-    font-size: 40px;
+    font-size: 36px;
     font-weight: bold;
-    padding-bottom: 10px;
+    line-height: 36px;
+    padding-bottom: 12px;
 }
 .plot-header--description{
     color: #000000;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: normal;
 }
 
 /*Section Settings*/
 .plot-header--section{
-    padding-top: 15px;
-    padding-bottom: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     display: inline-block;
 }
 .plot-header--section-title{
@@ -33,13 +51,13 @@
 /*Filtering Settings*/
 .plot-header--section-elements{
     display: inline-block;
-    padding-bottom: 15px;
 }
 
 .plot-header--filtering-element-label{
-    height: 40px;
-    line-height: 40px;
-    font-size: 20px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 18px;
+    font-weight: bold;
     padding-right: 5px;
     padding-left: 5px;
     border: thin lightgrey solid;
@@ -47,42 +65,44 @@
     border-radius: 1px;
 }
 .DateInput_input, .DateInput_input_1{
-    height: 40px;
-    font-size: 20px
+    height: 32px;
+    font-size: 16px;
+    text-align: center;
 }
 .plot-header-filtering-starttime, .plot-header--filtering-date, .plot-header--filtering-name, .plot-header--filtering-room, .plot-header--filtering-number{
     display: inline-flex;
-    min-width: 250px;
+    min-width: 200px;
     max-width: 400px;
-    min-height: 40px;
-    max-height: 80px;
-    padding-top: 15px;
+    min-height: 32px;
+    max-height: 72px;
     padding-right: 15px;
+    padding-top: 10px;
 }
 
 /*Sorting and mode elements*/
 .plot-header--sorting, .plot-header--mode, .plot-header--grouping{
     display: inline-table;
-    padding-right: 15px;
+    padding-right: 25px;
 }
 
 /* Sorting elements */
 .plot-header--sorting-elements{
     display: inline-flex;
-    height: 40px;
-    width: 360px;
+    height: 32px;
+    min-width: 200px;
+    max-width: 400px;
 }
 .plot-header--sorting-dropdown, .plot-header--grouping-dropdown, .plot-header--mode-dropdown{
-    width: 250px;
-    min-height: 40px;
-    max-height: 80px;
-    line-height: 40px;
-    font-size: 18px;
-    padding-top: 15px;
+    width: 200px;
+    min-height: 32px;
+    max-height: 72px;
+    line-height: 32px;
+    font-size: 16px;
+    padding-top: 10px;
 }
 .plot-header--sorting-switch{
     width: 60px;
-    padding-top: 15px;
+    padding-top: 14px;
 }
 
 /*Course Information*/
@@ -94,8 +114,8 @@
     display: inline-flex;
     min-width: 100px;
     max-width: 600px;
-    min-height: 40px;
-    max-height: 80px;
+    min-height: 32px;
+    max-height: 32px;
     padding-top: 15px;
     padding-right: 15px;
 
