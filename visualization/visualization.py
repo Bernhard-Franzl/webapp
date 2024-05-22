@@ -19,7 +19,7 @@ class Visualizer():
         # font settings
         self.font_family = "Arial, sans-serif"
         
-        self.margin=dict(l=100, r=50, t=50, b=100)
+        self.margin=dict(l=50, r=50, t=50, b=50)
         if "margin" in kwargs:
             self.margin = kwargs["margin"]
             
@@ -223,7 +223,8 @@ class Visualizer():
                 family=self.font_family,
                 size=self.text_size,),
             margin=self.margin,
-            height=self.plot_height)
+            height=self.plot_height,
+            hoverlabel=dict(font_size=self.text_size+2))
 
         if self.plot_width is not None:
             fig.update_layout(width=self.plot_width)
@@ -277,30 +278,28 @@ class Visualizer():
             row=row, col=col)  
         return fig
     
-    def customize_hover(self, fig, mode):
+    def customize_hover(self, fig, mode, **kwargs):
         if mode == "multi_bar":
             fig.update_traces(
-                hovertemplate="<b>Value: %{y}</b><br>" +
+                hovertemplate="<b>Frequency: %{y}</b><br>" +
                             "%{customdata[9]}: %{customdata[8]}<br>" +
-                            "Course number: %{customdata[0]}<br>" +
-                            "Present: %{customdata[17]} | Registered: %{customdata[14]}<br>" +
+                            #"Course number: %{customdata[0]}<br>" +
+                            #"Present: %{customdata[17]} | Registered: %{customdata[14]}<br>" +
                             "Time: %{customdata[1]} %{customdata[5]}-%{customdata[6]}<br>" +
-                            "Room: %{customdata[2]} | Room Capacity:%{customdata[7]} <br>"+
-                            "Irregular: %{customdata[21]}<br>" +
+                            "Room: %{customdata[2]}<br>"+
+                            #"Room: %{customdata[2]} | Room Capacity:%{customdata[7]} <br>"+
+                            #"Irregular: %{customdata[21]}<br>" +
                             "Note: %{customdata[3]}")
             
         elif mode == "single_bar":
             fig.update_traces(
-                hovertemplate="Y: %{y}<br>" +
+                hovertemplate="Frequency: %{y}<br>" +
                             "Note: %{customdata[3]}<br>"
             )
         
         elif mode == "grouped_bar":
             fig.update_traces(
-                hovertemplate="Y: %{y}<br>" +
-                            "Present: %{customdata[1]}<br>" +
-                            "Registered: %{customdata[2]}<br>" +
-                            "Room Capacity: %{customdata[4]}<br>"
+                hovertemplate="Frequency: %{y}<br>" + kwargs["template"]
             )
             
         elif mode == "late_students":
@@ -555,6 +554,16 @@ class Visualizer():
                 continue
             
         return fig
+    
+    def handle_mode_y_title(self, mode):
+        if mode == "absolute":
+            return "<br>Absolute Frequency"
+        elif mode == "relative_registered":
+            return "<br>Frequency Realtive to Registered Students"
+        elif mode == "relative_capacity":
+            return "<br>Frequency Relative to Room Capacity"
+        else:
+            raise ValueError("Mode must be one of: absolute, relative_registered, relative_capacity")
         
     def plot_multiple_courses_bars(self, dataframe, course_numbers, mode):
         
@@ -571,10 +580,11 @@ class Visualizer():
         y_column, relative, _ = self.handle_mode(mode)
         
         x_title = "Course Number"
-        y_title = "Onsite Participants"   
+        y_title = "Onsite Participants" +  self.handle_mode_y_title(mode)
         fig = make_subplots(rows=n_rows, cols=n_cols, 
                             y_title=y_title,
                             x_title=x_title,)
+        
         fig = self.customise_x_and_y_title(fig, x_title, y_title)
 
         for row, indices in enumerate(course_indices, 1):
@@ -592,7 +602,7 @@ class Visualizer():
                                     ticktext=ticktext,
                                     n_rows=n_rows)  
                           
-            fig = self.frequency_yaxis(fig=fig, row=row, col=n_cols, relative=relative, title=True)
+            #fig = self.frequency_yaxis(fig=fig, row=row, col=n_cols, relative=relative, title=True)
         
         #fig = self.add_title(fig, title)
         fig = self.apply_general_settings(fig)
@@ -622,9 +632,20 @@ class Visualizer():
         
         return df
     
+    def make_hover_template(self, df, group_by):
+        columns = df.columns
+        template = ""
+        for x in group_by:
+            idx = columns.get_loc(x)
+            #"%{customdata[9]}: %{customdata[8]}<br>" +
+            template += f"{x}:"+ " %{customdata["+f"{idx}"+"]}<br>"
+        return template
+            
     def plot_grouped_bar(self, dataframe, group_by, mode):
         df = dataframe.copy()
-                
+        
+        # duration as a string
+        df["duration"] = df["duration"].astype(str)    
         # handle mode
         y_column, relative, _ = self.handle_mode(mode)
         
@@ -656,11 +677,13 @@ class Visualizer():
         fig = self.frequency_yaxis(fig=fig, row=1, col=1, relative=relative, title=True)
         fig.update_xaxes(
             title={
-                "text":", ".join(group_by),
+                "text":"<b>"+", ".join(group_by)+"</b>",
                 "font": {"size": self.axis_title_size}},
             automargin=True,
             row=1, col=1) 
-        fig = self.customize_hover(fig, "grouped_bar")
+        
+        template = self.make_hover_template(df, group_by)
+        fig = self.customize_hover(fig, "grouped_bar", template=template)
         return fig
         
     def plot_empty_grouped_bar(self):
@@ -674,7 +697,6 @@ class Visualizer():
             return fig   
 
     ##### Charts for Attendance Dynamics #####
-
     def calc_relative_registered(self, dataframe, column):
         df = dataframe.copy()
         df["relative_registered"] = df[column] / df["registered_students"]

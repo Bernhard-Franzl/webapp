@@ -30,11 +30,12 @@ start_date = metadata_participants["start_time"].date()
 end_date = metadata_participants["end_time"].date()
 
 
-visard = Visualizer(plot_height=750, plot_width=750)
+visard = Visualizer(plot_height=750, plot_width=750,
+                    margin=dict(l=125, r=50, t=50, b=50))
 
 header_config = {
     "title": "Course Participants Detailed View",
-    "description": "This page provides a more detailed view on the participants of a single course.",
+    "description": "This page provides a more detailed view on a single course.",
     "filtering": ["date", "number", "name"],
     "grouping": False,
     "sorting": False,

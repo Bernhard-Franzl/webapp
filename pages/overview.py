@@ -30,7 +30,7 @@ end_date = metadata_participants["end_time"].date()
 
 #print(df_participants.columns)
 
-visard = Visualizer()
+visard = Visualizer(margin=dict(l=125, r=50, t=50, b=100))
 header_config = {
     "title": "Course Participants Overview",
     "description": "This page provides an overview of the onsite participants of all the courses.",
