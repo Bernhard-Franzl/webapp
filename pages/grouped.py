@@ -2,7 +2,7 @@ from dash import Dash, html, dcc, Input, Output, callback, register_page
 import json
 import pandas as pd
 from datetime import datetime, date, time
-from assets import plot_header
+from components import plot_header
 
 from visualization.visualization import Visualizer
 
@@ -38,12 +38,12 @@ with open("data/metadata_participants.json", "r") as file:
 start_date = metadata_participants["start_time"].date()
 end_date = metadata_participants["end_time"].date()
 
-# if plot height not specified use different css for chart-container
-visard = Visualizer(plot_height=750, plot_width=1000)
-css_class = visard.get_css_class()
+df_participants["start_time_string"] = df_participants["start_time"].dt.strftime("%H:%M")
+
+visard = Visualizer(plot_height=750)
 
 header_config = {
-    "title": "Grouped Onsite Participants",
+    "title": "Grouped Onsite Participants Data",
     "description": "This page visualizes the data grouped by a selection of features.",
     "filtering": ["date", "room", "start_time"],
     "grouping": True,
@@ -71,7 +71,7 @@ layout = html.Div(children=[
                 grouping=header_config["grouping"],
             ),
             html.Div(
-                className=css_class,
+                className=visard.get_css_class(),
                 children=[
                     dcc.Graph(
                         id="grouped_bar_chart",
@@ -98,11 +98,13 @@ def update_figure(start_date_filter, end_date_filter, room_filter, start_time_fi
     room_filter = [metadata_participants["room_to_id"][room] for room in room_filter]
     if len(room_filter) > 0:
         df = visard.filter_by_rooms(df, room_filter)
-    
-    
+    # filter by start time
+    if len(start_time_filter) > 0:
+            start_time_filter = [time.fromisoformat(time_str) for time_str in start_time_filter]
+            df = visard.filter_by_start_time(df, start_time_filter)
     ########## Grouping ##########
     # keep only the informative columns
-    df = df[["weekday", "start_time", "end_time", 
+    df = df[["weekday", "start_time", "end_time", "start_time_string",
              "present_students", "registered_students", 
              "room", "room_capacity", "type", "kind", "duration"]]
     

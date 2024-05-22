@@ -2,7 +2,7 @@ from dash import Dash, html, dcc, Input, Output, callback, register_page
 import json
 import pandas as pd
 from datetime import datetime, date, time
-from assets import plot_header
+from components import plot_header
 
 from visualization.visualization import Visualizer
 

@@ -1,0 +1,22 @@
+body{
+    margin:0;
+}
+
+.plot{
+    padding-top: 90px;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.course_detail_plot{
+    display: flex;
+    justify-content: center;
+}
+.chart-container-fixed{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.chart-container-responsive{
+    display: block;
+}

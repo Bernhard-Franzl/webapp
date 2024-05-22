@@ -2,9 +2,10 @@
 from dash import Dash, html, dcc, Input, Output, callback, register_page
 import json
 import pandas as pd
+from components import course_info
 from visualization.visualization import Visualizer
 from datetime import datetime, date, time
-from assets import plot_header
+from components import plot_header
 
 register_page(__name__, name="Course Details", order=2)
 
@@ -29,7 +30,7 @@ start_date = metadata_participants["start_time"].date()
 end_date = metadata_participants["end_time"].date()
 
 
-visard = Visualizer()
+visard = Visualizer(plot_height=750, plot_width=750)
 
 header_config = {
     "title": "Course Participants Detailed View",
@@ -42,11 +43,14 @@ header_config = {
     "figure":True 
 }
 
+
+    
 layout = html.Div(children=[
     # plot
     html.Div(
         className="plot",
         children=[
+            # Header
             plot_header.layout(
                 title=header_config["title"],
                 description= header_config["description"],
@@ -58,9 +62,23 @@ layout = html.Div(children=[
                 mode=header_config["mode"],
                 course_info=header_config["course_info"]
             ),
-            dcc.Graph(
-            id="participants_single_course_bar",
-            config=visard.config)
+            # Plot and course info
+            html.Div(
+                className="course_detail_plot",
+                children =[
+                    html.Div(
+                        course_info.initialize_layout()
+                        ),
+                    html.Div(
+                        className=visard.get_css_class(),
+                        children=dcc.Graph(
+                            id="participants_single_course_bar",
+                            config=visard.config
+                        )
+                    )
+                    
+                ]
+            )
         ]
     )
 ])
@@ -68,19 +86,21 @@ layout = html.Div(children=[
 
 input_list = plot_header.generate_input_list(header_config)
 output_list = plot_header.generate_output_list(header_config, "participants_single_course_bar")
+output_list.append(Output("course_info", "children"))
 @callback(
     output_list,
     input_list)
 def update_figure(start_date_filter, end_date_filter, course_number, course_name):
-    ########## Filtering ##########    
+    ########## Filtering ########## 
+    df = df_participants.copy()
     # filter by date
     start_time = datetime.combine(date.fromisoformat(start_date_filter) , time(hour=0, minute=0))
     end_time = datetime.combine(date.fromisoformat(end_date_filter), time(hour=23, minute=59))
-    df = visard.filter_by_time(df_participants, start_time, end_time)
+    df = visard.filter_by_time(df, start_time, end_time)
     # filter by course number
     course_filtered = False
     if course_number != "":
-        df = visard.filter_by_course_number(df_participants, course_number)
+        df = visard.filter_by_course_number(df, course_number)
         if len(df) != 0:
             course_filtered = True
     # filter by course name
@@ -91,9 +111,9 @@ def update_figure(start_date_filter, end_date_filter, course_number, course_name
             
     ########## Course Info ##########
     if course_filtered:
-        course_info = plot_header.generate_course_info(df)
+        info_section = course_info.generate_course_info(df)
     else:
-        course_info = "Please select a Course"
+        info_section = "Please select a course!"
     
     ########## Plotting ##########
     if course_filtered:
@@ -103,4 +123,4 @@ def update_figure(start_date_filter, end_date_filter, course_number, course_name
     else:
         fig = visard.plot_empty_course_bar()
     
-    return fig, course_info
+    return fig, info_section

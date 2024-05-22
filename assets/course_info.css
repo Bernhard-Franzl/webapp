@@ -1,0 +1,46 @@
+.plot--course-info{
+    margin-top: 25px;
+    margin-right: 20px;
+    max-width: 750px;
+    min-width: 250px;
+    border: 1px solid lightgray;
+    display: grid;
+}
+.plot--course-info-title{
+    font-size: 24px;
+    font-weight: bold;
+    color: #0028aa;
+    border-bottom: 1px solid lightgray;
+    margin: 0;
+    padding: 10px;
+}
+
+.plot--course-info-table{
+    border-spacing: 5px;
+    padding: 10px;
+    justify-self: center;
+}
+.plot--course-info-table-row{
+    min-height: 32px;
+    max-height: 32px;
+    font-size: 18px;
+}
+
+.plot--course-info-table-element{
+    text-align: center;
+    font-size: 18px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid lightgray;
+    border-collapse: collapse;
+    border-radius: 1px;
+}
+.plot--course-info-table-label{
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 18px;
+    border: 1px solid lightgray;
+    border-collapse: collapse;
+    border-radius: 1px;
+    background: lightgray;
+}

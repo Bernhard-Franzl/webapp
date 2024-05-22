@@ -1,6 +1,6 @@
 import dash
 from dash import Dash, html, dcc
-from assets import page_header
+from components import page_header
 
 app = Dash(__name__, use_pages=True)
 

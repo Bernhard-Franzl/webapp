@@ -2,7 +2,7 @@ from dash import Dash, html, dcc, Input, Output, callback, register_page
 import json
 import pandas as pd
 from datetime import datetime, date, time
-from assets import plot_header
+from components import plot_header
 
 from visualization.visualization import Visualizer
 
@@ -38,7 +38,6 @@ header_config = {
     "grouping": False,
     "sorting": True,
     "mode": True,
-    "course_info": False,
     "figure":True 
 }
 
@@ -57,7 +56,6 @@ layout = html.Div(children=[
                 grouping=header_config["grouping"],
                 sorting=header_config["sorting"],
                 mode=header_config["mode"],
-                course_info=header_config["course_info"]
             ),
             dcc.Graph(
             id="participants_multi_course_bar",

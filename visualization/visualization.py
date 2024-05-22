@@ -423,10 +423,9 @@ class Visualizer():
         df = dataframe.copy()
 
         titles = ["Absolute Frequencies",
-                  "Absolute Frequencies with Before & After",
                   "Frequencies Relative to Registered Students", 
                   "Frequencies Relative to Room Capacity"]
-        fig = make_subplots(rows=2, cols=2,
+        fig = make_subplots(rows=3, cols=1,
                             vertical_spacing=0.2,
                             horizontal_spacing=0.1,
                             subplot_titles=titles)
@@ -434,9 +433,9 @@ class Visualizer():
         
          # absolute frequency always on top
         fig = self.make_subplot_chart(fig=fig, df=df, y_col="present_students", row=1, col=1)
-        fig = self.make_subplot_beforeafter(fig=fig, df=df, row=1, col=2)
+        #fig = self.make_subplot_beforeafter(fig=fig, df=df, row=1, col=2)
         fig = self.make_subplot_chart(fig=fig, df=df, y_col="relative_registered", row=2, col=1)
-        fig = self.make_subplot_chart(fig=fig, df=df, y_col="relative_capacity", row=2, col=2)
+        fig = self.make_subplot_chart(fig=fig, df=df, y_col="relative_capacity", row=3, col=1)
         
         
         fig = self.apply_general_settings(fig)

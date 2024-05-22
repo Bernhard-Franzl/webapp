@@ -64,11 +64,7 @@ def generate_output_list(header_config, figure_id):
     if header_config["figure"]:
         out_list.append(Output(figure_id, "figure"))
         
-    if header_config["course_info"]:
-        out_list.append(Output("course_info", "children"))
-        
     return out_list
-
 
 # generates the header layout
 def layout(title, 
@@ -76,7 +72,6 @@ def layout(title,
            filtering=[], 
            sorting=False, 
            mode=False,
-           course_info=False,
            grouping=False,
            **kwargs):
     
@@ -161,17 +156,6 @@ def layout(title,
         
         plot_header.append(filtering_section)
         plot_header.append(horizontal_line)
-    
-    ## grouping
-    #if grouping:
-    #    grouping_section = html.Div(
-    #        className="plot-header--section",
-    #        children=generate_grouping_section()
-    #    )
-    #    plot_header.append(grouping_section)
-    #    plot_header.append(horizontal_line)
-        
-        
         
         
     # if sorting and/or mode are provided, add it to the layout  
@@ -218,23 +202,6 @@ def layout(title,
         
     del sorting_mode_section    
     
-    if course_info:
-        info_section = html.Div(
-            className="plot-header--section",
-            children=[
-                html.Div(
-                    "Course Information:",
-                    className="plot-header--section-title"
-                ),
-                html.Div(
-                    className="plot-header--section-elements",
-                    id="course_info",
-                )
-            ]
-        )
-        plot_header.append(info_section)
-        plot_header.append(horizontal_line)
-        
     return layout
 
 def generate_date_filter(start_date, end_date):
@@ -423,7 +390,7 @@ def generate_grouping_section():
                     html.Div(
                         className="plot-header--grouping-dropdown",
                         children=dcc.Dropdown(
-                            options=["weekday", "room", "type", "kind"],
+                            options=["weekday", "room", "type", "duration", "start_time_string"],
                             value=["weekday"],
                             id="graph_group_by",
                             multi=True,
@@ -433,98 +400,4 @@ def generate_grouping_section():
                         )
                     )
                 ]
-    )
-
-def generate_info_element(label, text):
-    return html.Div(
-        className="plot-header--info-element",
-        children=[
-            html.Div(
-                label, 
-                className="plot-header--info-element-label"
-            ),
-            html.Div(
-                text,
-                className="plot-header--info-element-text"
-            )
-        ]
-    )
-    
-def generate_course_info(dataframe):
-    df = dataframe.copy()
-    first_row = df.iloc[0]
-    # time 
-    if df["start_time"].dt.time.nunique() == 1:
-        time = f"{first_row['start_time'].strftime('%H:%M')} - {first_row['end_time'].strftime('%H:%M')}"
-    else:
-        time = "Irregular"
-        
-    if df["weekday"].nunique() == 1:
-        weekday = first_row["weekday"]
-    else:
-        weekday = "Irregular"
-    
-    return html.Div(
-        className="plot-header--course-information",
-        children=[
-            # ID
-            html.Div(
-                style={"padding-bottom": "10px"},
-                children=[
-                    generate_info_element(
-                        label="ID:",
-                        text=first_row["course_number"]
-                    ),
-                    # type
-                    generate_info_element(
-                        label="Type:",
-                        text=first_row["type"]
-                    ),
-                    # Title
-                    generate_info_element(
-                        label="Title:",
-                        text=first_row["course_name"]
-                    )
-                ]
-            ),
-            html.Div(
-                style={"padding-bottom": "10px"},
-                children=[
-                    # Registered Students
-                    generate_info_element(
-                        label="Registered Students:",
-                        text=first_row["registered_students"]
-                    ),
-                    # Room Capacity
-                    generate_info_element(
-                        label="Room Capacity:",
-                        text=first_row["room_capacity"]
-                    )
-                ]
-            ),
-            html.Div(
-                children=[
-                    # Room
-                    generate_info_element(
-                        label="Room:",
-                        text=first_row["room"]
-                    ),
-                    # Weekday
-                    generate_info_element(
-                        label="Weekday:",
-                        text=weekday
-                    ),
-                    # Time
-                    generate_info_element(
-                        label="Time:",
-                        text=time
-                    ),
-                    # No. of dates
-                    generate_info_element(
-                        label="No. of Dates:",
-                        text=df["start_time"].nunique()
-                    )
-                ]
-            )
-        ]
     )
