@@ -286,7 +286,7 @@ def generate_number_filter(course_numbers, id_data_list="number_suggestions"):
                 className="plot-header--filtering-element-label"
             ),
             dcc.Input(
-                value="136.309",
+                value="",
                 type="text",
                 placeholder="Course Number",
                 id="course_number_filter",

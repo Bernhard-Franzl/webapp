@@ -1,0 +1,50 @@
+.home-page{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.home-page--section{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+
+.home-page--title{
+    color: #000000;
+    font-size: 40px;
+    font-weight: bold;
+    line-height: 40px;
+    padding-bottom: 12px; 
+}
+
+.home-page--description{
+    color: #000000;
+    font-size: 22px;
+    font-weight: normal;
+}
+.home-page--section-title{
+    color: #0028aa;
+    font-size: 30px;
+    line-height: 30px;
+    font-weight: bold;
+    padding-bottom: 15px;
+}
+
+p{
+    padding: 0px;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+}
+
+.home-page--list-item{
+    padding-left: 40px;
+    display: inline-flex;
+    padding-bottom: 0.25em;
+}
+.home-page--list-item-label{
+    font-weight: bold;
+}
+.home-page--list-item-description{
+    padding-left: 5px;
+}

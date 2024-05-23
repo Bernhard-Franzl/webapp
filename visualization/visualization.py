@@ -208,8 +208,7 @@ class Visualizer():
                     'size':self.title_size},
                 'x':0.5,
                 'y':0.95,
-                'xanchor':'center',
-                "automargin":True},)
+                'xanchor':'center'},)
         
         return fig
              
@@ -450,6 +449,7 @@ class Visualizer():
             fig = self.add_title(fig, "No Course Selected")
             fig = self.apply_general_settings(fig)
             fig.update_layout(showlegend=False)
+            fig.update_layout(margin=dict(t=100))
             
             return fig   
     
@@ -607,7 +607,6 @@ class Visualizer():
         #fig = self.add_title(fig, title)
         fig = self.apply_general_settings(fig)
         fig = self.customize_hover(fig=fig, mode="multi_bar")
-        
         fig.update_layout(showlegend=False)
         
         return fig
@@ -692,6 +691,7 @@ class Visualizer():
             
             fig = self.add_title(fig, "Please select a feature to group by!")
             fig = self.apply_general_settings(fig)
+            fig.update_layout(margin=dict(t=100))
             fig.update_layout(showlegend=False)
             
             return fig   

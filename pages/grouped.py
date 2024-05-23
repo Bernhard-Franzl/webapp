@@ -40,7 +40,7 @@ end_date = metadata_participants["end_time"].date()
 
 df_participants["start_time_string"] = df_participants["start_time"].dt.strftime("%H:%M")
 
-visard = Visualizer(plot_height=750)
+visard = Visualizer(plot_height=750, plot_width=1200)
 
 header_config = {
     "title": "Grouped Onsite Participants Data",
