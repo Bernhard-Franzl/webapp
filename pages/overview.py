@@ -41,28 +41,26 @@ header_config = {
     "figure":True 
 }
 
-layout = html.Div(children=[
-    # plot
-    html.Div(
-        className="plot",
-        children=[
-            plot_header.layout(
-                title=header_config["title"],
-                description=header_config["description"],
-                filtering=header_config["filtering"],
-                start_date = start_date,
-                end_date = end_date,
-                dataframe = df_participants,
-                grouping=header_config["grouping"],
-                sorting=header_config["sorting"],
-                mode=header_config["mode"],
-            ),
-            dcc.Graph(
-            id="participants_multi_course_bar",
-            config=visard.config)
-        ]
-    )
-])
+layout = html.Div(
+    className="page",
+    children=[
+        plot_header.layout(
+            title=header_config["title"],
+            description=header_config["description"],
+            filtering=header_config["filtering"],
+            start_date = start_date,
+            end_date = end_date,
+            dataframe = df_participants,
+            grouping=header_config["grouping"],
+            sorting=header_config["sorting"],
+            mode=header_config["mode"],
+        ),
+        dcc.Graph(
+        id="participants_multi_course_bar",
+        config=visard.config)
+    ]
+)
+
 
 @callback(
     Output(

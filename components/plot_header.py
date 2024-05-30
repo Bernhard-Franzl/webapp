@@ -112,6 +112,8 @@ def layout(title,
         )
         title_section.children.append(description_section)
         plot_header.append(horizontal_line)
+    else:
+        plot_header.append(horizontal_line)
 
     # if filtering is provided, add it to the layout
     if len(filtering) > 0:

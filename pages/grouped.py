@@ -6,7 +6,7 @@ from components import plot_header
 
 from visualization.visualization import Visualizer
 
-register_page(__name__, name="Grouped Data" ,order=3)
+register_page(__name__, name="Grouped Data" ,order=4)
 
 # TODO:
 # - add group options -> type
@@ -53,34 +53,31 @@ header_config = {
     "figure":True 
 }
 
-layout = html.Div(children=[
-    # plot
-    html.Div(
-        className="plot",
-        children=[
-            plot_header.layout(
-                title=header_config["title"],
-                description= header_config["description"],
-                filtering=header_config["filtering"],
-                start_date = start_date,
-                end_date = end_date,
-                dataframe = df_participants,
-                sorting=header_config["sorting"],
-                mode=header_config["mode"],
-                course_info=header_config["course_info"],
-                grouping=header_config["grouping"],
-            ),
-            html.Div(
-                className=visard.get_css_class(),
-                children=[
-                    dcc.Graph(
-                        id="grouped_bar_chart",
-                        config=visard.config)
-                ]
-            )
-        ]
-    )
-])
+layout = html.Div(
+    className="page",
+    children=[
+        plot_header.layout(
+            title=header_config["title"],
+            description= header_config["description"],
+            filtering=header_config["filtering"],
+            start_date = start_date,
+            end_date = end_date,
+            dataframe = df_participants,
+            sorting=header_config["sorting"],
+            mode=header_config["mode"],
+            course_info=header_config["course_info"],
+            grouping=header_config["grouping"],
+        ),
+        html.Div(
+            className=visard.get_css_class(),
+            children=[
+                dcc.Graph(
+                    id="grouped_bar_chart",
+                    config=visard.config)
+            ]
+        )
+    ]
+)
 
 input_list = plot_header.generate_input_list(header_config)
 output_list = plot_header.generate_output_list(header_config, "grouped_bar_chart")

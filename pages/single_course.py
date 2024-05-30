@@ -7,7 +7,7 @@ from visualization.visualization import Visualizer
 from datetime import datetime, date, time
 from components import plot_header
 
-register_page(__name__, name="Course Details", order=2)
+register_page(__name__, name="Course Details", order=3)
 
 ## TODO:
 # - make course information -> more structured
@@ -46,43 +46,40 @@ header_config = {
 
 
     
-layout = html.Div(children=[
-    # plot
-    html.Div(
-        className="plot",
-        children=[
-            # Header
-            plot_header.layout(
-                title=header_config["title"],
-                description= header_config["description"],
-                filtering=header_config["filtering"],
-                start_date = start_date,
-                end_date = end_date,
-                dataframe = df_participants,
-                sorting=header_config["sorting"],
-                mode=header_config["mode"],
-                course_info=header_config["course_info"]
-            ),
-            # Plot and course info
-            html.Div(
-                className="course_detail_plot",
-                children =[
-                    html.Div(
-                        course_info.initialize_layout()
-                        ),
-                    html.Div(
-                        className=visard.get_css_class(),
-                        children=dcc.Graph(
-                            id="participants_single_course_bar",
-                            config=visard.config
-                        )
+layout = html.Div(
+    className="page",
+    children=[
+        # Header
+        plot_header.layout(
+            title=header_config["title"],
+            description= header_config["description"],
+            filtering=header_config["filtering"],
+            start_date = start_date,
+            end_date = end_date,
+            dataframe = df_participants,
+            sorting=header_config["sorting"],
+            mode=header_config["mode"],
+            course_info=header_config["course_info"]
+        ),
+        # Plot and course info
+        html.Div(
+            className="course_detail_plot",
+            children =[
+                html.Div(
+                    course_info.initialize_layout()
+                    ),
+                html.Div(
+                    className=visard.get_css_class(),
+                    children=dcc.Graph(
+                        id="participants_single_course_bar",
+                        config=visard.config
                     )
-                    
-                ]
-            )
-        ]
-    )
-])
+                )
+                
+            ]
+        )
+    ]
+)
 
 
 input_list = plot_header.generate_input_list(header_config)

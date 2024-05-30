@@ -18,7 +18,7 @@ horizontal_line = html.Hr(
     )
 
 layout = html.Div(
-    className="plot",
+    className="page",
     children = html.Div(
         className="home-page",
         children=[
