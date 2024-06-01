@@ -26,15 +26,15 @@ def layout(df_participants, metadata_participants):
     data["start_time"] = data["start_time"].apply(lambda x: x.replace(year=min_date.year, month=min_date.month, day=min_date.day))
     data["end_time"] = data["end_time"].apply(lambda x: x.replace(year=min_date.year, month=min_date.month, day=min_date.day)- timedelta(minutes=15))
     # pivot table that shows the course number for each weekday and start_time and end_time
-    table_start = data.pivot_table(index=["start_time"], 
+    table = data.pivot_table(index=["start_time"], 
                              columns=["weekday"], 
                              values="course_number",
                              aggfunc="first")
-    table_end  = data.pivot_table(index=["end_time"],
-                                columns=["weekday"],
-                                values="course_number",
-                                aggfunc="first")
-    table = table_start.combine_first(table_end)
+    #table_end  = data.pivot_table(index=["end_time"],
+    #                            columns=["weekday"],
+    #                            values="course_number",
+    #                            aggfunc="first")
+    #table = table_start.combine_first(table_start)
     
     # new index
     min_time = data["start_time"].min()
@@ -58,8 +58,10 @@ def layout(df_participants, metadata_participants):
     datetime_obj = "d3.timeParse('%Y-%m-%dT%H:%M:%S')(params.data.time)"
     table = table.reset_index().rename(columns={"index":"time"})
 
-    columnDefs = [{"field": weekday,
-                   'rowSpan': {"function": "rowSpanningComplex(params)"}} for weekday in table.columns[1:]]
+    columnDefs = [{"field": weekday} for weekday in table.columns[1:]]
+
+    columnDefs[1]['rowSpan'] = {"function": f"rowSpanningComplex(params)"}
+    
     columnDefs.insert(0, {"field":"time",
                 "valueGetter": {"function": datetime_obj},
                 "valueFormatter": {"function": f"d3.timeFormat('%H:%M')({datetime_obj})"}
@@ -73,7 +75,8 @@ def layout(df_participants, metadata_participants):
         columnDefs=columnDefs,
         columnSize="sizeToFit",
         dashGridOptions = {"suppressFieldDotNotation": True,
-                           "suppressRowTransform": True},
+                           "suppressRowTransform": True,
+                           "context":"hello",}, # extremely nice we can pass data for rowSpanningComplex
     )
 
     return html.Div(
