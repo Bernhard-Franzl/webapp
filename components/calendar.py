@@ -42,12 +42,20 @@ def layout(df_participants, metadata_participants):
     new_index = pd.date_range(start=min_time, end=max_time, freq="15min")
 
     # make sure that with that with start_time, weekday and course_number we can identify a unique row
-    data_grouped = data.set_index(["start_time", "weekday"])
+    data["start_time_string"] = data["start_time"].dt.strftime("%Y-%m-%dT%H:%M:%S")
+    data_grouped = data.set_index(["start_time_string", "weekday"])
     info_look_up = data_grouped.to_dict(orient="index")
+    dict_to_rowspan = {}
+    for key in info_look_up:
+        values = info_look_up[key]
+        try:
+            dict_to_rowspan[key[1]][key[0]] = values
+        except KeyError:
+            dict_to_rowspan[key[1]] ={key[0]: values}
+    
     
     
     table = table.resample("15min").first().reindex(new_index, fill_value=None)
-
 
     # for the right order of weekdays
     weekday_list = sorted([weekday_to_id[weekday] for weekday in data["weekday"].unique()])
@@ -58,9 +66,10 @@ def layout(df_participants, metadata_participants):
     datetime_obj = "d3.timeParse('%Y-%m-%dT%H:%M:%S')(params.data.time)"
     table = table.reset_index().rename(columns={"index":"time"})
 
-    columnDefs = [{"field": weekday} for weekday in table.columns[1:]]
-
-    columnDefs[1]['rowSpan'] = {"function": f"rowSpanningComplex(params)"}
+    columnDefs = [{"field": weekday,
+                   "rowSpan":{"function": f"rowSpanningComplex(params)"},
+                   "cellRenderer":"RowSpanningComplexCellRenderer",
+                   'cellClassRules': {"calendar--cell": "params.value"},} for weekday in table.columns[1:]]
     
     columnDefs.insert(0, {"field":"time",
                 "valueGetter": {"function": datetime_obj},
@@ -70,13 +79,14 @@ def layout(df_participants, metadata_participants):
     row_data = table.to_dict(orient="records")
     
     grid = dag.AgGrid(
-        id="calendar_table",
+        id="calendar-grid",
         rowData=row_data,
         columnDefs=columnDefs,
         columnSize="sizeToFit",
+        defaultColDef={"sortable": False, "resizable": True, "filter": False},
         dashGridOptions = {"suppressFieldDotNotation": True,
                            "suppressRowTransform": True,
-                           "context":"hello",}, # extremely nice we can pass data for rowSpanningComplex
+                           "context":dict_to_rowspan,}, # extremely nice we can pass data for rowSpanningComplex
     )
 
     return html.Div(

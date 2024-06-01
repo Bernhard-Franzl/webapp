@@ -1,0 +1,11 @@
+.calendar--cell{
+    background: rgb(240, 240, 240);
+    border: 2px solid lightgrey !important;
+
+}
+.calendar--cell:hover{
+    background: rgb(218, 6, 6);
+}
+.calendar--course-number{
+    font-weight: bold;
+}
