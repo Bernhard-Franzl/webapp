@@ -69,10 +69,11 @@ def layout(df_participants, metadata_participants):
     columnDefs = [{"field": weekday,
                    "rowSpan":{"function": f"rowSpanningComplex(params)"},
                    "cellRenderer":"RowSpanningComplexCellRenderer",
-                   'cellClassRules': {"calendar--cell": "params.value"},} for weekday in table.columns[1:]]
+                   } for weekday in table.columns[1:]]
     
     columnDefs.insert(0, {"field":"time",
                 "valueGetter": {"function": datetime_obj},
+                "cellClass": "calendar--time-cell",
                 "valueFormatter": {"function": f"d3.timeFormat('%H:%M')({datetime_obj})"}
                 })
     
@@ -80,10 +81,17 @@ def layout(df_participants, metadata_participants):
     
     grid = dag.AgGrid(
         id="calendar-grid",
+        className="ag-grid",
         rowData=row_data,
         columnDefs=columnDefs,
         columnSize="sizeToFit",
-        defaultColDef={"sortable": False, "resizable": True, "filter": False},
+        #dangerously_allow_code=True,
+        style={"height": "1000px", "width": "750px"},
+        defaultColDef={"sortable": False, 
+                       "resizable": False, 
+                       "filter": False,
+                        "initialWidth": "50px",
+                        "wrapHeaderText": False},
         dashGridOptions = {"suppressFieldDotNotation": True,
                            "suppressRowTransform": True,
                            "context":dict_to_rowspan,}, # extremely nice we can pass data for rowSpanningComplex
