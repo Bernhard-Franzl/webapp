@@ -72,8 +72,14 @@ def layout(df_participants, metadata_participants):
                    } for weekday in table.columns[1:]]
     
     columnDefs.insert(0, {"field":"time",
+                          "headerName":"",
                 "valueGetter": {"function": datetime_obj},
+                "cellRenderer":"TimeCellRenderer",
                 "cellClass": "calendar--time-cell",
+                'suppressSizeToFit': True,
+                "resizable": False,
+                "pinned": "left",
+                "width": 70,
                 "valueFormatter": {"function": f"d3.timeFormat('%H:%M')({datetime_obj})"}
                 })
     
@@ -86,12 +92,10 @@ def layout(df_participants, metadata_participants):
         columnDefs=columnDefs,
         columnSize="sizeToFit",
         #dangerously_allow_code=True,
-        style={"height": "1000px", "width": "750px"},
-        defaultColDef={"sortable": False, 
-                       "resizable": False, 
-                       "filter": False,
-                        "initialWidth": "50px",
-                        "wrapHeaderText": False},
+        style={"height": "750px", "width": "750px"},
+        defaultColDef={"editable": False,
+                       "sortable": False,
+                       "suppressMovable":True},
         dashGridOptions = {"suppressFieldDotNotation": True,
                            "suppressRowTransform": True,
                            "context":dict_to_rowspan,}, # extremely nice we can pass data for rowSpanningComplex

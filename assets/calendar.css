@@ -4,15 +4,17 @@
 
 }
 .ag-grid{
-    border: 1px solid black;
+    /*border: 1px solid black;*/
     --ag-borders: none;
     /* row border */
     --ag-row-border-style: solid;
     --ag-row-border-width: 1px;
     --ag-row-border-color: lightgrey;
 }
-
-.ag-cell-normal-height, ag-cell-value, ag-cell-value ag-cell-focus, .ag-cell-normal-height, ag-cell-not-inline-editing{
+.ag-body{
+    border: 1px solid black;
+}
+.ag-cell, .ag-cell-normal-height, .ag-column-first, .ag-cell-value, .ag-cell-normal-height, ag-cell-not-inline-editing{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,38 +26,62 @@
 .ag-header-cell-label{
     justify-content: center;
 }
-.ag-header-row{
-    background-color: #0028aa;
+.ag-header-cell, .ag-focused-managed, .ag-header-active{
+    background-color: #0028aa !important;
     color: white;
     font-weight: bold;
     font-size: 20px;
     border-bottom: 1px solid black;
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+}
+.ag-pinned-left-header > div:nth-child(1) > div:nth-child(1){
+    background-color: white !important;
+    border-right: 1px solid black;
+    border-top: none;
+    border-bottom: none;
 }
 
 .calendar--time-cell{
+    width: 100%;
+    height: 100%;
     font-weight: bold;
-    font-size:  14px;
+    font-size:  12px;
+    background: hsla(228, 87%, 95%, 0.9);
     text-align: center;
     vertical-align: top;
-    justify-self: center;
-    background: hsla(228, 87%, 95%, 0.9);
-    border: 1px solid black;
-    padding: 0px;
-    margin: 0;
+
 }
 .calendar--entry{
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
     background: rgb(141, 169, 252);
     border: 1px solid black;
-    text-align: center;
     width: 100%;
     height: 100%;
     padding: 0;
     margin: 3px;
-    overflow: hidden;
+    text-align: center;
+    white-space: normal;
+    overflow: scroll;
 }
 .calendar--entry:hover{
     background: rgb(218, 6, 6);
 }
 .calendar--entry-course-number{
+    font-size: 14px;
+    line-height: 14px;
+    width: 90%;
+    margin-bottom: 5px;
+    text-align: center;
+}
+.calendar--entry-course-name{
+    font-size: 12px;
     font-weight: bold;
+    line-height: 14px;
+    margin-bottom: 5px;
+    width: 90%;
+    text-align: center;
 }
