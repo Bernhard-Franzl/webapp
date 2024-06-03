@@ -138,6 +138,7 @@ def layout(title,
                 filtering_section.children[1].children.append(generate_date_filter(start_date, end_date))
                 
             elif filter == "room":
+                multi = kwargs["multi"]
                 unique_rooms = kwargs["dataframe"]["room"].unique().tolist()
                 filtering_section.children[1].children.append(generate_room_filter(unique_rooms))   
                 
@@ -230,7 +231,7 @@ def generate_date_filter(start_date, end_date):
             ],
         )
 
-def generate_room_filter(unique_rooms):
+def generate_room_filter(unique_rooms, multiple):
     return  html.Div(
         className="plot-header--filtering-room",
         children=[
@@ -241,7 +242,7 @@ def generate_room_filter(unique_rooms):
             dcc.Dropdown(
                 options=[{"label": room, "value": room} for room in unique_rooms],
                 value=unique_rooms,
-                multi=True,
+                multi=multiple,
                 id="room_filter",
                 style={"height": "32px", "line-height": "32px", "min-width": "150px"},
                 persistence=True,
