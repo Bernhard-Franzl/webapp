@@ -14,97 +14,56 @@ weekday_to_id = {
     "So.": 6,
 }
 
+def convert_start_end_time(dataframe):
+    df = dataframe.copy()
+    min_time = df["start_time"].min()
+    max_time = df["end_time"].max()
+    df["start_time"] = df["start_time"].apply(lambda x: x.replace(year=min_time.year, 
+                                                                      month=min_time.month, 
+                                                                      day=min_time.day))
+    df["start_time_string"] = df["start_time"].dt.strftime("%Y-%m-%dT%H:%M:%S")
+    df["end_time"] = df["end_time"].apply(lambda x: x.replace(year=min_time.year, 
+                                                                  month=min_time.month, 
+                                                                  day=min_time.day)- timedelta(minutes=15))
+    return df, min_time, max_time
 
-def layout(df_participants, metadata_participants):
-    
-    
-    #data = df_participants[df_participants["calendar_week"] == 15]
-    #data = data[data["room_id"] == 0]
-    
-    ## remove day from datetime
-    #min_date = data["start_time"].min()
-    #data["start_time"] = data["start_time"].apply(lambda x: x.replace(year=min_date.year, month=min_date.month, day=min_date.day))
-    #data["end_time"] = data["end_time"].apply(lambda x: x.replace(year=min_date.year, month=min_date.month, day=min_date.day)- timedelta(minutes=15))
-    ## pivot table that shows the course number for each weekday and start_time and end_time
-    #table = data.pivot_table(index=["start_time"], 
-    #                         columns=["weekday"], 
-    #                         values="course_number",
-    #                         aggfunc="first")
-    ##table_end  = data.pivot_table(index=["end_time"],
-    ##                            columns=["weekday"],
-    ##                            values="course_number",
-    ##                            aggfunc="first")
-    ##table = table_start.combine_first(table_start)
-    
-    ## new index
-    #min_time = data["start_time"].min()
-    #max_time = data["end_time"].max() + timedelta(minutes=15)
-    #new_index = pd.date_range(start=min_time, end=max_time, freq="15min")
+def generate_new_index(dataframe):
+    min_time = dataframe["start_time"].min()
+    max_time = dataframe["end_time"].max() + timedelta(minutes=15)
+    new_index = pd.date_range(start=min_time, end=max_time, freq="15min")
+    return new_index
 
-    ## make sure that with that with start_time, weekday and course_number we can identify a unique row
-    #data["start_time_string"] = data["start_time"].dt.strftime("%Y-%m-%dT%H:%M:%S")
-    #data_grouped = data.set_index(["start_time_string", "weekday"])
-    #info_look_up = data_grouped.to_dict(orient="index")
-    #dict_to_rowspan = {}
-    #for key in info_look_up:
-    #    values = info_look_up[key]
-    #    try:
-    #        dict_to_rowspan[key[1]][key[0]] = values
-    #    except KeyError:
-    #        dict_to_rowspan[key[1]] ={key[0]: values}
-    
-    
-    
-    #table = table.resample("15min").first().reindex(new_index, fill_value=None)
+def generate_context_dictionary(dataframe):
+    df = dataframe.copy()
+    info_look_up = df.set_index(["start_time_string", "weekday"]).to_dict(orient="index")
+    dict_to_rowspan = {}
+    for key in info_look_up:
+        values = info_look_up[key]
+        try:
+            dict_to_rowspan[key[1]][key[0]] = values
+        except KeyError:
+            dict_to_rowspan[key[1]] ={key[0]: values}
+            
+    return dict_to_rowspan
 
-    ## for the right order of weekdays
-    #weekday_list = sorted([weekday_to_id[weekday] for weekday in data["weekday"].unique()])
-    #weekday_list = [list(weekday_to_id)[weekday] for weekday in weekday_list]
-    #table = table[weekday_list]
-
-    ## weekdays as columns
-    #datetime_obj = "d3.timeParse('%Y-%m-%dT%H:%M:%S')(params.data.time)"
-    #table = table.reset_index().rename(columns={"index":"time"})
-
-    #columnDefs = [{"field": weekday,
-    #               "rowSpan":{"function": f"rowSpanningComplex(params)"},
-    #               "cellRenderer":"RowSpanningComplexCellRenderer",
-    #               } for weekday in table.columns[1:]]
+def define_columns(table):
+    datetime_obj = "d3.timeParse('%Y-%m-%dT%H:%M:%S')(params.data.time)"
+    columnDefs = [{"field": weekday,
+                "rowSpan":{"function": f"rowSpanningComplex(params)"},
+                "cellRenderer":"RowSpanningComplexCellRenderer",
+                } for weekday in table.columns[1:]]
     
-    #columnDefs.insert(0, {"field":"time",
-    #                      "headerName":"",
-    #            "valueGetter": {"function": datetime_obj},
-    #            "cellRenderer":"TimeCellRenderer",
-    #            "cellClass": "calendar--time-cell",
-    #            'suppressSizeToFit': True,
-    #            "resizable": False,
-    #            "pinned": "left",
-    #            "width": 70,
-    #            "valueFormatter": {"function": f"d3.timeFormat('%H:%M')({datetime_obj})"}
-    #            })
-    
-    #row_data = table.to_dict(orient="records")
-    
-    grid = dag.AgGrid(
-        id="calendar-grid",
-        className="ag-grid",
-        #rowData=rowData,
-        #columnDefs=columnDefs,
-        columnSize="sizeToFit",
-        #dangerously_allow_code=True,
-        style={"height": "750px", "width": "750px"},
-        defaultColDef={"editable": False,
-                       "sortable": False,
-                       "suppressMovable":True},
-        #dashGridOptions = {"suppressFieldDotNotation": True,
-        #                   "suppressRowTransform": True,
-        #                   "context":dict_to_rowspan,
-        #                   }, # extremely nice we can pass data for rowSpanningComplex
-    )
-
-    return html.Div(
-        className="calendar",
-        children=[
-            grid
-        ]
-    )
+    columnDefs.insert(
+        0, 
+        {"field":"time",
+                          "headerName":"",
+                "valueGetter": {"function": datetime_obj},
+                "cellRenderer":"TimeCellRenderer",
+                "cellClass": "calendar--time-cell",
+                'suppressSizeToFit': True,
+                "resizable": False,
+                "pinned": "left",
+                "width": 70,
+                "valueFormatter": {"function": f"d3.timeFormat('%H:%M')({datetime_obj})"}
+                })    
+    return columnDefs

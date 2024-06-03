@@ -21,6 +21,11 @@ def generate_input_list(header_config):
             component_id="room_filter",
             component_property="value"))
         
+    if "calendar_week" in filter_list:
+        input_list.append(Input(
+            component_id="calendar_week_filter",
+            component_property="value"))
+        
     if "start_time" in filter_list:
         input_list.append(Input(
             component_id="start_time_filter",
@@ -138,10 +143,22 @@ def layout(title,
                 filtering_section.children[1].children.append(generate_date_filter(start_date, end_date))
                 
             elif filter == "room":
-                multi = kwargs["multi"]
+                try:
+                    multi = kwargs["multi_room"]
+                except KeyError:
+                    multi = True
                 unique_rooms = kwargs["dataframe"]["room"].unique().tolist()
-                filtering_section.children[1].children.append(generate_room_filter(unique_rooms))   
+                filtering_section.children[1].children.append(generate_room_filter(unique_rooms, multi))   
                 
+            elif filter == "calendar_week":
+                try:
+                    multi = kwargs["multi_calendar_week"]
+                except KeyError:
+                    multi = True
+
+                unique_calendar_weeks = kwargs["dataframe"]["calendar_week"].unique().tolist()
+                filtering_section.children[1].children.append(generate_weekday_filter(unique_calendar_weeks, multi))
+                                                              
             elif filter == "start_time":
                 start_time_list = sorted(kwargs["dataframe"]["start_time"].dt.time.unique())
                 filtering_section.children[1].children.append(generate_start_time_filter(start_time_list))
@@ -232,6 +249,11 @@ def generate_date_filter(start_date, end_date):
         )
 
 def generate_room_filter(unique_rooms, multiple):
+    
+    if multiple:
+        default_value = unique_rooms
+    else:        
+        default_value = unique_rooms[0]
     return  html.Div(
         className="plot-header--filtering-room",
         children=[
@@ -241,7 +263,7 @@ def generate_room_filter(unique_rooms, multiple):
             ),
             dcc.Dropdown(
                 options=[{"label": room, "value": room} for room in unique_rooms],
-                value=unique_rooms,
+                value=default_value,
                 multi=multiple,
                 id="room_filter",
                 style={"height": "32px", "line-height": "32px", "min-width": "150px"},
@@ -251,6 +273,33 @@ def generate_room_filter(unique_rooms, multiple):
             )
         ],
     )
+   
+def generate_weekday_filter(unique_calendar_weeks, multiple):
+    if multiple:
+        default_value = unique_calendar_weeks
+    else:        
+        default_value = unique_calendar_weeks[0]
+        
+    return html.Div(
+        className="plot-header--filtering-room",
+        children=[
+            html.Div(
+                "Week:", 
+                className="plot-header--filtering-element-label"
+            ),
+            dcc.Dropdown(
+                options=[{"label": f"CW {cw}", "value": cw} for cw in unique_calendar_weeks],
+                value=default_value,
+                multi=multiple,
+                id="calendar_week_filter",
+                style={"height": "32px", "line-height": "32px", "min-width": "150px"},
+                persistence=True,
+                persistence_type="memory",
+                persisted_props=["value"]
+            )
+        ]
+    )
+    
     
 def generate_start_time_filter(start_time_list):
     return html.Div(

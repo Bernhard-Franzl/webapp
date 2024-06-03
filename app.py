@@ -2,7 +2,8 @@ import dash
 from dash import Dash, html, dcc
 from components import page_header
 
-app = Dash(__name__, use_pages=True)
+app = Dash(__name__,
+           use_pages=True)
 
 app.layout = html.Div([
     page_header.layout(),

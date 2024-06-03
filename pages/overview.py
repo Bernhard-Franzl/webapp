@@ -38,7 +38,7 @@ header_config = {
     "grouping": False,
     "sorting": True,
     "mode": True,
-    "figure":True 
+    "figure":True,
 }
 
 layout = html.Div(
