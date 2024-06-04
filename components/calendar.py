@@ -56,14 +56,13 @@ def define_columns(table):
     columnDefs.insert(
         0, 
         {"field":"time",
-                          "headerName":"",
-                "valueGetter": {"function": datetime_obj},
-                "cellRenderer":"TimeCellRenderer",
-                "cellClass": "calendar--time-cell",
-                'suppressSizeToFit': True,
-                "resizable": False,
-                "pinned": "left",
-                "width": 70,
-                "valueFormatter": {"function": f"d3.timeFormat('%H:%M')({datetime_obj})"}
-                })    
+        "headerName":"",
+        "valueGetter": {"function": datetime_obj},
+        "cellClass": "calendar--time-cell",
+        'suppressSizeToFit': True,
+        "resizable": False,
+        "pinned": "left",
+        "width": 70,
+        "valueFormatter": {"function": f"d3.timeFormat('%H:%M')({datetime_obj})"}
+        })    
     return columnDefs

@@ -1,6 +1,19 @@
-.button-container{
+
+/* Calendar Header */
+.calendar-header{
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px;
+    width: 750px;
+    height: 50px;
+    font-size: 18px;
+}
+.calendar-header-title, .calendar-header-room{
+    text-align: center;
+}
+.button-container{
+    justify-self: center;
     align-items: center;
     margin: 10px;
 }
@@ -16,6 +29,7 @@
     border-radius: 5px;
 }
 
+/* Calendar Grid & Header Cells*/
 .calendar{
     margin-bottom: 10px;
     padding: 0;
@@ -29,11 +43,9 @@
 .ag-body{
     border: 1px solid black;
 }
-
 .ag-header-cell-label{
     justify-content: center;
 }
-
 .ag-header-cell, .ag-focused-managed, .ag-header-active{
     background-color: #0028aa !important;
     color: white;
@@ -49,51 +61,126 @@
     border-top: none;
     border-bottom: none;
 }
+
+/* Calendar Cells*/
 .calendar--time-cell{
-    width: 100%;
-    height: 100%;
+    /* styling */
     font-weight: bold;
     font-size:  12px;
+    line-height: 12px;
     background: hsla(228, 87%, 95%, 0.9);
-    text-align: center;
-    vertical-align: top;
 
 }
+.calendar--entry-wrapper{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-items: center !important;
+    align-items: center !important;
+    padding: 0px;
+    margin: none;
+    z-index: inherit;
+}
+.calendar--entry-background-bot{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-right: 5px;
+    margin-left: 4px;
+    /* styling */
+    background: rgb(141, 169, 252);
+    z-index: -100;
+}
+.calendar--entry-background-top{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-right: 5px;
+    margin-left: 4px;
+    /* styling */
+    background: hsla(228, 87%, 95%, 1);
+    z-index: -100;
+}
+
 .calendar--entry{
     display: flex;
     flex-direction: column;
     justify-items: center;
     align-items: center;
-    background: rgb(141, 169, 252);
+    /* position */
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    /*margin*/
+    margin-right: 5px;
+    margin-left: 4px;
+
+    /* styling */
     border: 1px solid black;
-    width: 100%;
-    height: 100%;
-    padding: 0px;
-    margin: 3px;
     text-align: center;
     white-space: normal;
     overflow: scroll;
+    z-index: 100;
 }
 .calendar--entry:hover{
     background: rgb(218, 6, 6);
 }
 .calendar--entry-course-number{
-    font-size: 14px;
+    font-size: 12px;
     line-height: 14px;
     width: 90%;
     margin-bottom: 5px;
+    margin-top: 5px;
     text-align: center;
 }
 .calendar--entry-course-name{
+    font-size: 12px;
+    font-weight: bold;
+    color: black;
+    line-height: 14px;
+    margin-bottom: 5px;
+    width: 90%;
+    text-align: center;
+    text-decoration: none;
+}
+.calendar--entry-course-name:link, .calendar--entry-course-name:visited{
     font-size: 12px;
     font-weight: bold;
     line-height: 14px;
     margin-bottom: 5px;
     width: 90%;
     text-align: center;
+    
 }
+.calendar--entry-details-link{
+    font-size: 12px;
+    line-height: 14px;
+    margin-bottom: 5px;
+    width: 90%;
+    text-align: center;
+}
+.calendar--entry-course-time{    
+    font-size: 12px;
+    line-height: 14px;
+    margin-bottom: 5px;
+    width: 90%;
+    text-align: center;}
 
 .ag-cell{
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0px 0px 0px 0px!important;
+    padding: 0px !important;
+}
+/*.ag-cell{
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -101,4 +188,4 @@
     padding-top: 1px !important;
     padding-bottom: 1px !important;
     padding-left: 1px !important;
-}
+}*/

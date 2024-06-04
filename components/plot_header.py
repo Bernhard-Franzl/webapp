@@ -165,7 +165,7 @@ def layout(title,
                 
             elif filter == "number":
                 course_numbers = sorted(kwargs["dataframe"]["course_number"].unique())
-                filtering_section.children[1].children.append(generate_number_filter(course_numbers))
+                filtering_section.children[1].children.append(generate_number_filter(course_numbers, course_id_default=kwargs["course_id_default"]))
                 
             elif filter == "name":
                 course_names = sorted(kwargs["dataframe"]["course_name"].unique())
@@ -299,8 +299,7 @@ def generate_weekday_filter(unique_calendar_weeks, multiple):
             )
         ]
     )
-    
-    
+       
 def generate_start_time_filter(start_time_list):
     return html.Div(
         className="plot-header-filtering-starttime",
@@ -323,7 +322,11 @@ def generate_start_time_filter(start_time_list):
         
     )
 
-def generate_number_filter(course_numbers, id_data_list="number_suggestions"):
+def generate_number_filter(course_numbers, id_data_list="number_suggestions", course_id_default=""):
+    if course_id_default != "none":
+        default_value = course_id_default
+    else:
+        default_value = ""
     
     data_list = html.Datalist(
         id=id_data_list, 
@@ -338,7 +341,7 @@ def generate_number_filter(course_numbers, id_data_list="number_suggestions"):
                 className="plot-header--filtering-element-label"
             ),
             dcc.Input(
-                value="",
+                value=default_value,
                 type="text",
                 placeholder="Course Number",
                 id="course_number_filter",

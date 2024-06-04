@@ -1,5 +1,5 @@
 
-from dash import Dash, html, dcc, Input, Output, callback, register_page
+from dash import Dash, html, dcc, Input, Output, callback, register_page, page_registry
 import json
 import pandas as pd
 from components import course_info
@@ -7,7 +7,8 @@ from visualization.visualization import Visualizer
 from datetime import datetime, date, time
 from components import plot_header
 
-register_page(__name__, name="Course Details", order=3)
+register_page(__name__,name="Course Details", path_template="/details/<course_id>",order=3)
+
 
 ## TODO:
 # - make course information -> more structured
@@ -45,41 +46,77 @@ header_config = {
 }
 
 
-    
-layout = html.Div(
-    className="page",
-    children=[
-        # Header
-        plot_header.layout(
-            title=header_config["title"],
-            description= header_config["description"],
-            filtering=header_config["filtering"],
-            start_date = start_date,
-            end_date = end_date,
-            dataframe = df_participants,
-            sorting=header_config["sorting"],
-            mode=header_config["mode"],
-            course_info=header_config["course_info"]
-        ),
-        # Plot and course info
-        html.Div(
-            className="course_detail_plot",
-            children =[
-                html.Div(
-                    course_info.initialize_layout()
-                    ),
-                html.Div(
-                    className=visard.get_css_class(),
-                    children=dcc.Graph(
-                        id="participants_single_course_bar",
-                        config=visard.config
+def layout(course_id="none"):
+    return html.Div(
+        className="page",
+        children=[
+            # Header
+            plot_header.layout(
+                title=header_config["title"],
+                description= header_config["description"],
+                filtering=header_config["filtering"],
+                start_date = start_date,
+                end_date = end_date,
+                dataframe = df_participants,
+                sorting=header_config["sorting"],
+                mode=header_config["mode"],
+                course_info=header_config["course_info"],
+                course_id_default=course_id
+            ),
+            # Plot and course info
+            html.Div(
+                className="course_detail_plot",
+                children =[
+                    html.Div(
+                        course_info.initialize_layout()
+                        ),
+                    html.Div(
+                        className=visard.get_css_class(),
+                        children=dcc.Graph(
+                            id="participants_single_course_bar",
+                            config=visard.config
+                        )
                     )
-                )
+                    
+                ]
+            )
+        ]
+    )
+
+#layout = html.Div(
+#    className="page",
+#    children=[
+#        # Header
+#        plot_header.layout(
+#            title=header_config["title"],
+#            description= header_config["description"],
+#            filtering=header_config["filtering"],
+#            start_date = start_date,
+#            end_date = end_date,
+#            dataframe = df_participants,
+#            sorting=header_config["sorting"],
+#            mode=header_config["mode"],
+#            course_info=header_config["course_info"]
+#        ),
+#        # Plot and course info
+#        html.Div(
+#            className="course_detail_plot",
+#            children =[
+#                html.Div(
+#                    course_info.initialize_layout()
+#                    ),
+#                html.Div(
+#                    className=visard.get_css_class(),
+#                    children=dcc.Graph(
+#                        id="participants_single_course_bar",
+#                        config=visard.config
+#                    )
+#                )
                 
-            ]
-        )
-    ]
-)
+#            ]
+#        )
+#    ]
+#)
 
 
 input_list = plot_header.generate_input_list(header_config)
@@ -89,6 +126,7 @@ output_list.append(Output("course_info", "children"))
     output_list,
     input_list)
 def update_figure(start_date_filter, end_date_filter, course_number, course_name):
+    
     ########## Filtering ########## 
     df = df_participants.copy()
     # filter by date
