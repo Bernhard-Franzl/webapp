@@ -178,10 +178,10 @@ class Visualizer():
         if mode == "multi_bar":
             fig.update_traces(
                 hovertemplate="<b>Frequency: %{y}</b><br>" +
-                            "%{customdata[9]}: %{customdata[8]}<br>" +
+                            "%{customdata[13]}: %{customdata[12]}<br>" +
                             #"Course number: %{customdata[0]}<br>" +
                             #"Present: %{customdata[17]} | Registered: %{customdata[14]}<br>" +
-                            "Time: %{customdata[1]} %{customdata[5]}-%{customdata[6]}<br>" +
+                            "Time: %{customdata[1]} %{customdata[8]}-%{customdata[9]}<br>" +
                             "Room: %{customdata[2]}<br>"+
                             #"Room: %{customdata[2]} | Room Capacity:%{customdata[7]} <br>"+
                             #"Irregular: %{customdata[21]}<br>" +
@@ -483,7 +483,7 @@ class Visualizer():
                             x_title=x_title,)
         
         fig = self.customise_x_and_y_title(fig, x_title, y_title)
-
+        print(df.columns)
         for row, indices in enumerate(course_indices, 1):
             chunk_course_numbers = [course_numbers[i] for i in indices]
             fig = self.generate_mulit_bar_plot(fig=fig, 

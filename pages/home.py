@@ -66,6 +66,15 @@ layout = html.Div(
                                     html.Div(
                                         className="home-page--list-item",
                                         children=[
+                                            html.Div("Calendar View:",
+                                                     className="home-page--list-item-label"),
+                                            html.Div("Illustrates the distribution of the courses over a chosen calendar week and a chosen room.",)
+                                                  ]
+                                        
+                                    ),
+                                    html.Div(
+                                        className="home-page--list-item",
+                                        children=[
                                             html.Div("Course Details:",
                                                     className="home-page--list-item-label"),
                                             html.Div("Provides a detailed view of the course information and the participants of a single course.",	

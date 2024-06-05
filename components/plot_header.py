@@ -192,7 +192,10 @@ def layout(title,
         sorting_mode_section.children.children.append(sorting_section)
         
         if mode:
-            mode_section = generate_mode_section()
+            try:
+                mode_section = generate_mode_section(kwargs["mode_options"])
+            except KeyError:
+                mode_section = generate_mode_section(None)
             sorting_mode_section.children.children.append(mode_section)
             
             plot_header.append(sorting_mode_section)
@@ -211,7 +214,11 @@ def layout(title,
                 grouping_section = generate_grouping_section()
                 sorting_mode_section.children.children.append(grouping_section)
                 
-            mode_section = generate_mode_section()
+            try:
+                mode_section = generate_mode_section(kwargs["mode_options"])
+            except KeyError:
+                mode_section = generate_mode_section(None)
+                
             sorting_mode_section.children.children.append(mode_section)
             
             plot_header.append(sorting_mode_section)
@@ -414,7 +421,12 @@ def generate_sorting_section():
                 ]
             )
 
-def generate_mode_section():
+def generate_mode_section(mode_options):
+    if mode_options == None:
+        mode_option_list = ["absolute", "relative_registered", "relative_capacity"]
+    else:
+        mode_option_list = mode_options
+        
     return html.Div(
                 className="plot-header--mode",
                 children=[
@@ -424,8 +436,8 @@ def generate_mode_section():
                     html.Div(
                         className="plot-header--mode-dropdown",
                         children=dcc.Dropdown(
-                            options=["absolute", "relative_registered", "relative_capacity"],
-                            value="absolute",
+                            options=mode_option_list,
+                            value=mode_option_list[0],
                             id="graph_mode",
                             persistence=True,
                             persistence_type="memory",

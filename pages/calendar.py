@@ -38,11 +38,12 @@ header_config = {
     "filtering": ["room", "calendar_week"],
     "grouping": False,
     "sorting": False,
-    "mode": False,
+    "mode": True,
     "figure":False,
     "dataframe": df_participants,
     "multi_calendar_week":False,
-    "multi_room":False
+    "multi_room":False,
+    "mode_options": ["relative_capacity", "relative_registered"],
 }
 layout = html.Div(
     className="page",
@@ -52,7 +53,9 @@ layout = html.Div(
             filtering=header_config["filtering"],
             dataframe = header_config["dataframe"],
             multi_room = header_config["multi_room"],
-            multi_calendar_week = header_config["multi_calendar_week"]
+            mode=header_config["mode"],
+            multi_calendar_week = header_config["multi_calendar_week"],
+            mode_options=header_config["mode_options"]
         ),
         html.Div(
             className="calendar",
@@ -100,7 +103,7 @@ layout = html.Div(
      Output("calendar-title-id", "children"),
      Output("calendar-room-id", "children")],
     plot_header.generate_input_list(header_config))
-def update_calendar(room_filter, calendar_week_filter):
+def update_calendar(room_filter, calendar_week_filter, mode):
 
     ########## Filtering ##########
     # filter by date
@@ -131,8 +134,8 @@ def update_calendar(room_filter, calendar_week_filter):
     # new index
     new_index = calendar.generate_new_index(df)
     # make sure that with start_time, weekday and course_number we can identify a unique row
+    df["mode"] = mode
     context_dictionary = calendar.generate_context_dictionary(df)
-    
     
     # pivot table that shows the course number for each weekday and start_time and end_time
     weekday_list = ["Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."]
