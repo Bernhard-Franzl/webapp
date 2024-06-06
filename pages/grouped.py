@@ -101,9 +101,14 @@ def update_figure(start_date_filter, end_date_filter, room_filter, start_time_fi
             df = visard.filter_by_start_time(df, start_time_filter)
     ########## Grouping ##########
     # keep only the informative columns
+    print(df.columns)
+    df.rename(columns={"instute": "institute"}, inplace=True)
     df = df[["weekday", "start_time", "end_time", "start_time_string",
              "present_students", "registered_students", 
-             "room", "room_capacity", "type", "kind", "duration"]]
+             "room", "room_capacity", "type", "kind", "duration",
+             "calendar_week", "institute", "level", "curriculum", 
+             "exam", "test", "tutorium", "study_area", "university"]]
+    
     
     if group_by == None:
         group_by = []
