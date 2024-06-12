@@ -6,8 +6,10 @@ from datetime import datetime, date, time, timedelta
 from components import plot_header
 import dash_ag_grid as dag
 
+from data_handler import DataHandler
 from visualization.visualization import Visualizer
 from components import calendar
+
 register_page(__name__, name="Calendar View", order=2)
 weekday_to_id = {
     "Mo.": 0,
@@ -19,43 +21,33 @@ weekday_to_id = {
     "So.": 6,
 }
 
-###### load data ########
-df_participants = pd.read_csv("data/df_participants.csv")
-df_participants["start_time"] = pd.to_datetime(df_participants["start_time"])
-df_participants["end_time"] = pd.to_datetime(df_participants["end_time"])
-df_participants["note"] = df_participants["note"].fillna("")
-df_participants["time_span_str"] = df_participants.apply(lambda x: f"{x['start_time'].strftime('%H:%M')}-{x['end_time'].strftime('%H:%M')}", axis=1)
+###### Load Data ########
+DataHandler = DataHandler("data")
+df_participants = DataHandler.get_data()
+metadata_participants = DataHandler.get_meta_data()
 
-with open("data/metadata_participants.json", "r") as file:
-    metadata_participants = json.load(file)
-    metadata_participants["start_time"] = datetime.strptime(metadata_participants["start_time"], "%d.%m.%Y %H:%M")
-    metadata_participants["end_time"] = datetime.strptime(metadata_participants["end_time"], "%d.%m.%Y %H:%M")
+
 #########################
 visard = Visualizer()
 
 header_config = {
     "title": "Calendar View",
     "filtering": ["room", "calendar_week"],
+    "dataframe": df_participants,
+    "multi_room":False,
+    "mode": True,
+    "multi_calendar_week":False,
     "grouping": False,
     "sorting": False,
-    "mode": True,
     "figure":False,
-    "dataframe": df_participants,
-    "multi_calendar_week":False,
-    "multi_room":False,
     "mode_options": ["relative_capacity", "relative_registered"],
 }
+
 layout = html.Div(
     className="page",
     children=[
         plot_header.layout(
-            title=header_config["title"],
-            filtering=header_config["filtering"],
-            dataframe = header_config["dataframe"],
-            multi_room = header_config["multi_room"],
-            mode=header_config["mode"],
-            multi_calendar_week = header_config["multi_calendar_week"],
-            mode_options=header_config["mode_options"]
+            **header_config
         ),
         html.Div(
             className="calendar",
@@ -106,25 +98,16 @@ layout = html.Div(
 def update_calendar(room_filter, calendar_week_filter, mode):
 
     ########## Filtering ##########
-    # filter by date
-    #start_time = datetime.combine(date.fromisoformat(start_date_filter) , time(hour=0, minute=0))
-    #end_time = datetime.combine(date.fromisoformat(end_date_filter), time(hour=23, minute=59))
-    #df = visard.filter_by_time(df_participants, start_time, end_time)
     # filter by room
     df =  df_participants.copy()
     
-    df = df[df["calendar_week"] == calendar_week_filter]
     # filter by calendar week
-    
+    df = DataHandler.filter_column_by_value(df, "calendar_week", calendar_week_filter)
     # filter by room
-    if type(room_filter) == list:
-        room_filter = [metadata_participants["room_to_id"][room] for room in room_filter]
-        if len(room_filter) > 0:
-            df = visard.filter_by_rooms(df, room_filter)
-    else:
-        df = visard.filter_by_rooms(df, [metadata_participants["room_to_id"][room_filter]])
+    df = DataHandler.filter_by_rooms(df, room_filter)
     
     
+    ########### Calendar ###########
     # convert start_time and end_time to suitable format
     df, min_time, max_time = calendar.convert_start_end_time(df)
     # first date of calendar week

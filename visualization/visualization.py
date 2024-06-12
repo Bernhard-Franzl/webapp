@@ -52,6 +52,7 @@ class Visualizer():
             "modeBarButtonsToRemove": 
                 ["select", "zoomIn", "zoomOut", "autoScale", "lasso2d"]}
 
+
 ############ CSS ############
     def get_css_class(self):
         
@@ -60,40 +61,7 @@ class Visualizer():
         else:
             return "chart-container-fixed"
         
-############ Pandas ############
-    def filter_by_rooms(self, dataframe, room_id:list):
-        df = dataframe.copy()
-        return df[df["room_id"].isin(room_id)]
-    
-    def filter_greater_than(self, dataframe, column, value):
-        df = dataframe.copy()
-        return df[df[column] > value]
-    
-    def filter_by_time(self, dataframe, start_time, end_time):
-        df = dataframe.copy()
-        return df[(df["start_time"] >= start_time) & (df["end_time"] <= end_time)]
-    
-    def filter_by_start_time(self, dataframe, start_time:list):
-        df = dataframe.copy()
-        return df[df["start_time"].dt.time.isin(start_time)]
-    
-    def filter_by_course_number(self, dataframe, course_number):
-        df = dataframe.copy()
-        return df[df["course_number"] == course_number]
-    
-    def filter_by_course_name(self, dataframe, course_name):
-        df = dataframe.copy()
-        return df[df["course_name"] == course_name]
-        
-    def sort_by_column(self, dataframe, column, ascending=True):
-        df = dataframe.copy() 
-        return df.sort_values(by=column, ascending=ascending)
-
-    def group_by_column(self, dataframe, column):
-        df = dataframe.copy()
-        df = df.drop(columns=["start_time", "end_time"])
-        return df.groupby(by=column).sum().reset_index()
-
+         
 ############ Plotly ############
     ##### Basic Utility Functions #####
     def add_title(self, fig, title):
@@ -661,6 +629,12 @@ class Visualizer():
         fig = self.customize_hover(fig, mode="late_students")
         fig.show(config=self.config)     
 
+
+############# Pandas ############
+#    def filter_greater_than(self, dataframe, column, value):
+#        df = dataframe.copy()
+#        return df[df[column] > value]
+    
 
     #def plot_early_leaving_students(self, fig, df_hs18, df_hs19, top_n):
         
