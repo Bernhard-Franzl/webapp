@@ -457,7 +457,8 @@ def generate_grouping_section():
                     html.Div(
                         className="plot-header--grouping-dropdown",
                         children=dcc.Dropdown(
-                            options=["weekday", "room", "type", "duration", "start_time_string"],
+                            options=["weekday", "calendar_week", "room", "type", "duration", "start_time_string",
+                                     "institute", "level", "curriculum","exam", "test", "tutorium"],
                             value=["weekday"],
                             id="graph_group_by",
                             multi=True,
