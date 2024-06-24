@@ -6,6 +6,7 @@ from components import course_info
 from visualization.visualization import Visualizer
 from datetime import datetime, date, time
 from components import plot_header
+from data_handler import DataHandler
 
 register_page(__name__,name="Course Details", path_template="/details/<course_id>",order=3)
 
@@ -15,17 +16,10 @@ register_page(__name__,name="Course Details", path_template="/details/<course_id
 # - institute info
 # - add a table that shows the available courses
 
-###### load data ########
-df_participants = pd.read_csv("data/df_participants.csv")
-df_participants["start_time"] = pd.to_datetime(df_participants["start_time"])
-df_participants["end_time"] = pd.to_datetime(df_participants["end_time"])
-df_participants["note"] = df_participants["note"].fillna("")
-
-with open("data/metadata_participants.json", "r") as file:
-    metadata_participants = json.load(file)
-    metadata_participants["start_time"] = datetime.strptime(metadata_participants["start_time"], "%d.%m.%Y %H:%M")
-    metadata_participants["end_time"] = datetime.strptime(metadata_participants["end_time"], "%d.%m.%Y %H:%M")
-#########################
+###### Load Data ########
+data_handler = DataHandler("data")
+df_participants = data_handler.get_data()
+metadata_participants = data_handler.get_meta_data()
 
 start_date = metadata_participants["start_time"].date()
 end_date = metadata_participants["end_time"].date()
@@ -41,6 +35,7 @@ header_config = {
     "grouping": False,
     "sorting": False,
     "mode": False,
+    "dataframe": df_participants,
     "course_info": True,
     "figure":True 
 }
@@ -52,16 +47,11 @@ def layout(course_id="none"):
         children=[
             # Header
             plot_header.layout(
-                title=header_config["title"],
-                description= header_config["description"],
-                filtering=header_config["filtering"],
                 start_date = start_date,
                 end_date = end_date,
-                dataframe = df_participants,
-                sorting=header_config["sorting"],
-                mode=header_config["mode"],
-                course_info=header_config["course_info"],
-                course_id_default=course_id
+                course_id_default=course_id,
+                **header_config
+                
             ),
             # Plot and course info
             html.Div(
@@ -83,40 +73,7 @@ def layout(course_id="none"):
         ]
     )
 
-#layout = html.Div(
-#    className="page",
-#    children=[
-#        # Header
-#        plot_header.layout(
-#            title=header_config["title"],
-#            description= header_config["description"],
-#            filtering=header_config["filtering"],
-#            start_date = start_date,
-#            end_date = end_date,
-#            dataframe = df_participants,
-#            sorting=header_config["sorting"],
-#            mode=header_config["mode"],
-#            course_info=header_config["course_info"]
-#        ),
-#        # Plot and course info
-#        html.Div(
-#            className="course_detail_plot",
-#            children =[
-#                html.Div(
-#                    course_info.initialize_layout()
-#                    ),
-#                html.Div(
-#                    className=visard.get_css_class(),
-#                    children=dcc.Graph(
-#                        id="participants_single_course_bar",
-#                        config=visard.config
-#                    )
-#                )
-                
-#            ]
-#        )
-#    ]
-#)
+
 
 
 input_list = plot_header.generate_input_list(header_config)
@@ -127,23 +84,13 @@ output_list.append(Output("course_info", "children"))
     input_list)
 def update_figure(start_date_filter, end_date_filter, course_number, course_name):
     
-    ########## Filtering ########## 
     df = df_participants.copy()
+    
+    ########## Filtering ########## 
     # filter by date
-    start_time = datetime.combine(date.fromisoformat(start_date_filter) , time(hour=0, minute=0))
-    end_time = datetime.combine(date.fromisoformat(end_date_filter), time(hour=23, minute=59))
-    df = visard.filter_by_time(df, start_time, end_time)
-    # filter by course number
-    course_filtered = False
-    if course_number != "":
-        df = visard.filter_by_course_number(df, course_number)
-        if len(df) != 0:
-            course_filtered = True
-    # filter by course name
-    if course_name != "" and (not course_filtered):
-        df = visard.filter_by_course_name(df, course_name)
-        if len(df) != 0:
-            course_filtered = True
+    df = data_handler.filter_by_date(df, start_date_filter, end_date_filter)
+    # filter by course number or name
+    df, course_filtered = data_handler.filter_course(df, course_number, course_name)
             
     ########## Course Info ##########
     if course_filtered:

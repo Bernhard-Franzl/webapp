@@ -51,47 +51,45 @@ layout = html.Div(
                             html.P(
                                 "The dashboard contains the following pages:"
                             ),
-                           html.P(
-                                style={"display":"flex", "flexDirection":"column"},
-                                children=[
-                                    html.Div(
-                                        className="home-page--list-item",
+                            html.Table(
+                                className="home-page--table",
+                                children = [
+                                    html.Tr(
+                                        className="home-page--table-row",
                                         children=[
-                                            html.Div("Course Overview:",
-                                                    className="home-page--list-item-label"),
-                                            html.Div("Provides an overview of the onsite participants of all the course in the selected data.",
+                                            html.Td("Course Overview:",
+                                                    className="home-page--list-item-label-pages"), 
+                                            html.Td("Provides an overview of the onsite participants of all the course in the selected data.",
+                                                    className="home-page--list-item-description")]
+                                        ),
+                                    html.Tr(
+                                        className="home-page--table-row",
+                                        children=[
+                                            html.Td("Calendar View:",
+                                                    className="home-page--list-item-label-pages"), 
+                                            html.Td("Illustrates the distribution of the courses over a chosen calendar week and a chosen room.",
+                                                    className="home-page--list-item-description")]
+                                        ),
+                                    html.Tr(
+                                        className="home-page--table-row",
+                                        children=[
+                                            html.Td("Course Details:",
+                                                    className="home-page--list-item-label-pages"), 
+                                            html.Td("Provides a detailed view of the course information and the participants of a single course.",
                                                     className="home-page--list-item-description")
-                                        ]
-                                    ),
-                                    html.Div(
-                                        className="home-page--list-item",
+                                            ]
+                                        ),
+                                    html.Tr(
+                                        className="home-page--table-row",
                                         children=[
-                                            html.Div("Calendar View:",
-                                                     className="home-page--list-item-label"),
-                                            html.Div("Illustrates the distribution of the courses over a chosen calendar week and a chosen room.",)
-                                                  ]
-                                        
-                                    ),
-                                    html.Div(
-                                        className="home-page--list-item",
-                                        children=[
-                                            html.Div("Course Details:",
-                                                    className="home-page--list-item-label"),
-                                            html.Div("Provides a detailed view of the course information and the participants of a single course.",	
+                                            html.Td("Grouped Data:",
+                                                    className="home-page--list-item-label-pages"), 
+                                            html.Td("Illustrates the effect of grouping the data by different features.",
                                                     className="home-page--list-item-description")
-                                        ]
-                                    ),
-                                    html.Div(
-                                        className="home-page--list-item",
-                                        children=[
-                                            html.Div("Grouped Data:",
-                                                    className="home-page--list-item-label"),
-                                            html.Div("Illustrates the effect of grouping the data by different features.",
-                                                    className="home-page--list-item-description")
-                                        ]
-                                    )
-                                ]
-                            )
+                                            ]
+                                        )
+                                    ],
+                                ),
                         ]
                     )
                 ]
@@ -106,57 +104,55 @@ layout = html.Div(
                         className="home-page--section-title"
                     ),
                     html.Div(
-                        className="plot-header--description",
+                        className="home-page--description",
                         children=[
-                            html.P(
+                            html.Div(
                                 "The plot header is the top part of every page." + 
                                 "It contains the title, description and data manipulation options."
                             ),
                             html.P(
                                 "The data manipulation options are:"
                             ),
-                            html.P(
-                                style={"display":"flex", "flexDirection":"column"},
-                                children=[
-                                    html.Div(
-                                        className="home-page--list-item",
+                            html.Table(
+                                className="home-page--table",
+                                children = [
+                                    html.Tr(
+                                        className="home-page--table-row",
                                         children=[
-                                            html.Div("Filter By:", 
-                                                    className="home-page--list-item-label"),
-                                            html.Div("Allows you to filter the data by date, room, start time and course title/number.",
+                                            html.Td("Filter By:",
+                                                    className="home-page--list-item-label-header"), 
+                                            html.Td("Allows you to filter the data by date, room, start time and course title/number.",
+                                                    className="home-page--list-item-description")]
+                                        ),
+                                    html.Tr(
+                                        className="home-page--table-row",
+                                        children=[
+                                            html.Td("Group By:",
+                                                    className="home-page--list-item-label-header"), 
+                                            html.Td("Allows you to group the data by a specific feature.",
+                                                    className="home-page--list-item-description")]
+                                        ),
+                                    html.Tr(
+                                        className="home-page--table-row",
+                                        children=[
+                                            html.Td("Sort By:",
+                                                    className="home-page--list-item-label-header"), 
+                                            html.Td("Allows you to sort the data by a specific feature.",
                                                     className="home-page--list-item-description")
-                                        ]
-                                    ),
-                                    html.Div(
-                                        className="home-page--list-item",
+                                            ]
+                                        ),
+                                    html.Tr(
+                                        className="home-page--table-row",
                                         children=[
-                                            html.Div("Group By:", 
-                                                    className="home-page--list-item-label"),
-                                            html.Div("Allows you to group the data by a specific feature.",
-                                                    className="home-page--list-item-description")
-                                        ]
-                                    ),
-                                    html.Div(
-                                        className="home-page--list-item",
-                                        children=[
-                                            html.Div("Sort By:", 
-                                                    className="home-page--list-item-label"),
-                                            html.Div("Allows you to sort the data by a specific feature.",
-                                                    className="home-page--list-item-description")
-                                        ]
-                                    ),
-                                    html.Div(
-                                        className="home-page--list-item",
-                                        children=[
-                                            html.Div("Mode:", 
-                                                    className="home-page--list-item-label"),
-                                            html.Div("Allows you to switch between absolute and relative frequencies. " +
+                                            html.Td("Mode:",
+                                                    className="home-page--list-item-label-header"), 
+                                            html.Td("Allows you to switch between absolute and relative frequencies. " +
                                                      "For the relative frequencies, the data is either normalized by the number of registered students or the room capacity.",
                                                     className="home-page--list-item-description")
-                                        ]
-                                    )
-                                ]
-                            ),
+                                            ]
+                                        )
+                                    ],
+                                ),
                         ]
                     )    
                 ]
@@ -165,3 +161,89 @@ layout = html.Div(
         ]
     )
 )
+
+
+                            # html.P(
+                            #     style={"display":"flex", "flexDirection":"column"},
+                            #     children=[
+                            #         html.Div(
+                            #             className="home-page--list-item",
+                            #             children=[
+                            #                 html.Div("Filter By:", 
+                            #                         className="home-page--list-item-label"),
+                            #                 html.Div("Allows you to filter the data by date, room, start time and course title/number.",
+                            #                         className="home-page--list-item-description")
+                            #             ]
+                            #         ),
+                            #         html.Div(
+                            #             className="home-page--list-item",
+                            #             children=[
+                            #                 html.Div("Group By:", 
+                            #                         className="home-page--list-item-label"),
+                            #                 html.Div("Allows you to group the data by a specific feature.",
+                            #                         className="home-page--list-item-description")
+                            #             ]
+                            #         ),
+                            #         html.Div(
+                            #             className="home-page--list-item",
+                            #             children=[
+                            #                 html.Div("Sort By:", 
+                            #                         className="home-page--list-item-label"),
+                            #                 html.Div("Allows you to sort the data by a specific feature.",
+                            #                         className="home-page--list-item-description")
+                            #             ]
+                            #         ),
+                            #         html.Div(
+                            #             className="home-page--list-item",
+                            #             children=[
+                            #                 html.Div("Mode:", 
+                            #                         className="home-page--list-item-label"),
+                            #                 html.Div("Allows you to switch between absolute and relative frequencies. " +
+                            #                          "For the relative frequencies, the data is either normalized by the number of registered students or the room capacity.",
+                            #                         className="home-page--list-item-description")
+                            #             ]
+                            #         )
+                            #     ]
+                            # ),
+                            
+                #    html.P(
+                #                 style={"display":"flex", "flexDirection":"column"},
+                #                 children=[
+                #                     html.Div(
+                #                         className="home-page--list-item",
+                #                         children=[
+                #                             html.Div("Course Overview:",
+                #                                     className="home-page--list-item-label"),
+                #                             html.Div("Provides an overview of the onsite participants of all the course in the selected data.",
+                #                                     className="home-page--list-item-description")
+                #                         ]
+                #                     ),
+                #                     html.Div(
+                #                         className="home-page--list-item",
+                #                         children=[
+                #                             html.Div("Calendar View:",
+                #                                      className="home-page--list-item-label"),
+                #                             html.Div("Illustrates the distribution of the courses over a chosen calendar week and a chosen room.",)
+                #                                   ]
+                                        
+                #                     ),
+                #                     html.Div(
+                #                         className="home-page--list-item",
+                #                         children=[
+                #                             html.Div("Course Details:",
+                #                                     className="home-page--list-item-label"),
+                #                             html.Div("Provides a detailed view of the course information and the participants of a single course.",	
+                #                                     className="home-page--list-item-description")
+                #                         ]
+                #                     ),
+                #                     html.Div(
+                #                         className="home-page--list-item",
+                #                         children=[
+                #                             html.Div("Grouped Data:",
+                #                                     className="home-page--list-item-label"),
+                #                             html.Div("Illustrates the effect of grouping the data by different features.",
+                #                                     className="home-page--list-item-description")
+                #                         ]
+                #                     )
+                #                 ]
+                #             )

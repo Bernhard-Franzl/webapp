@@ -1,44 +1,19 @@
-from dash import Dash, html, dcc, Input, Output, callback, register_page
-import json
-import pandas as pd
-from datetime import datetime, date, time
+from dash import  html, dcc, callback, register_page
 from components import plot_header
+from data_handler import DataHandler
 
 from visualization.visualization import Visualizer
 
 register_page(__name__, name="Grouped Data" ,order=4)
 
-# TODO:
-# - add group options -> type
-# - fix problems with grouping by more than two columns
-# - add color scheme based on groups
 
-weekday_to_id = {
-    "Mo.": 0,
-    "Di.": 1,
-    "Mi.": 2,
-    "Do.": 3,
-    "Fr.": 4,
-    "Sa.": 5,
-    "So.": 6,
-}
-
-###### load data ########
-df_participants = pd.read_csv("data/df_participants.csv")
-df_participants["start_time"] = pd.to_datetime(df_participants["start_time"])
-df_participants["end_time"] = pd.to_datetime(df_participants["end_time"])
-df_participants["note"] = df_participants["note"].fillna("")
-
-with open("data/metadata_participants.json", "r") as file:
-    metadata_participants = json.load(file)
-    metadata_participants["start_time"] = datetime.strptime(metadata_participants["start_time"], "%d.%m.%Y %H:%M")
-    metadata_participants["end_time"] = datetime.strptime(metadata_participants["end_time"], "%d.%m.%Y %H:%M")
-#########################
+###### Load Data ########
+data_handler = DataHandler("data")
+df_participants = data_handler.get_data()
+metadata_participants = data_handler.get_meta_data()
 
 start_date = metadata_participants["start_time"].date()
 end_date = metadata_participants["end_time"].date()
-
-df_participants["start_time_string"] = df_participants["start_time"].dt.strftime("%H:%M")
 
 visard = Visualizer(plot_height=750, plot_width=1200)
 
@@ -48,6 +23,7 @@ header_config = {
     "filtering": ["date", "room", "start_time"],
     "grouping": True,
     "sorting": False,
+    "dataframe": df_participants,
     "mode": True,
     "course_info": False,
     "figure":True 
@@ -57,16 +33,9 @@ layout = html.Div(
     className="page",
     children=[
         plot_header.layout(
-            title=header_config["title"],
-            description= header_config["description"],
-            filtering=header_config["filtering"],
             start_date = start_date,
             end_date = end_date,
-            dataframe = df_participants,
-            sorting=header_config["sorting"],
-            mode=header_config["mode"],
-            course_info=header_config["course_info"],
-            grouping=header_config["grouping"],
+            **header_config
         ),
         html.Div(
             className=visard.get_css_class(),
@@ -85,54 +54,22 @@ output_list = plot_header.generate_output_list(header_config, "grouped_bar_chart
     output_list,
     input_list)
 def update_figure(start_date_filter, end_date_filter, room_filter, start_time_filter, group_by, graph_mode):
-
+   
+    df = df_participants.copy()
+    
     ########## Filtering ##########
     # filter by date
-    start_time = datetime.combine(date.fromisoformat(start_date_filter) , time(hour=0, minute=0))
-    end_time = datetime.combine(date.fromisoformat(end_date_filter), time(hour=23, minute=59))
-    df = visard.filter_by_time(df_participants, start_time, end_time)
+    df = data_handler.filter_by_date(df, start_date_filter, end_date_filter)
     # filter by room
-    room_filter = [metadata_participants["room_to_id"][room] for room in room_filter]
-    if len(room_filter) > 0:
-        df = visard.filter_by_rooms(df, room_filter)
+    df = data_handler.filter_by_rooms(df, room_filter)
     # filter by start time
-    if len(start_time_filter) > 0:
-            start_time_filter = [time.fromisoformat(time_str) for time_str in start_time_filter]
-            df = visard.filter_by_start_time(df, start_time_filter)
-    ########## Grouping ##########
+    df = data_handler.filter_by_start_time(df, start_time_filter)
+    
+    
+     ########## Grouping ##########
     # keep only the informative columns
-    print(df.columns)
-    df.rename(columns={"instute": "institute"}, inplace=True)
-    df = df[["weekday", "start_time", "end_time", "start_time_string",
-             "present_students", "registered_students", 
-             "room", "room_capacity", "type", "kind", "duration",
-             "calendar_week", "institute", "level", "curriculum", 
-             "exam", "test", "tutorium", "study_area", "university"]]
+    df, grouped = data_handler.group_data(df, group_by)
     
-    
-    if group_by == None:
-        group_by = []
-    grouped = False
-    if len(group_by) > 0:
-        
-        if "weekday" in group_by:
-            # convert weekday to index for correct order
-            df["weekday"] = df["weekday"].apply(lambda x: weekday_to_id[x])
-            df = visard.group_by_column(df, column=group_by)
-            # convert weekday back
-            df["weekday"] = df["weekday"].apply(lambda x: list(weekday_to_id)[x])
-            
-        else:
-            df = visard.group_by_column(df, column=group_by)
-        
-        grouped = True
-        
-    else:
-        grouped = False
-    # ########## Sorting ##########
-    # df = visard.sort_by_column(df, sort_by_column, ascending=(not ascending))
-    
-    ########## Plotting ##########
     if grouped:
         fig = visard.plot_grouped_bar(
             dataframe=df,
