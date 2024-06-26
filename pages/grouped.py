@@ -68,38 +68,8 @@ def update_figure(start_date_filter, end_date_filter, room_filter, start_time_fi
     
      ########## Grouping ##########
     # keep only the informative columns
-    print(df.columns)
-    df.rename(columns={"instute": "institute"}, inplace=True)
-    df = df[["weekday", "start_time", "end_time", "start_time_string",
-             "present_students", "registered_students", 
-             "room", "room_capacity", "type", "kind", "duration",
-             "calendar_week", "institute", "level", "curriculum", 
-             "exam", "test", "tutorium", "study_area", "university"]]
+    df, grouped = data_handler.group_data(df, group_by)
     
-    
-    if group_by == None:
-        group_by = []
-    grouped = False
-    if len(group_by) > 0:
-        
-        if "weekday" in group_by:
-            # convert weekday to index for correct order
-            df["weekday"] = df["weekday"].apply(lambda x: weekday_to_id[x])
-            df = visard.group_by_column(df, column=group_by)
-            # convert weekday back
-            df["weekday"] = df["weekday"].apply(lambda x: list(weekday_to_id)[x])
-            
-        else:
-            df = visard.group_by_column(df, column=group_by)
-        
-        grouped = True
-        
-    else:
-        grouped = False
-    # ########## Sorting ##########
-    # df = visard.sort_by_column(df, sort_by_column, ascending=(not ascending))
-    
-    ########## Plotting ##########
     if grouped:
         fig = visard.plot_grouped_bar(
             dataframe=df,
