@@ -25,7 +25,7 @@ start_date = metadata_participants["start_time"].date()
 end_date = metadata_participants["end_time"].date()
 
 
-visard = Visualizer(plot_height=750, plot_width=750,
+visard = Visualizer(plot_height=750, plot_width=400,
                     margin=dict(l=125, r=50, t=50, b=50))
 
 header_config = {
