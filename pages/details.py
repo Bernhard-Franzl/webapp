@@ -58,7 +58,7 @@ def layout(course_id="none"):
                 className="course_detail_plot",
                 children =[
                     html.Div(
-                        course_info.initialize_layout()
+                        course_info.initialize_layout(id="course_info")
                         ),
                     html.Div(
                         className=visard.get_css_class(),
@@ -77,7 +77,7 @@ def layout(course_id="none"):
 
 
 input_list = plot_header.generate_input_list(header_config)
-output_list = plot_header.generate_output_list(header_config, "participants_single_course_bar")
+output_list = plot_header.generate_output_list(header_config, "participants_single_course_bar", details=False)
 output_list.append(Output("course_info", "children"))
 @callback(
     output_list,

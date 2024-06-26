@@ -1,8 +1,7 @@
 .plot--course-info{
     margin-top: 25px;
     margin-right: 20px;
-    max-width: 750px;
-    min-width: 250px;
+    height: 750px;
     border: 1px solid lightgray;
     display: grid;
 }

@@ -49,7 +49,7 @@ layout = html.Div(
 )
 
 input_list = plot_header.generate_input_list(header_config)
-output_list = plot_header.generate_output_list(header_config, "grouped_bar_chart")
+output_list = plot_header.generate_output_list(header_config, "grouped_bar_chart", details=False)
 @callback(
     output_list,
     input_list)

@@ -36,13 +36,16 @@ class Visualizer():
             self.title_size = kwargs["title_size"]
          
         # format settings
-        self.plot_height = 750
+        self.plot_height_provided = 1000
         if "plot_height" in kwargs:
-            self.plot_height = kwargs["plot_height"]
+            self.plot_height_provided = kwargs["plot_height"]
+
+        self.plot_height = self.plot_height_provided
         
         self.plot_width = None
         if "plot_width" in kwargs:
             self.plot_width = kwargs["plot_width"]
+            
         # plotly config
         self.config={
             "responsive": True,
@@ -373,8 +376,16 @@ class Visualizer():
             df_course = df[df["course_number"] == course_number]
             
             n_dates = len(df_course)
-            step_size = 0.8/n_dates
-            x = np.arange(0.1 + step_size/2, 0.9, step_size) + i
+            if n_dates < 4:
+                offset = n_dates/8
+                start = 0.5 - offset
+                end = 0.5 + offset
+                step_size = (end-start)/n_dates
+                x = np.arange(start+(step_size/2), end, step_size) + i
+            else:
+                step_size = 0.8/n_dates                
+                x = np.arange(0.1 + step_size/2, 0.9, step_size) + i
+                
             if len(x) != n_dates:
                 raise ValueError("Length of x and n_dates do not match", len(x), n_dates)
             
@@ -422,11 +433,11 @@ class Visualizer():
     
     def handle_mode_y_title(self, mode):
         if mode == "absolute":
-            return "<br>Absolute Frequency"
+            return "Absolute Frequency"
         elif mode == "relative_registered":
-            return "<br>Frequency Realtive to Registered Students"
+            return "Frequency Realtive to Registered Students"
         elif mode == "relative_capacity":
-            return "<br>Frequency Relative to Room Capacity"
+            return "Frequency Relative to Room Capacity"
         else:
             raise ValueError("Mode must be one of: absolute, relative_registered, relative_capacity")
         
@@ -438,20 +449,20 @@ class Visualizer():
         df["end_time"] = df["end_time"].dt.strftime("%H:%M")
         
         n_courses = len(course_numbers)
-        n_rows = int(np.ceil(n_courses/15))
+        n_rows = int(np.ceil(n_courses/8))
         course_indices = np.array_split(np.arange(n_courses), n_rows)
         n_cols = 1
-
+            
         y_column, relative, _ = self.handle_mode(mode)
         
-        x_title = "Course Number"
-        y_title = "Onsite Participants" +  self.handle_mode_y_title(mode)
-        fig = make_subplots(rows=n_rows, cols=n_cols, 
-                            y_title=y_title,
-                            x_title=x_title,)
+        #x_title = "Course Number"
+        #y_title = "Onsite Participants" +  self.handle_mode_y_title(mode)
+        #fig = make_subplots(rows=n_rows, cols=n_cols, 
+        #                    y_title=y_title,
+        #                    x_title=x_title,)
+        fig = make_subplots(rows=n_rows, cols=n_cols)
         
-        fig = self.customise_x_and_y_title(fig, x_title, y_title)
-        print(df.columns)
+        #fig = self.customise_x_and_y_title(fig, x_title, y_title)
         for row, indices in enumerate(course_indices, 1):
             chunk_course_numbers = [course_numbers[i] for i in indices]
             fig = self.generate_mulit_bar_plot(fig=fig, 
@@ -470,6 +481,11 @@ class Visualizer():
             #fig = self.frequency_yaxis(fig=fig, row=row, col=n_cols, relative=relative, title=True)
         
         #fig = self.add_title(fig, title)
+        if self.plot_height/n_rows > 200:
+            self.plot_height = int(200*n_rows)
+        else:
+            self.plot_height = self.plot_height_provided
+            
         fig = self.apply_general_settings(fig)
         fig = self.customize_hover(fig=fig, mode="multi_bar")
         fig.update_layout(showlegend=False)
@@ -560,6 +576,7 @@ class Visualizer():
             fig.update_layout(showlegend=False)
             
             return fig   
+
 
     ##### Charts for Attendance Dynamics #####
     def calc_relative_registered(self, dataframe, column):

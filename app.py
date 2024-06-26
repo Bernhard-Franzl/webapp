@@ -1,5 +1,5 @@
 import dash
-from dash import Dash, html, dcc
+from dash import Dash, html
 from components import page_header
 
 app = Dash(__name__,

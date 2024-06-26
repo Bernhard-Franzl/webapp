@@ -63,12 +63,13 @@ def generate_input_list(header_config):
         
     return input_list
 
-def generate_output_list(header_config, figure_id):
+def generate_output_list(header_config, figure_id, details):
     out_list = []
     
     if header_config["figure"]:
         out_list.append(Output(figure_id, "figure"))
-        
+    if details:
+        out_list.append(Output("participants_details_bar", "figure"))
     return out_list
 
 # generates the header layout

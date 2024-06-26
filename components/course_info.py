@@ -1,13 +1,13 @@
 from dash import html
 
 
-def initialize_layout():
+def initialize_layout(id):
     return html.Div(
         className="plot-header--section",
         children=[
             html.Div(
                 className="plot-header--section-elements",
-                id="course_info",
+                id=id,
             )
         ]
     )
