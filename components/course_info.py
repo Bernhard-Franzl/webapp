@@ -3,13 +3,8 @@ from dash import html
 
 def initialize_layout(id):
     return html.Div(
-        className="plot-header--section",
-        children=[
-            html.Div(
-                className="plot-header--section-elements",
-                id=id,
-            )
-        ]
+        className="details-info-container",
+        id=id
     )
     
    
@@ -25,11 +20,9 @@ def generate_course_info(dataframe):
     if df["weekday"].nunique() == 1:
         weekday = first_row["weekday"]
     else:
-        weekday = "Irregular"
+        weekday = "Irregular    "
     
-    return html.Div(
-        className="plot--course-info",
-        children=[
+    return [
             html.Div(
                 children=first_row["course_name"],
                 className="plot--course-info-title"
@@ -56,7 +49,6 @@ def generate_course_info(dataframe):
                 ]
             )
         ]
-    )
     
 def generate_table_row(label, text):
     return html.Tr(

@@ -209,6 +209,7 @@ class Visualizer():
             raise ValueError("Mode must be one of: absolute, relative_registered, relative_capacity, before_after")
 
         return y_column, relative, before_after
+        
             
     ##### One Course Particpants Bar Chart #####
     def generate_charts_before_after(self, fig, df, x, row, col):
@@ -292,8 +293,7 @@ class Visualizer():
                   "Frequencies Relative to Registered Students", 
                   "Frequencies Relative to Room Capacity"]
         fig = make_subplots(rows=3, cols=1,
-                            vertical_spacing=0.2,
-                            horizontal_spacing=0.1,
+                            vertical_spacing=0.25,
                             subplot_titles=titles)
         
         
@@ -320,6 +320,7 @@ class Visualizer():
             fig.update_layout(margin=dict(t=100))
             
             return fig   
+    
     
     ##### Multiple Courses Bar Chart #####
     def course_numbers_xaxis(self, fig, row, col, x, ticktext, n_rows):

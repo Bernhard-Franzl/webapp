@@ -1,9 +1,9 @@
-from dash import html, dcc, callback, register_page, Output
+from dash import html, dcc, callback, register_page, Output, Input
 from components import plot_header, course_info
 from data_handler import DataHandler
 from visualization.visualization import Visualizer
 
-register_page(__name__, name="Courses Overview", order=1)
+register_page(__name__, name="Courses Overview", path_template="/overview/<course_id>",order=1)
 
 ## TODO:
 # - incorporate the course info section
@@ -14,6 +14,7 @@ register_page(__name__, name="Courses Overview", order=1)
 #  other one should be disabled!
 
 ###### Load Data ########
+
 data_handler = DataHandler("data")
 df_participants = data_handler.get_data()
 metadata_participants = data_handler.get_meta_data()
@@ -22,8 +23,9 @@ metadata_participants = data_handler.get_meta_data()
 start_date = metadata_participants["start_time"].date()
 end_date = metadata_participants["end_time"].date()
 
-visard_details = Visualizer(margin=dict(l=35, r=35, t=35, b=35),
-                            plot_height=750)
+visard_details = Visualizer(margin=dict(l=35, r=35, t=50, b=35),
+                            plot_height=850,
+                            axis_title_size=16)
 visard_overview = Visualizer(margin=dict(l=5, r=35, t=35, b=5),
                              plot_height=1250)
 header_config = {
@@ -40,14 +42,14 @@ header_config = {
 
 
 
-def layout():
+def layout(course_id="none"):
     return html.Div(
         className="page",
         children=[
             plot_header.layout(
                 start_date = start_date,
                 end_date = end_date,
-                course_id_default="",
+                course_id_default=course_id,
                 **header_config
             ),
             html.Div(
@@ -75,11 +77,15 @@ def layout():
                         className="details-container",
                         children =[
                             html.Div(
-                                course_info.initialize_layout(id="details_course_info")
+                                className="details-info-container",
+                                id="details_course_info"
                             ),
-                            dcc.Graph(
-                                    id="participants_details_bar",
-                                    config=visard_details.config
+                            html.Div(
+                                className="details-plot-container",
+                                children=dcc.Graph(
+                                        id="participants_details_bar",
+                                        config=visard_details.config
+                                )
                             )
                         ]
                     )
@@ -87,7 +93,6 @@ def layout():
             )
         ]
     )
-
 
 input_list = plot_header.generate_input_list(header_config=header_config)
 output_list = plot_header.generate_output_list(header_config=header_config, 
@@ -127,24 +132,32 @@ def update_overview_figure(start_date_filter, end_date_filter, room_filter, star
 @callback(
     [Output("participants_details_bar", "figure"),
      Output("details_course_info", "children")],
-    input_list
+    input_list + [Input("participants_multi_course_bar", "clickData")]
     )
 def update_details_figure(start_date_filter, end_date_filter, room_filter, start_time_filter, 
-                  course_number_filter, course_name_filter, sort_by_column, ascending, graph_mode):
-    
+                  course_number_filter, course_name_filter, sort_by_column, ascending, graph_mode, clickData):
+
     df = df_participants.copy()
     
     ########## Filtering ########## 
     # filter by date
     df = data_handler.filter_by_date(df, start_date_filter, end_date_filter)
+
+    # extract clickData    
+    if clickData is not None:
+        course_number_click = clickData["points"][0]["customdata"][0]
+    else:
+        course_number_click = ""          
+    
     # filter by course number or name
-    df, course_filtered = data_handler.filter_course(df, course_number_filter, course_name_filter)
+    # FIXME
+    df, course_filtered = data_handler.filter_course(df, course_number_filter, course_name_filter, course_number_click)
             
     ########## Course Info ##########
     if course_filtered:
         info_section = course_info.generate_course_info(df)
     else:
-        info_section = "Please select a course!"
+        info_section = None
     
     ########## Plotting ##########
     if course_filtered:

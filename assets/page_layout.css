@@ -68,6 +68,16 @@ body{
     overflow-y: scroll;
     width: 30%;
     height: 750px;
-    border: 1px solid black;
-    margin-left: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid lightgray;
+}
+
+.details-info-container{
+    border-bottom: 1px solid lightgray;
+    display: grid;
+    justify-items: center;
+}
+.details-plot-container{
+    margin-top: 10px;
 }
