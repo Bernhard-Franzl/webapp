@@ -23,7 +23,7 @@ dagcomponentfuncs.RowSpanningComplexCellRenderer = function (props) {
         
         children = [
             React.createElement('div', {className: 'calendar--entry-course-number'}, props.value.length > 7 ? props.value.slice(0, 7).concat("...") : props.value),
-            React.createElement('a', {href: "/details/" + courseNumber, className:'calendar--entry-course-name'}, context["type"].concat(": ", context['course_name'])),
+            React.createElement('a', {className:'calendar--entry-course-name'}, context["type"].concat(": ", context['course_name'])),
             React.createElement('div', {className: 'calendar--entry-course-time'}, context['time_span_str']),
             React.createElement('div', {className: 'calendar--entry-course-time'}, "Present".concat(": ", context['present_students'])),
             React.createElement('div', {className: 'calendar--entry-course-time'}, "Relative Freq.".concat(": ", context[mode])),

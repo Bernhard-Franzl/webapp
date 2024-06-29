@@ -26,7 +26,7 @@ body{
 
 .content-container{
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
 }
 
@@ -34,10 +34,10 @@ body{
     display: grid;
     grid-template-columns: 10% 90%;
     grid-template-rows: 700px 50px;
-    width: 70%;
     height: 750px;
     text-align: center;
-    margin-right: 5px;
+    margin-right: 10px;
+    flex-grow: 1;
 }
 .overview-plot-container{
     overflow-y: scroll;
@@ -53,7 +53,6 @@ body{
     font-size: 24px;
     font-weight: bold;
 }
-
 .overview-yaxis-container{
     grid-column: 1;
     grid-row: 1;
@@ -63,10 +62,11 @@ body{
     font-size: 24px;
     margin-right: 10px;
 }
+
 .details-container{
     display: grid;
     overflow-y: scroll;
-    width: 30%;
+    width: 375px;
     height: 750px;
     padding-left: 10px;
     padding-right: 10px;

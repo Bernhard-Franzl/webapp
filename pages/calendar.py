@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import numpy as np
 from datetime import datetime, date, time, timedelta
-from components import plot_header
+from components import plot_header, course_info
 import dash_ag_grid as dag
 
 from data_handler import DataHandler
@@ -22,13 +22,16 @@ weekday_to_id = {
 }
 
 ###### Load Data ########
-DataHandler = DataHandler("data")
-df_participants = DataHandler.get_data()
-metadata_participants = DataHandler.get_meta_data()
-
+datahandler = DataHandler("data")
+df_participants = datahandler.get_data()
+metadata_participants = datahandler.get_meta_data()
+start_date = metadata_participants["start_time"].date()
+end_date = metadata_participants["end_time"].date()
 
 #########################
-visard = Visualizer()
+visard_details = Visualizer(margin=dict(l=35, r=35, t=50, b=35),
+                            plot_height=850,
+                            axis_title_size=16)
 
 header_config = {
     "title": "Calendar View",
@@ -43,50 +46,76 @@ header_config = {
     "mode_options": ["relative_capacity", "relative_registered"],
 }
 
-layout = html.Div(
-    className="page",
-    children=[
-        plot_header.layout(
-            **header_config
-        ),
-        html.Div(
-            className="calendar",
-            children=[
-                html.Div(
-                    className="calendar-header",
-                    children=[
-                        html.Div(
-                            id="calendar-room-id",
-                            className="calendar-header-room"
-                            ),
-                        html.Div(
-                            id="calendar-title-id",
-                            className="calendar-header-title"
-                        ),
-                        html.Div(
-                            className="button-container",
+def layout():
+    return html.Div(
+        className="page",
+        children=[
+            plot_header.layout(
+                id_suffix="calendar",
+                **header_config
+            ),
+            html.Div(
+                className="content-container",
+                children=[
+                    html.Div(
+                        className="calendar-container",
+                        children=html.Div(
+                            className="calendar",
                             children=[
-                                html.Button("Reset Column Size", 
-                                            id="button-size-to-fit-callback",
-                                            className="button-reset")
+                                html.Div(
+                                    className="calendar-header",
+                                    children=[
+                                        html.Div(
+                                            id="calendar-room-id",
+                                            className="calendar-header-room"
+                                            ),
+                                        html.Div(
+                                            id="calendar-title-id",
+                                            className="calendar-header-title"
+                                        ),
+                                        html.Div(
+                                            className="button-container",
+                                            children=[
+                                                html.Button("Reset Column Size", 
+                                                            id="button-size-to-fit-callback",
+                                                            className="button-reset")
+                                            ]
+                                        )
+                                    ]
+                                ),
+                                dag.AgGrid(
+                                    id="calendar-grid",
+                                    className="ag-grid",
+                                    columnSize="responsiveSizeToFit",
+                                    dangerously_allow_code=True,
+                                    style={"height": "750px", "width": "750px"},
+                                    defaultColDef={"editable": False,
+                                                    "sortable": False,
+                                                    "suppressMovable":True}
+                                )
                             ]
                         )
-                    ]
-                ),
-                dag.AgGrid(
-                    id="calendar-grid",
-                    className="ag-grid",
-                    columnSize="responsiveSizeToFit",
-                    dangerously_allow_code=True,
-                    style={"height": "750px", "width": "750px"},
-                    defaultColDef={"editable": False,
-                                    "sortable": False,
-                                    "suppressMovable":True}
-                )
-            ]
+                    ),
+                    html.Div(
+                        className="details-container",
+                        children=[
+                            html.Div(
+                                className="details-info-container",
+                                id="details_course_info_calendar"
+                            ),
+                            html.Div(
+                                className="details-plot-container",
+                                children=dcc.Graph(
+                                        id="participants_details_bar_calendar",
+                                        config=visard_details.config
+                                )
+                            )
+                        ]
+                    )
+                ]
+            )   
+        ]
     )
-        
-])
 
 @callback(
     [Output("calendar-grid", "columnDefs"),
@@ -94,7 +123,7 @@ layout = html.Div(
      Output("calendar-grid", "dashGridOptions"),
      Output("calendar-title-id", "children"),
      Output("calendar-room-id", "children")],
-    plot_header.generate_input_list(header_config))
+    plot_header.generate_input_list(header_config, id_suffix="calendar"))
 def update_calendar(room_filter, calendar_week_filter, mode):
 
     ########## Filtering ##########
@@ -102,9 +131,9 @@ def update_calendar(room_filter, calendar_week_filter, mode):
     df =  df_participants.copy()
     
     # filter by calendar week
-    df = DataHandler.filter_column_by_value(df, "calendar_week", calendar_week_filter)
+    df = datahandler.filter_column_by_value(df, "calendar_week", calendar_week_filter)
     # filter by room
-    df = DataHandler.filter_by_rooms(df, room_filter)
+    df = datahandler.filter_by_rooms(df, room_filter)
     
     
     ########### Calendar ###########
@@ -176,3 +205,41 @@ def update_calendar(room_filter, calendar_week_filter, mode):
 )
 def update_column_size_callback(_):
     return "responsiveSizeToFit"
+
+@callback(
+    [Output("participants_details_bar_calendar", "figure"),
+    Output("details_course_info_calendar", "children")],
+    Input("calendar-grid", "cellClicked"),
+)
+def update_details_figure(cellClicked):
+    
+    df = df_participants.copy()
+    
+    ########## Filtering ########## 
+    # filter by date
+    df = datahandler.filter_by_date(df, start_date, end_date)
+
+    # extract clickData    
+    if cellClicked is not None:
+        course_number_click = cellClicked["value"]
+    else:
+        course_number_click = ""          
+    
+    # filter by course number or name
+    df, course_filtered = datahandler.filter_course(df, "", "", course_number_click)
+            
+    ########## Course Info ##########
+    if course_filtered:
+        info_section = course_info.generate_course_info(df)
+    else:
+        info_section = None
+    
+    ########## Plotting ##########
+    if course_filtered:
+        fig = visard_details.plot_course_bar(
+            dataframe=df
+        )
+    else:
+        fig = visard_details.plot_empty_course_bar()
+    
+    return [fig, info_section]

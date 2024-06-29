@@ -3,7 +3,8 @@ from dash import Dash, html
 from components import page_header
 
 app = Dash(__name__,
-           use_pages=True)
+           use_pages=True,
+           suppress_callback_exceptions=True)
 
 app.layout = html.Div([
     page_header.layout(),

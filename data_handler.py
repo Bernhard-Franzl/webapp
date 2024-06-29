@@ -18,8 +18,10 @@ class DataHandler:
     def __init__(self, path_to_data):
         
         self.path_to_data = path_to_data
-        
         self.data, self.meta_data = self.load_data(self.path_to_data)
+        
+        self.last_course_filter = ""
+        self.last_course_filter_mode = ""
 
     ########## Load data ##########
     def load_data(self, path_to_data):
@@ -118,22 +120,31 @@ class DataHandler:
     def filter_by_course_name(self, dataframe, course_name):
         return self.filter_column_by_value(dataframe, "course_name", course_name)
     
-    def filter_course(self, dataframe, course_number, course_name):
+    def filter_course(self, dataframe, course_number_filter, course_name_filter, course_number_click):
 
         course_filtered = False
         
-        if course_number != "":
-            dataframe = self.filter_by_course_number(dataframe, course_number)
+        if (course_number_click != "") and (self.last_course_filter != course_number_click):
+            dataframe = self.filter_by_course_number(dataframe, course_number_click)
             if len(dataframe) != 0:
                 course_filtered = True
+                self.last_course_filter = course_number_click
+                  
+        elif (course_number_filter != "") and (self.last_course_filter != course_number_filter):
+            dataframe = self.filter_by_course_number(dataframe, course_number_filter)
+            if len(dataframe) != 0:
+                course_filtered = True
+                self.last_course_filter = course_number_filter
                 
-        if course_name != "" and not course_filtered:
-            dataframe = self.filter_by_course_name(dataframe, course_name)
+        elif (course_name_filter != "") and (self.last_course_filter != course_name_filter):
+            dataframe = self.filter_by_course_name(dataframe, course_name_filter)
             if len(dataframe) != 0:
                 course_filtered = True
-            
+                self.last_course_filter = course_name_filter
+        else:
+            self.last_course_filter = ""
+        
         return dataframe, course_filtered
-            
                 
     ######### Grouping functions ##########
     def prepare_data_for_grouping(self, dataframe):

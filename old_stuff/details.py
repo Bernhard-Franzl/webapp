@@ -8,7 +8,7 @@ from datetime import datetime, date, time
 from components import plot_header
 from data_handler import DataHandler
 
-register_page(__name__,name="Course Details", path_template="/details/<course_id>",order=3)
+#register_page(__name__,name="Course Details", path_template="/details/<course_id>",order=3)
 
 
 ## TODO:

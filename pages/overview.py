@@ -3,15 +3,15 @@ from components import plot_header, course_info
 from data_handler import DataHandler
 from visualization.visualization import Visualizer
 
-register_page(__name__, name="Courses Overview", path_template="/overview/<course_id>",order=1)
-
+register_page(__name__, name="Courses Overview", order=1)
+id_suffix = "overview"
 ## TODO:
-# - incorporate the course info section
+# - restructure header in as table
+# - add different header id in order to make settings persistent
+# - make button to hide the course info
 # - fix the axis titles in the case of only two or less rows
 # - reset button for the filters -> resets them to initial values
 #   which is showing all data
-# - fix that you can either filter by course number or course name if one is selected the
-#  other one should be disabled!
 
 ###### Load Data ########
 
@@ -41,7 +41,6 @@ header_config = {
 }
 
 
-
 def layout(course_id="none"):
     return html.Div(
         className="page",
@@ -50,6 +49,7 @@ def layout(course_id="none"):
                 start_date = start_date,
                 end_date = end_date,
                 course_id_default=course_id,
+                id_suffix=id_suffix,
                 **header_config
             ),
             html.Div(
@@ -94,7 +94,7 @@ def layout(course_id="none"):
         ]
     )
 
-input_list = plot_header.generate_input_list(header_config=header_config)
+input_list = plot_header.generate_input_list(header_config=header_config, id_suffix=id_suffix)
 output_list = plot_header.generate_output_list(header_config=header_config, 
                                                figure_id="participants_multi_course_bar", 
                                                details=True)
@@ -129,13 +129,18 @@ def update_overview_figure(start_date_filter, end_date_filter, room_filter, star
     )
     return fig_overview, y_title
 
+
 @callback(
     [Output("participants_details_bar", "figure"),
      Output("details_course_info", "children")],
-    input_list + [Input("participants_multi_course_bar", "clickData")]
+    [Input(f"date_picker_{id_suffix}", "start_date"),
+    Input(f"date_picker_{id_suffix}", "end_date"),
+    Input(f"course_number_filter_{id_suffix}", "value"),
+    Input(f"course_name_filter_{id_suffix}", "value"),
+    Input("participants_multi_course_bar", "clickData")]
     )
-def update_details_figure(start_date_filter, end_date_filter, room_filter, start_time_filter, 
-                  course_number_filter, course_name_filter, sort_by_column, ascending, graph_mode, clickData):
+def update_details_figure(start_date_filter, end_date_filter,
+                  course_number_filter, course_name_filter, clickData):
 
     df = df_participants.copy()
     
@@ -150,7 +155,6 @@ def update_details_figure(start_date_filter, end_date_filter, room_filter, start
         course_number_click = ""          
     
     # filter by course number or name
-    # FIXME
     df, course_filtered = data_handler.filter_course(df, course_number_filter, course_name_filter, course_number_click)
             
     ########## Course Info ##########

@@ -33,6 +33,7 @@ layout = html.Div(
     className="page",
     children=[
         plot_header.layout(
+            id_suffix="grouped",
             start_date = start_date,
             end_date = end_date,
             **header_config
@@ -48,7 +49,7 @@ layout = html.Div(
     ]
 )
 
-input_list = plot_header.generate_input_list(header_config)
+input_list = plot_header.generate_input_list(header_config, id_suffix="grouped")
 output_list = plot_header.generate_output_list(header_config, "grouped_bar_chart", details=False)
 @callback(
     output_list,
