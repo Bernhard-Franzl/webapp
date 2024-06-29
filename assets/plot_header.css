@@ -24,15 +24,55 @@
     padding-bottom: 5px;
     display: inline-block;
 }
-.plot-header--section-title{
+.plot-header--data-section{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: center;
+    margin: 0px;
+    padding: 0px;
+
+}
+
+.plot-header--table{
+    border-spacing: 5px;
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+}
+.plot-header--table-header{
     color: #0028aa;
     font-size: 22px;
     font-weight: bold;
+    
 }
+.plot-header--table-header-element{
+    text-align: left;
+    border-bottom: thin lightgrey solid;
+    padding-bottom: 5px;
+}
+
+.plot-header--table-label{
+    background: lightgray;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+/*.plot-header--section-title{
+    color: #0028aa;
+    font-size: 22px;
+    font-weight: bold;
+}*/
 /*Filtering Settings*/
-.plot-header--section-elements{
+/*.plot-header--section-elements{
     display: inline-block;
-}
+}*/
 
 .plot-header--filtering-element-label{
     height: 32px;
@@ -44,6 +84,7 @@
     border: thin lightgrey solid;
     background: lightgray;
     border-radius: 1px;
+    width: 100px;
 }
 .DateInput_input, .DateInput_input_1{
     height: 32px;
@@ -58,30 +99,37 @@
     max-height: 72px;
     padding-right: 15px;
     padding-top: 10px;
+    font-size: 16px;
 }
 
 /*Sorting and mode elements*/
-.plot-header--sorting, .plot-header--mode, .plot-header--grouping{
+/*.plot-header--sorting, .plot-header--mode, .plot-header--grouping{
     display: inline-table;
     padding-right: 25px;
-}
+}*/
 
 /* Sorting elements */
 .plot-header--sorting-elements{
     display: inline-flex;
-    height: 32px;
     min-width: 200px;
     max-width: 400px;
 }
-.plot-header--sorting-dropdown, .plot-header--grouping-dropdown, .plot-header--mode-dropdown{
+.plot-header--sorting-dropdown, .plot-header--mode-dropdown{
     width: 200px;
     min-height: 32px;
     max-height: 72px;
     line-height: 32px;
     font-size: 16px;
-    padding-top: 10px;
+}
+.plot-header--grouping-dropdown{
+    width: 250px;
+    min-height: 32px;
+    max-height: 72px;
+    line-height: 32px;
+    font-size: 16px;
+    overflow-y: scroll;
 }
 .plot-header--sorting-switch{
     width: 60px;
-    padding-top: 14px;
+    align-self: center;
 }

@@ -71,6 +71,7 @@ body{
     padding-left: 10px;
     padding-right: 10px;
     border: 1px solid lightgray;
+    border-radius: 10px;
 }
 
 .details-info-container{

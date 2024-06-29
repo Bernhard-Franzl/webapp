@@ -31,7 +31,7 @@ visard_overview = Visualizer(margin=dict(l=5, r=35, t=35, b=5),
 header_config = {
     "title": "Course Participants Overview",
     "description": "This page provides an overview of the onsite participants of all the courses.",
-    "filtering": ["date", "room", "start_time", "number", "name"],
+    "filtering": ["date", "room",  "number", "name", "start_time"],
     "grouping": False,
     "sorting": True,
     "mode": True,

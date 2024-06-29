@@ -83,7 +83,6 @@ def layout(title,
            grouping=False,
            **kwargs):
     
-    print("ID-suffix: ", id_suffix)
     horizontal_line = html.Hr(
         style={
             "border": "0",
@@ -128,6 +127,11 @@ def layout(title,
         plot_header.append(horizontal_line)
             
     # restructure header as table
+    data_manipulation_section = html.Div(
+            className="plot-header--data-section",
+            children=[]
+        )
+
     table = html.Table(
         className="plot-header--table",
         children = [
@@ -135,15 +139,12 @@ def layout(title,
                 className="plot-header--table-header",
                 children=[
                     html.Th(
-                        "Filter By:",
-                        className="plot-header--table-header-element"
+                        children="Filter By:",
+                        className="plot-header--table-header-element",
+                        colSpan=4
                         )
-                    ]
-                ),
-            html.Tr(
-                className="plot-header--table-row",
-                children=[]
-            )
+                ]
+            ),
         ]
     )
 
@@ -156,9 +157,18 @@ def layout(title,
         else:
             n_rows = len(filtering)//2
         
-        print(n_rows)
-        row_nr = 1
-        for filter in filtering:
+        for i in range(n_rows):
+            table.children.append(
+                html.Tr(
+                    className="plot-header--table-row",
+                    children=[]
+                )
+            )
+
+        for i, filter in enumerate(filtering):
+            
+            row_nr = i//2 + 1
+
             if filter == "date":
                 start_date = kwargs["start_date"]
                 end_date = kwargs["end_date"]
@@ -196,70 +206,73 @@ def layout(title,
             else:
                 raise ValueError(f"Filtering option {filter} not recognized.")
         
-        plot_header.append(table)
-        plot_header.append(horizontal_line)
-        
+        data_manipulation_section.children.append(table)
+     
+     
+    table_2 = html.Table(
+        className="plot-header--table",
+        children = []
+    )   
         
     # if sorting and/or mode are provided, add it to the layout  
-    sorting_mode_section = html.Div(
-            className="plot-header--section",
-            children=html.Div(
-                className="plot-header--section-elements",
-                children=[]
-            )
-        )
+    #sorting_mode_section = html.Div(
+    #        className="plot-header--section",
+    #        children=html.Div(
+    #            className="plot-header--section-elements",
+    #            children=[]
+    #        )
+    #    )
 
     if sorting:
         sorting_section = generate_sorting_section(id_suffix)
-        sorting_mode_section.children.children.append(sorting_section)
+        
+        table_2.children.extend(sorting_section)
         
         if mode:
             try:
                 mode_section = generate_mode_section(kwargs["mode_options"],id_suffix)
             except KeyError:
                 mode_section = generate_mode_section(None, id_suffix)
-            sorting_mode_section.children.children.append(mode_section)
+            #sorting_mode_section.children.children.append(mode_section)
             
-            plot_header.append(sorting_mode_section)
-            plot_header.append(horizontal_line)
+            table_2.children.extend(mode_section)
+            data_manipulation_section.children.append(table_2)
             
         elif grouping:
             raise ValueError("Grouping and Sorting are not compatible.")
         
         else:
-            plot_header.append(sorting_mode_section)
-            plot_header.append(horizontal_line)
+            data_manipulation_section.children.append(table_2)
                
     else:
         if mode:
             if grouping:
                 grouping_section = generate_grouping_section(id_suffix)
-                sorting_mode_section.children.children.append(grouping_section)
+                table_2.children.extend(grouping_section)
                 
             try:
                 mode_section = generate_mode_section(kwargs["mode_options"], id_suffix)
             except KeyError:
                 mode_section = generate_mode_section(None, id_suffix)
                 
-            sorting_mode_section.children.children.append(mode_section)
-            
-            plot_header.append(sorting_mode_section)
-            plot_header.append(horizontal_line)
+            table_2.children.extend(mode_section)
+            data_manipulation_section.children.append(table_2)
                 
         else:
             pass
-        
-    del sorting_mode_section    
     
+    plot_header.append(data_manipulation_section)
+    plot_header.append(horizontal_line)
     return layout
 
 def generate_date_filter(start_date, end_date, id_suffix):
     return [html.Td(
                 "Date:", 
-                className="plot-header--filtering-element-label"
+                className="plot-header--table-label"
             ),
             html.Td(
-                dcc.DatePickerRange(
+                className="plot-header--table-cell",
+                children=dcc.DatePickerRange(
                     id=f"date_picker_{id_suffix}",
                     display_format="DD.MM.YYYY",
                     min_date_allowed=start_date,
@@ -283,10 +296,11 @@ def generate_room_filter(unique_rooms, multiple, id_suffix):
         default_value = unique_rooms[0]
     return [html.Td(
                 "Room:", 
-                className="plot-header--filtering-element-label"
+                className="plot-header--table-label"
             ),
             html.Td(
-                dcc.Dropdown(
+                className="plot-header--table-cell",
+                children=dcc.Dropdown(
                     options=[{"label": room, "value": room} for room in unique_rooms],
                     value=default_value,
                     multi=multiple,
@@ -307,10 +321,11 @@ def generate_weekday_filter(unique_calendar_weeks, multiple, id_suffix):
         
     return [html.Td(
                 "Week:", 
-                className="plot-header--filtering-element-label"
+                className="plot-header--table-label",
             ),
             html.Td(
-                dcc.Dropdown(
+                className="plot-header--table-cell",
+                children=dcc.Dropdown(
                     options=[{"label": f"CW {cw}", "value": cw} for cw in unique_calendar_weeks],
                     value=default_value,
                     multi=multiple,
@@ -326,10 +341,11 @@ def generate_weekday_filter(unique_calendar_weeks, multiple, id_suffix):
 def generate_start_time_filter(start_time_list, id_suffix):
     return[html.Td(
                 "Start Time:",
-                className="plot-header--filtering-element-label"
+                className="plot-header--table-label"
             ),
             html.Td(
-                dcc.Dropdown(
+                className="plot-header--table-cell",
+                children=dcc.Dropdown(
                     options=[{"label": time.strftime("%H:%M") , "value": time} for time in start_time_list],
                     value=[],
                     multi=True,
@@ -355,9 +371,10 @@ def generate_number_filter(course_numbers, id_suffix, id_data_list="number_sugge
     
     return [html.Td(
                 "ID:",
-                className="plot-header--filtering-element-label"
+                className="plot-header--table-label"
             ),
             html.Td(
+                className="plot-header--table-cell",
                 children=[
                     dcc.Input(
                         value=default_value,
@@ -381,9 +398,10 @@ def generate_name_filter(course_names, id_suffix, id_data_list="name_suggestions
     
     return [html.Td(
                 "Title:",
-                className="plot-header--filtering-element-label"
+                className="plot-header--table-label"
             ),
             html.Td(
+                className="plot-header--table-cell",
                 children=[
                     dcc.Input(
                         value="",
@@ -399,14 +417,17 @@ def generate_name_filter(course_names, id_suffix, id_data_list="name_suggestions
         ]
      
 def generate_sorting_section(id_suffix):
-    return  html.Div(
-                className="plot-header--sorting",
+    return  [html.Tr(
+                className="plot-header--table-header",
                 children=[
-                    html.Div(
-                        "Sort By:",
-                        className="plot-header--section-title"
-                    ),
-                    html.Div(
+                    html.Th(
+                        children="Sort By:",
+                        className="plot-header--table-header-element",
+                        )
+                    ]
+            ),
+            html.Tr(
+                    html.Td(
                         className="plot-header--sorting-elements",
                         children=[
                             html.Div(
@@ -431,8 +452,8 @@ def generate_sorting_section(id_suffix):
                             )
                         ]
                     )
-                ]
-            )
+                )
+            ]   
 
 def generate_mode_section(mode_options, id_suffix):
     if mode_options == None:
@@ -440,48 +461,56 @@ def generate_mode_section(mode_options, id_suffix):
     else:
         mode_option_list = mode_options
         
-    return html.Div(
-                className="plot-header--mode",
+    return [html.Tr(
+                className="plot-header--table-header",
                 children=[
-                    html.Div("Frequency Mode:",
-                            className="plot-header--section-title"
-                    ),
-                    html.Div(
-                        className="plot-header--mode-dropdown",
-                        children=dcc.Dropdown(
-                            options=mode_option_list,
-                            value=mode_option_list[0],
-                            id=f"graph_mode_{id_suffix}",
-                            persistence=True,
-                            persistence_type="memory",
-                            persisted_props=["value"]
-                        ),
-                    )
+                    html.Th(
+                        children="Frequency Mode:",
+                        className="plot-header--table-header-element",
+                        )
                 ]
+            ),
+            html.Tr(
+                html.Td(
+                    className="plot-header--mode-dropdown",
+                    children=dcc.Dropdown(
+                        options=mode_option_list,
+                        value=mode_option_list[0],
+                        id=f"graph_mode_{id_suffix}",
+                        persistence=True,
+                        persistence_type="memory",
+                        persisted_props=["value"]
+                    ),
+                )
             )
+        ]
 
 def generate_grouping_section(id_suffix):
-    return html.Div(
-                className="plot-header--grouping",
+    return [html.Tr(
+                className="plot-header--table-header",
                 children=[
-                    html.Div("Group By:",
-                            className="plot-header--section-title"
-                    ),
-                    html.Div(
-                        className="plot-header--grouping-dropdown",
-                        children=dcc.Dropdown(
-                            options=["weekday", "calendar_week", "room", "type", "duration", "start_time_string",
-                                     "institute", "level", "curriculum","exam", "test", "tutorium"],
-                            value=["weekday"],
-                            id=f"graph_group_by_{id_suffix}",
-                            multi=True,
-                            persistence=True,
-                            persistence_type="memory",
-                            persisted_props=["value"]
+                    html.Th(
+                        children="Group By:",
+                        className="plot-header--table-header-element",
                         )
-                    )
                 ]
-    )
+            ),
+            html.Tr(
+                html.Td(
+                    className="plot-header--grouping-dropdown",
+                    children=dcc.Dropdown(
+                        options=["weekday", "calendar_week", "room", "type", "duration", "start_time_string",
+                                    "institute", "level", "curriculum","exam", "test", "tutorium"],
+                        value=["weekday"],
+                        id=f"graph_group_by_{id_suffix}",
+                        multi=True,
+                        persistence=True,
+                        persistence_type="memory",
+                        persisted_props=["value"]
+                    )
+                )
+            )
+        ]
     
     
 
