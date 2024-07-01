@@ -34,6 +34,8 @@ class DataHandler:
         data["note"] = data["note"].fillna("")
         data["time_span_str"] = data.apply(lambda x: f"{x['start_time'].strftime('%H:%M')}-{x['end_time'].strftime('%H:%M')}", axis=1)
         data["start_time_string"] = data["start_time"].dt.strftime("%H:%M")
+        # convert calendar_week to string
+        data["calendar_week"] = data["calendar_week"].astype(str)
         
         meta_data_path = os.path.join(path_to_data, "metadata_participants.json")
         with open(meta_data_path, "r") as file:
@@ -148,9 +150,13 @@ class DataHandler:
                 
     ######### Grouping functions ##########
     def prepare_data_for_grouping(self, dataframe):
-        df = dataframe[["weekday", "start_time_string",
+        if "instute" in dataframe.columns:
+            dataframe = dataframe.rename(columns={"instute":"institute"})
+            
+        df = dataframe[["calendar_week", "weekday", "start_time_string",
              "present_students", "registered_students", 
-             "room", "room_capacity", "type", "kind", "duration"]]
+             "room", "room_capacity", "type", "kind", "duration",
+             "institute", "level", "curriculum", "exam", "test", "tutorium"]]
         
         return df
         

@@ -6,7 +6,7 @@ from datetime import datetime, date, time, timedelta
 from components import plot_header, course_info
 import dash_ag_grid as dag
 
-from data_handler import DataHandler
+from data_handling.data_handler import DataHandler
 from visualization.visualization import Visualizer
 from components import calendar
 

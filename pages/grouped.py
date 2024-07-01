@@ -1,6 +1,6 @@
 from dash import  html, dcc, callback, register_page
 from components import plot_header
-from data_handler import DataHandler
+from data_handling.data_handler import DataHandler
 
 from visualization.visualization import Visualizer
 
@@ -67,7 +67,7 @@ def update_figure(start_date_filter, end_date_filter, room_filter, start_time_fi
     df = data_handler.filter_by_start_time(df, start_time_filter)
     
     
-     ########## Grouping ##########
+    ########## Grouping ##########
     # keep only the informative columns
     df, grouped = data_handler.group_data(df, group_by)
     

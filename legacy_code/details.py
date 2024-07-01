@@ -4,9 +4,8 @@ import json
 import pandas as pd
 from components import course_info
 from visualization.visualization import Visualizer
-from datetime import datetime, date, time
 from components import plot_header
-from data_handler import DataHandler
+from data_handling.data_handler import DataHandler
 
 #register_page(__name__,name="Course Details", path_template="/details/<course_id>",order=3)
 

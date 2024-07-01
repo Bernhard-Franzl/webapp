@@ -129,9 +129,6 @@
     overflow: scroll;
     z-index: 100;
 }
-.calendar--entry:hover{
-    background: rgb(218, 6, 6);
-}
 .calendar--entry-course-number{
     font-size: 12px;
     line-height: 14px;

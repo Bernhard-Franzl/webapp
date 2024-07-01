@@ -1,6 +1,6 @@
 from dash import html, dcc, callback, register_page, Output, Input
 from components import plot_header, course_info
-from data_handler import DataHandler
+from data_handling.data_handler import DataHandler
 from visualization.visualization import Visualizer
 
 register_page(__name__, name="Courses Overview", order=1)

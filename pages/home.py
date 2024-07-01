@@ -1,10 +1,4 @@
-from dash import Dash, html, dcc, Input, Output, callback, register_page
-import json
-import pandas as pd
-from datetime import datetime, date, time
-from components import plot_header
-
-from visualization.visualization import Visualizer
+from dash import html, register_page
 
 register_page(__name__, path="/", order=0)
 
@@ -31,11 +25,33 @@ layout = html.Div(
                         className="home-page--title" 
                     ),
                     html.Div(
-                        "Welcome to the dashboard! This pages explains the available pages and features.",
+                        children=[
+                            html.Div(
+                                "Welcome to the dashboard! This tool is designed to help you manage and analyze course schedules, participants, and room allocations effectively. Below is an overview of the available features and sections.",
+                            )
+                        ],
                         className="home-page--description"
                     )
                 ]
             ),
+            horizontal_line,
+            # Data explanation
+            html.Div(
+                className="home-page--section",
+                children=[
+                    html.Div(
+                        "Data",
+                        className="home-page--section-title"
+                    ),
+                    html.Div(
+                        className="home-page--description",
+                        children=[
+                            html.P(
+                                "The dataset includes information about all the courses and their respective dates held in HS18 and HS19, from April 8, 2024, to June 28, 2024. It comprises 386 samples and 45 features, with each sample representing a specific course date."
+                            )]
+                    )
+                ]
+            ),   
             horizontal_line,
             # Pages explanation
             html.Div(
@@ -67,18 +83,18 @@ layout = html.Div(
                                         children=[
                                             html.Td("Calendar View:",
                                                     className="home-page--list-item-label-pages"), 
-                                            html.Td("Illustrates the distribution of the courses over a chosen calendar week and a chosen room.",
+                                            html.Td("Shows the distribution of the courses over a chosen calendar week and a chosen room.",
                                                     className="home-page--list-item-description")]
                                         ),
-                                    html.Tr(
-                                        className="home-page--table-row",
-                                        children=[
-                                            html.Td("Course Details:",
-                                                    className="home-page--list-item-label-pages"), 
-                                            html.Td("Provides a detailed view of the course information and the participants of a single course.",
-                                                    className="home-page--list-item-description")
-                                            ]
-                                        ),
+                                    #html.Tr(
+                                    #    className="home-page--table-row",
+                                    #    children=[
+                                    #        html.Td("Course Details:",
+                                    #                className="home-page--list-item-label-pages"), 
+                                    #        html.Td("Provides a detailed view of the course information and the participants of a single course.",
+                                    #                className="home-page--list-item-description")
+                                    #        ]
+                                    #    ),
                                     html.Tr(
                                         className="home-page--table-row",
                                         children=[
@@ -144,10 +160,9 @@ layout = html.Div(
                                     html.Tr(
                                         className="home-page--table-row",
                                         children=[
-                                            html.Td("Mode:",
+                                            html.Td("Frequency Mode:",
                                                     className="home-page--list-item-label-header"), 
-                                            html.Td("Allows you to switch between absolute and relative frequencies. " +
-                                                     "For the relative frequencies, the data is either normalized by the number of registered students or the room capacity.",
+                                            html.Td("Lets you switch between absolute and relative frequencies. For the relative frequencies, the data is either normalized by the number of registered students or the room capacity.",
                                                     className="home-page--list-item-description")
                                             ]
                                         )
